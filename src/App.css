@@ -20,7 +20,9 @@
 .App-link {
   color: #09d3ac;
 }
-
+body {
+  overscroll-behavior: contain;
+}
 .wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
