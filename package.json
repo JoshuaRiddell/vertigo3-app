@@ -2,7 +2,7 @@
   "name": "vertigo3-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://sabbar-dev.github.io/vertigo3-app",
+  "homepage": "https://sabbar-dev.github.io/vertigo3-app/",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-brands-svg-icons": "^5.11.2",
