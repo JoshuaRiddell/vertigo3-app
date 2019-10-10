@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/vertigo3-app/precache-manifest.f1ba02399d64279bcce4a4dc061abdec.js"
+  "/vertigo3-app/precache-manifest.a29f6c6f3ed7bc1a8c656c18c67654e6.js"
 );
 
 self.addEventListener('message', (event) => {
