@@ -12,7 +12,9 @@ export default class DashboardContainer extends React.Component {
     expandSonar: false,
     expandMap: false,
     activeMode: "surFace",
-    hidePopup: false
+    hidePopup: false,
+    percentBarMenu: false,
+    dataSelection: ""
   };
 
   showNotification = (msg, duration) => {
@@ -33,6 +35,21 @@ export default class DashboardContainer extends React.Component {
     this.setState({ notification: {} });
   };
 
+  setDataSelection = selection => {
+    const { dataSelection } = this.state;
+    if (dataSelection === selection) {
+      this.setState({
+        dataSelection: "",
+        percentBarMenu: false
+      });
+    } else {
+      this.setState({
+        dataSelection: selection,
+        percentBarMenu: true
+      });
+    }
+  };
+
   static propTypes = {};
 
   render() {
@@ -41,26 +58,23 @@ export default class DashboardContainer extends React.Component {
       expandMap,
       expandSonar,
       activeMode,
-      hidePopup
+      hidePopup,
+      percentBarMenu,
+      dataSelection
     } = this.state;
     // const activeView = (
 
     // )
     return (
       <div class="main-container">
+        <div className="dev-mode-version">v0.0.3</div>
         <div class="top-sec">
           <div class="left-sidebar">
             <div class="nav-wrapper">
-              <div class="dr-btn btn-half bg-olive-dark btn-l">seabed</div>
-              <div class="dr-btn btn-half bg-olive-dark btn-r">surface</div>
-              <div class="dr-btn btn-full bg-olive-medium">
+              <div class="dr-btn btn-half nav-btn-bg-1 btn-l">Surface</div>
+              <div class="dr-btn btn-half bg-olive-dark btn-r">Seabed</div>
+              <div class="dr-btn btn-full nav-btn-bg-2">
                 manual
-                <span>
-                  <img src="images/remote.png" class="remote-icon" />
-                </span>
-              </div>
-              <div class="dr-btn btn-full bg-olive-dark">
-                offline
                 <span>
                   <img src="images/remote.png" class="remote-icon" />
                 </span>
@@ -69,11 +83,15 @@ export default class DashboardContainer extends React.Component {
 
             <div class="state-wrapper bg-olive-light">
               <div class="state-labels">
+                <span class="state-title">Depth</span>
+                <span class="state-value">24.1 m</span>
+              </div>
+              <div class="state-labels">
                 <span class="state-title">Speed</span>
                 <span class="state-value">1.96 kts</span>
               </div>
               <div class="state-labels">
-                <span class="state-title">Depth</span>
+                <span class="state-title">G.Depth</span>
                 <span class="state-value">24.1 m</span>
               </div>
               <div class="state-labels">
@@ -81,7 +99,17 @@ export default class DashboardContainer extends React.Component {
                 <span class="state-value">25.2 m</span>
               </div>
               <div class="state-labels">
-                <span class="state-title">Image qual focus Exposure</span>
+                <span class="state-title">G.Speed</span>
+                <span class="state-value">1.96 kts</span>
+              </div>
+              <div class="state-labels">
+                <span class="state-title" style={{ fontSize: 16 }}>
+                  Image qual
+                </span>
+                <span class="red-text" style={{ display: "block" }}>
+                  focus
+                </span>
+                <span class="green-text">Exposure</span>
               </div>
               <div class="state-labels">
                 <span class="state-title">Time</span>
@@ -95,9 +123,22 @@ export default class DashboardContainer extends React.Component {
 
             <div class="info-wrapper bg-olive-dark">
               <span class="info-text">
-                Duis id nunc leo suspendisse molestie venenatis lacus vel
-                condimentum donec vel varius velit. Donec venenatis imperdiet
-                diam id bibendum mauris ac arcu vel turpis blandit mo lestie
+                <div class="info-inner-wrapper">
+                  <span class="info-label">Coral cover</span>
+                  <span class="info-value">23%</span>
+                </div>
+                <div class="info-inner-wrapper">
+                  <span class="info-label">Starfish</span>
+                  <span class="info-value">1076</span>
+                </div>
+                <div class="info-inner-wrapper">
+                  <span class="info-label">Seagrass</span>
+                  <span class="info-value">3%</span>
+                </div>
+                <div class="info-inner-wrapper">
+                  <span class="info-label">Sand</span>
+                  <span class="info-value">36%</span>
+                </div>
               </span>
             </div>
           </div>
@@ -148,7 +189,7 @@ export default class DashboardContainer extends React.Component {
               <div class="sonar-controller-wrapper">
                 <span class="sonar-icon-wrap empty-icon-wrapper">
                   <img
-                    src="images/empty-icon.svg"
+                    src="images/zoming-icon.svg"
                     class="sonar-icon empty-icon"
                   />
                 </span>
@@ -172,59 +213,94 @@ export default class DashboardContainer extends React.Component {
         <div class="bottom-sec">
           <div class="data-wrapper">
             <div class="data-inner-wrap">
-              <div class="data-item bg-brown">
+              <div
+                class={`data-item border-brown bg-brown ${
+                  dataSelection === "ho" ? "active" : ""
+                }`}
+                onClick={() => this.setDataSelection("ho")}
+              >
                 <img class="data-img" src="images/Picture10.png" />
                 <span class="data-label">Ho</span>
                 <span class="play-icon-wrap">
-                  <img class="play-icon" src="images/play-icon.svg" />
+                  <img class="play-icon" src="images/play-small-icon.svg" />
                 </span>
               </div>
-              <div class="data-item bg-violet">
+              <div
+                class={`data-item border-violet bg-violet ${
+                  dataSelection === "hs" ? "active" : ""
+                }`}
+                onClick={() => this.setDataSelection("hs")}
+              >
                 <img class="data-img" src="images/Picture11.png" />
                 <span class="data-label">Hs</span>
                 <span class="play-icon-wrap">
-                  <img class="play-icon" src="images/play-icon.svg" />
+                  <img class="play-icon" src="images/play-small-icon.svg" />
                 </span>
               </div>
             </div>
             <div class="data-inner-wrap">
-              <div class="data-item bg-blue-d">
+              <div
+                class={`data-item border-blue-d bg-blue-d ${
+                  dataSelection === "cs" ? "active" : ""
+                }`}
+                onClick={() => this.setDataSelection("cs")}
+              >
                 <img class="data-img" src="images/Picture12.png" />
                 <span class="data-label">Cs</span>
                 <span class="play-icon-wrap">
-                  <img class="play-icon" src="images/play-icon.svg" />
+                  <img class="play-icon" src="images/play-small-icon.svg" />
                 </span>
               </div>
-              <div class="data-item bg-blue-l">
+              <div
+                class={`data-item border-blue-l bg-blue-l ${
+                  dataSelection === "si" ? "active" : ""
+                }`}
+                onClick={() => this.setDataSelection("si")}
+              >
                 <img class="data-img" src="images/Picture13.png" />
                 <span class="data-label">Si</span>
                 <span class="play-icon-wrap">
-                  <img class="play-icon" src="images/play-icon.svg" />
+                  <img class="play-icon" src="images/play-small-icon.svg" />
                 </span>
               </div>
             </div>
             <div class="data-inner-wrap">
-              <div class="data-item bg-yellow-l">
+              <div
+                class={`data-item border-yellow-l bg-yellow-l ${
+                  dataSelection === "zm" ? "active" : ""
+                }`}
+                onClick={() => this.setDataSelection("zm")}
+              >
                 <img class="data-img" src="images/Picture14.png" />
                 <span class="data-label">Zm</span>
                 <span class="play-icon-wrap">
-                  <img class="play-icon" src="images/play-icon.svg" />
+                  <img class="play-icon" src="images/play-small-icon.svg" />
                 </span>
               </div>
-              <div class="data-item bg-yellow-d">
+              <div
+                class={`data-item border-yellow-d bg-yellow-d ${
+                  dataSelection === "hd" ? "active" : ""
+                }`}
+                onClick={() => this.setDataSelection("hd")}
+              >
                 <img class="data-img" src="images/Picture15.png" />
                 <span class="data-label">Hd</span>
                 <span class="play-icon-wrap">
-                  <img class="play-icon" src="images/play-icon.svg" />
+                  <img class="play-icon" src="images/play-small-icon.svg" />
                 </span>
               </div>
             </div>
             <div class="data-inner-wrap data-inner-wrap_lg">
-              <div class="data-item bg-orange">
+              <div
+                class={`data-item border-orange bg-orange ${
+                  dataSelection === "hu" ? "active" : ""
+                }`}
+                onClick={() => this.setDataSelection("hu")}
+              >
                 <img class="data-img" src="images/Picture16.png" />
                 <span class="data-label">Hu</span>
                 <span class="play-icon-wrap">
-                  <img class="play-icon" src="images/play-icon.svg" />
+                  <img class="play-icon" src="images/play-small-icon.svg" />
                 </span>
               </div>
 
@@ -248,108 +324,128 @@ export default class DashboardContainer extends React.Component {
                 </ul>
               </div>
             </div>
+            {percentBarMenu && (
+              <div
+                class="percentage-bar-wrapper"
+                onClick={() =>
+                  this.setState({ percentBarMenu: false, dataSelection: "" })
+                }
+              >
+                <span class="percentage-bar-item">0%</span>
+                <span class="percentage-bar-item">2%</span>
+                <span class="percentage-bar-item">10%</span>
+                <span class="percentage-bar-item">20%</span>
+                <span class="percentage-bar-item">30%</span>
+                <span class="percentage-bar-item">40%</span>
+                <span class="percentage-bar-item">50%</span>
+                <span class="percentage-bar-item">60%</span>
+                <span class="percentage-bar-item">70%</span>
+                <span class="percentage-bar-item">80%</span>
+                <span class="percentage-bar-item">90%</span>
+                <span class="percentage-bar-item">100%</span>
+              </div>
+            )}
           </div>
         </div>
-        <div class="popup-layer" style={hidePopup ? { display: "none" } : {}}>
-          <div class="dr-popup-wrapper">
-            <span
-              class="dr-close-btn"
-              onClick={() => {
-                // document.documentElement.requestFullscreen();
-                this.setState({ hidePopup: true });
-              }}
-            >
-              <img src="images/close-icon.svg" class="close-icon" />
-            </span>
-            <span class="dr-popup-label">Training set:</span>
-            <div class="dr-popup-inner-wrap">
-              <div class="popup-item">
-                <div class="popup-img-wrapper">
-                  <img src="images/Picture3.png" class="popup-img" />
+        {!hidePopup && (
+          <div class="popup-layer">
+            <div class="dr-popup-wrapper">
+              <span
+                class="dr-close-btn"
+                onClick={() => this.setState({ hidePopup: true })}
+              >
+                <img src="images/close-icon.svg" class="close-icon" />
+              </span>
+              <span class="dr-popup-label">Training set:</span>
+              <div class="dr-popup-inner-wrap">
+                <div class="popup-item">
+                  <div class="popup-img-wrapper">
+                    <img src="images/Picture3.png" class="popup-img" />
+                  </div>
+                  <span class="popup-label bg-red-l">
+                    <span class="popup-text">Halophila Ovalis</span>
+                  </span>
                 </div>
-                <span class="popup-label bg-red-l">
-                  <span class="popup-text">Halophila Ovalis</span>
-                </span>
-              </div>
-              <div class="popup-item">
-                <div class="popup-img-wrapper">
-                  <img src="images/Picture4.png" class="popup-img" />
+                <div class="popup-item">
+                  <div class="popup-img-wrapper">
+                    <img src="images/Picture4.png" class="popup-img" />
+                  </div>
+                  <span class="popup-label bg-green">
+                    <span class="popup-text">Cymodocea Serrulata</span>
+                  </span>
                 </div>
-                <span class="popup-label bg-green">
-                  <span class="popup-text">Cymodocea Serrulata</span>
-                </span>
-              </div>
-              <div class="popup-item">
-                <div class="popup-img-wrapper">
-                  <img src="images/Picture5.png" class="popup-img" />
+                <div class="popup-item">
+                  <div class="popup-img-wrapper">
+                    <img src="images/Picture5.png" class="popup-img" />
+                  </div>
+                  <span class="popup-label bg-yellow">
+                    <span class="popup-text">Zostera Muelleri</span>
+                  </span>
                 </div>
-                <span class="popup-label bg-yellow">
-                  <span class="popup-text">Zostera Muelleri</span>
-                </span>
-              </div>
-              <div class="popup-item">
-                <div class="popup-img-wrapper">
-                  <img src="images/Picture6.png" class="popup-img" />
+                <div class="popup-item">
+                  <div class="popup-img-wrapper">
+                    <img src="images/Picture6.png" class="popup-img" />
+                  </div>
+                  <span class="popup-label bg-blue-d">
+                    <span class="popup-text">Halodule Uninervis</span>
+                  </span>
                 </div>
-                <span class="popup-label bg-blue-d">
-                  <span class="popup-text">Halodule Uninervis</span>
-                </span>
-              </div>
-              <div class="popup-item">
-                <div class="popup-img-wrapper">
-                  <img src="images/Picture7.png" class="popup-img" />
+                <div class="popup-item">
+                  <div class="popup-img-wrapper">
+                    <img src="images/Picture7.png" class="popup-img" />
+                  </div>
+                  <span class="popup-label bg-orange">
+                    <span class="popup-text">Halophila Spinulosa</span>
+                  </span>
                 </div>
-                <span class="popup-label bg-orange">
-                  <span class="popup-text">Halophila Spinulosa</span>
-                </span>
-              </div>
-              <div class="popup-item">
-                <div class="popup-img-wrapper">
-                  <img src="images/Picture8.png" class="popup-img" />
+                <div class="popup-item">
+                  <div class="popup-img-wrapper">
+                    <img src="images/Picture8.png" class="popup-img" />
+                  </div>
+                  <span class="popup-label bg-violet">
+                    <span class="popup-text">Syringodium cordifolia</span>
+                  </span>
                 </div>
-                <span class="popup-label bg-violet">
-                  <span class="popup-text">Syringodium cordifolia</span>
-                </span>
-              </div>
-              <div class="popup-item">
-                <div class="popup-img-wrapper">
-                  <img src="images/Picture9.png" class="popup-img" />
+                <div class="popup-item">
+                  <div class="popup-img-wrapper">
+                    <img src="images/Picture9.png" class="popup-img" />
+                  </div>
+                  <span class="popup-label bg-blue-l">
+                    <span class="popup-text">Halophila Decipiens</span>
+                  </span>
                 </div>
-                <span class="popup-label bg-blue-l">
-                  <span class="popup-text">Halophila Decipiens</span>
-                </span>
-              </div>
-              <div class="popup-item">
-                <div class="popup-img-wrapper"></div>
-                <span class="popup-label"></span>
-              </div>
-              <div class="popup-item">
-                <div class="popup-img-wrapper"></div>
-                <span class="popup-label"></span>
-              </div>
-              <div class="popup-item">
-                <div class="popup-img-wrapper">
-                  <img src="images/Picture17.png" class="popup-img" />
+                <div class="popup-item">
+                  <div class="popup-img-wrapper"></div>
+                  <span class="popup-label"></span>
                 </div>
-                <span class="popup-label bg-pink">
-                  <span class="popup-text">Pentaceraster mammillatus</span>
-                </span>
-              </div>
-              <div class="popup-item">
-                <div class="popup-img-wrapper"></div>
-                <span class="popup-label"></span>
-              </div>
-              <div class="popup-item">
-                <div class="popup-img-wrapper">
-                  <img src="images/question.png" class="popup-img" />
+                <div class="popup-item">
+                  <div class="popup-img-wrapper"></div>
+                  <span class="popup-label"></span>
                 </div>
-                <span class="popup-label bg-red-d">
-                  <span class="popup-text">Unkonw</span>
-                </span>
+                <div class="popup-item">
+                  <div class="popup-img-wrapper">
+                    <img src="images/Picture17.png" class="popup-img" />
+                  </div>
+                  <span class="popup-label bg-pink">
+                    <span class="popup-text">Pentaceraster mammillatus</span>
+                  </span>
+                </div>
+                <div class="popup-item">
+                  <div class="popup-img-wrapper"></div>
+                  <span class="popup-label"></span>
+                </div>
+                <div class="popup-item">
+                  <div class="popup-img-wrapper">
+                    <img src="images/question.png" class="popup-img" />
+                  </div>
+                  <span class="popup-label bg-red-d">
+                    <span class="popup-text">Unkonw</span>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     );
     // return (
