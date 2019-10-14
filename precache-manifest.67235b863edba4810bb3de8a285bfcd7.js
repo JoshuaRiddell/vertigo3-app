@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "c66d2cde5fee15ca844efd3e72e04d5c",
+    "revision": "f55710845c070f3c39753fe44522014b",
     "url": "/vertigo3-app/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/vertigo3-app/static/css/2.b91a2650.chunk.css"
   },
   {
-    "revision": "b686bcf76ab9422a9ee2",
+    "revision": "d5c79b306634c203ce4a",
     "url": "/vertigo3-app/static/css/main.a3952500.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/vertigo3-app/static/js/2.8a06bda0.chunk.js"
   },
   {
-    "revision": "b686bcf76ab9422a9ee2",
-    "url": "/vertigo3-app/static/js/main.1938868c.chunk.js"
+    "revision": "d5c79b306634c203ce4a",
+    "url": "/vertigo3-app/static/js/main.1c69f12e.chunk.js"
   },
   {
     "revision": "259646d364b3bccbc7d6",
