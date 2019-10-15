@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, HashRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import store from "./store";
 import AppRoutes from "./AppRoutes";
 import NoSleep from "nosleep.js";
 
@@ -40,11 +42,13 @@ class App extends Component {
   };
   render() {
     return (
-      <HashRouter>
-        <Switch>
-          <AppRoutes path="/" />
-        </Switch>
-      </HashRouter>
+      <Provider store={store}>
+        <HashRouter>
+          <Switch>
+            <AppRoutes path="/" />
+          </Switch>
+        </HashRouter>
+      </Provider>
     );
   }
 }

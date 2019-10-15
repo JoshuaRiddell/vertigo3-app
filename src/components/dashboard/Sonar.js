@@ -17,16 +17,34 @@ export default class Sonar extends React.Component {
   static propTypes = {};
 
   render() {
+    const { expandSonar } = this.props;
     return (
       <div className="sonar-container">
+        <div class="sonar-controller-wrapper">
+          <span class="sonar-icon-wrap empty-icon-wrapper">
+            <img
+              src="images/zoming-icon.svg"
+              class="sonar-icon empty-icon"
+              style={expandSonar ? { width: 80, height: 80 } : {}}
+            />
+          </span>
+          <span
+            class="sonar-icon-wrap loop-icon-wrapper"
+            style={expandSonar ? { marginRight: 20 } : { marginRight: 95 }}
+          >
+            <img
+              src="images/loop-icon.svg"
+              class="sonar-icon loop-icon"
+              style={expandSonar ? { width: 80, height: 80 } : {}}
+            />
+          </span>
+        </div>
         <SonarChart
           className="bezierCurves"
           viewBoxWidth={250}
-          viewBoxHeight={180}
+          viewBoxHeight={210}
           activeMode={this.props.activeMode}
         />
-        {/* <VerticalRangeSlider expandSonar={this.props.expandSonar} />
-        <HorizontalSlider expandSonar={this.props.expandSonar} /> */}
       </div>
     );
   }

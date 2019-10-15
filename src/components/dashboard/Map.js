@@ -12,7 +12,10 @@ class Map extends React.Component {
   };
   componentDidMount() {
     // create map
-    this.map = L.map("map").setView([-16.886647, 139.05126], 12);
+    this.map = L.map("map", { zoomControl: false }).setView(
+      [-16.886647, 139.05126],
+      12
+    );
     L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 20
     }).addTo(this.map);
@@ -70,11 +73,23 @@ class Map extends React.Component {
   }
 
   render() {
+    const { expandMap } = this.props;
+    console.log(expandMap);
     return (
-      <div
-        id="map"
-        style={{ width: "100%", height: this.props.mapHeight + "px" }}
-      />
+      <>
+        {/* <div
+          class="map-controller-wrapper"
+          style={expandMap ? {} : { top: 100 }}
+        >
+          <span class="map-icon-wrap zoom-icon-wrapper">
+            <img src="images/zoom-icon.svg" class="map-icon zoom-icon" />
+          </span>
+        </div> */}
+        <div
+          id="map"
+          style={{ width: "100%", height: this.props.mapHeight + "px" }}
+        />
+      </>
     );
   }
 }

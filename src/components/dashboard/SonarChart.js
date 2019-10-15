@@ -1,6 +1,6 @@
 import React from "react";
-import boatIcon from "../../assets/sonar-boat.png";
-import gliderIcon from "../../assets/sonar-glider.png";
+import boatIcon from "../../assets/sonar-boat-2.png";
+import gliderIcon from "../../assets/glider-icon.svg";
 export default class SonarChart extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -8,24 +8,58 @@ export default class SonarChart extends React.PureComponent {
     this.state = {
       // These are our 3 BÃ©zier points, stored in state.
       boatToGliderPosition: {
-        startPoint: { x: 16.4257555847569, y: 10.512483574244415 },
-        controlPoint: { x: 175, y: 7 },
-        endPoint: { x: 231, y: 89.5 }
+        startPoint: { x: 38, y: 14 },
+        controlPoint: { x: 160, y: 7 },
+        endPoint: { x: 196, y: 89.5 }
       },
       // We keep track of which point is currently being
       // dragged. By default, no point is.
       draggingPointKeys: null,
 
       vSliderPosition: {
-        startPoint: { x: 1, y: 22.3 },
-        endPoint: { x: 1, y: 82.7 }
+        // startPoint: { x: 1, y: 22.3 },
+        // endPoint: { x: 1, y: 82.7 }
+        startPoint: { x: 1, y: 0 },
+        endPoint: { x: 1, y: 33.46 }
       },
 
       hSliderPosition: {
-        startPoint: { x: 120, y: 160 },
-        endPoint: { x: 120, y: 160 }
+        startPoint: { x: 120, y: 181 },
+        endPoint: { x: 120, y: 181 }
       }
     };
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { activeMode } = this.props;
+
+    if (activeMode !== prevProps.activeMode) {
+      if (activeMode === "surFace") {
+        this.setState({
+          vSliderPosition: {
+            startPoint: { x: 1, y: 0 },
+            endPoint: { x: 1, y: 33.46 }
+          }
+        });
+      }
+      if (activeMode === "seaBed") {
+        this.setState({
+          vSliderPosition: {
+            startPoint: { x: 1, y: 46.5 },
+            endPoint: { x: 1, y: 90.7 }
+          }
+        });
+      }
+
+      if (activeMode === "manual") {
+        this.setState({
+          vSliderPosition: {
+            startPoint: { x: 1, y: 22.3 },
+            endPoint: { x: 1, y: 82.7 }
+          }
+        });
+      }
+    }
   }
 
   handleMouseDown(keys) {
@@ -34,7 +68,7 @@ export default class SonarChart extends React.PureComponent {
 
   handleMouseUp() {
     this.setState({ draggingPointKeys: null });
-    document.documentElement.style.overflow = "auto";
+    // document.documentElement.style.overflow = "auto";
   }
 
   handleMouseMove(e, type) {
@@ -78,7 +112,7 @@ export default class SonarChart extends React.PureComponent {
       });
     }
     if (parentKey === "vSliderPosition") {
-      if (viewBoxY > 0 && viewBoxY < 150) {
+      if (viewBoxY > 0 && viewBoxY < 160) {
         this.setState({
           [parentKey]: {
             ...this.state[parentKey],
@@ -141,7 +175,7 @@ export default class SonarChart extends React.PureComponent {
       >
         <rect
           width={viewBoxWidth}
-          height="15"
+          height="20"
           fill="rgb(33, 185, 245)"
           className="sky"
         />
@@ -159,12 +193,12 @@ export default class SonarChart extends React.PureComponent {
             // }
           />
 
-          <SmallHandle
+          {/* <SmallHandle
             coordinates={boatToGliderPosition.controlPoint}
             onMouseDown={() =>
               this.handleMouseDown("boatToGliderPosition.controlPoint")
             }
-          />
+          /> */}
 
           <GliderHandle
             coordinates={boatToGliderPosition.endPoint}
@@ -177,8 +211,8 @@ export default class SonarChart extends React.PureComponent {
         {activeMode !== "manual" && (
           <g className="verticle-slider">
             {/* <CircleHandle coordinates={vSliderPosition.startPoint} /> */}
-            {activeMode === "surFace" ? (
-              <ToolTip
+            {activeMode === "seaBed" ? (
+              <VerticleToolTip
                 coordinates={vSliderPosition.startPoint}
                 mode={activeMode}
                 onMouseDown={() =>
@@ -193,8 +227,8 @@ export default class SonarChart extends React.PureComponent {
               to={vSliderPosition.endPoint}
             />
 
-            {activeMode === "seaBed" ? (
-              <ToolTip
+            {activeMode === "surFace" ? (
+              <VerticleToolTip
                 mode={activeMode}
                 coordinates={vSliderPosition.endPoint}
                 onMouseDown={() =>
@@ -204,20 +238,41 @@ export default class SonarChart extends React.PureComponent {
             ) : (
               <CircleHandle coordinates={vSliderPosition.endPoint} />
             )}
+            <g className="horizontal-slider">
+              {/* <CircleHandle coordinates={vSliderPosition.startPoint} /> */}
+              <HorizontalToolTip
+                coordinates={hSliderPosition.startPoint}
+                mode={"manual"}
+                onMouseDown={() =>
+                  activeMode !== "manual" &&
+                  this.handleMouseDown("hSliderPosition.startPoint")
+                }
+              />
+            </g>
           </g>
         )}
-
-        <g className="horizontal-slider">
-          {/* <CircleHandle coordinates={vSliderPosition.startPoint} /> */}
-          <ToolTip
-            coordinates={hSliderPosition.startPoint}
-            mode={"manual"}
-            onMouseDown={() =>
-              activeMode === "manual" &&
-              this.handleMouseDown("hSliderPosition.startPoint")
-            }
-          />
-        </g>
+        {activeMode === "manual" && (
+          <>
+            <CircleHandle coordinates={vSliderPosition.startPoint} />
+            <rect
+              x="1.35"
+              y="1.35"
+              width="6.66"
+              height="6.66"
+              transform="translate(117 177.5) rotate(-45)"
+              stroke="rgb(244, 0, 0)"
+              fill="rgb(0, 0, 0, 0)"
+            />
+            <rect
+              x="1.04"
+              y="1.04"
+              width="6.01"
+              height="6.01"
+              fill="red"
+              transform={`translate(${hSliderPosition.startPoint.x} 177.5) rotate(-45)`}
+            />
+          </>
+        )}
       </svg>
     );
   }
@@ -242,10 +297,10 @@ const Path = ({ instructions }) => (
 const BoatHandle = ({ coordinates, onMouseDown }) => (
   <image
     xlinkHref={boatIcon}
-    height="15"
-    width="15"
-    x={coordinates.x - 10}
-    y={coordinates.y - 10}
+    height="60"
+    width="60"
+    x={-8}
+    y={-17}
     // onMouseDown={onMouseDown}
     // onTouchStart={onMouseDown}
     // style={{ cursor: "-webkit-grab" }}
@@ -255,10 +310,10 @@ const BoatHandle = ({ coordinates, onMouseDown }) => (
 const GliderHandle = ({ coordinates, onMouseDown }) => (
   <image
     xlinkHref={gliderIcon}
-    height="20"
-    width="20"
-    x={coordinates.x - 10}
-    y={coordinates.y - 10}
+    height="35"
+    width="35"
+    x={coordinates.x - 6}
+    y={coordinates.y - 21.5}
     onMouseDown={onMouseDown}
     onTouchStart={onMouseDown}
     style={{ cursor: "-webkit-grab" }}
@@ -282,16 +337,16 @@ const SmallHandle = ({ coordinates, onMouseDown }) => (
 
 const CircleHandle = ({ coordinates }) => (
   <ellipse
-    transform="translate(0 18.25)"
+    transform="translate(0 25.25)"
     cx={coordinates.x}
     cy={coordinates.y}
-    rx={3}
-    ry={3}
+    rx={5}
+    ry={5}
     fill="rgb(244, 0, 0)"
   />
 );
 
-const ToolTip = ({ coordinates, onMouseDown, mode }) => {
+const VerticleToolTip = ({ coordinates, onMouseDown, mode }) => {
   let x = coordinates.x;
   let y = coordinates.y;
   return (
@@ -306,42 +361,88 @@ const ToolTip = ({ coordinates, onMouseDown, mode }) => {
     <>
       <g
         style={{ cursor: "-webkit-grab" }}
-        transform={`translate(${mode === "manual" ? x : -2} ${y - 3})`}
+        transform={`translate(${-2} ${y - 3})`}
         onMouseDown={onMouseDown}
         onTouchStart={onMouseDown}
       >
-        {mode === "manual" ? (
-          <polygon
-            fill="rgb(244, 0, 0)"
-            points="6.04 0 6.04 13 15.82 13 7.42 17.73 5.35 18.78 3.54 16.96 0 20.5 3.54 24.04 7.07 20.5 5.38 18.81 7.51 18.24 27.77 13 47.04 13 47.04 0 6.04 0"
-          />
-        ) : (
-          <path
-            fill="rgb(244, 0, 0)"
-            d="M7.5,0V13h9.79L5.89,18.74A3,3,0,1,0,6,19.5a2.3,2.3,0,0,0,0-.26L29.23,13H48.5V0Z"
-          />
-        )}
+        <path
+          fill="rgb(244, 0, 0)"
+          d="M7.5,0V13h9.79L5.89,18.74A3,3,0,1,0,6,19.5a2.3,2.3,0,0,0,0-.26L29.23,13H48.5V0Z"
+        />
+
         <text
           transform="translate(10 10.25)"
           style={{
             pointerEvents: "none",
             userSelect: "none",
             fontSize: "10px",
-            fontWeight: "500"
+            fontWeight: "600"
           }}
-        >{`${Math.round(mode === "manual" ? x : y * 100) / 100}m`}</text>
+        >
+          {`${(Math.round(y * 100) / 100).toFixed(1)}m`}
+        </text>
       </g>
-      {mode === "manual" && (
-        <rect
-          x="1.35"
-          y="1.35"
-          width="6.66"
-          height="6.66"
-          transform="translate(117 177.5) rotate(-45)"
-          stroke="rgb(244, 0, 0)"
-          fill="rgb(0, 0, 0, 0)"
+    </>
+  );
+};
+
+const HorizontalToolTip = ({ coordinates, onMouseDown, mode }) => {
+  let x = coordinates.x;
+  let y = coordinates.y;
+
+  let displacement = 0;
+  let labelText = ``;
+
+  const centerPoint = 120;
+  const totalWidth = 240;
+
+  displacement = (Math.round(x - centerPoint) * totalWidth) / 100;
+
+  if (displacement > 0) {
+    labelText = `R${displacement}m`;
+  }
+  if (displacement < 0) {
+    labelText = `L${Math.abs(displacement)}m`;
+  }
+  if (displacement === 0) {
+    labelText = `${displacement}m`;
+  }
+
+  return (
+    <>
+      <g
+        style={{ cursor: "-webkit-grab" }}
+        transform={`translate(${x} ${y})`}
+        onMouseDown={onMouseDown}
+        onTouchStart={onMouseDown}
+      >
+        <polygon
+          fill="rgb(244, 0, 0)"
+          points="6.04 0 6.04 13 15.82 13 7.42 17.73 5.35 18.78 3.54 16.96 0 20.5 3.54 24.04 7.07 20.5 5.38 18.81 7.51 18.24 27.77 13 47.04 13 47.04 0 6.04 0"
         />
-      )}
+
+        <text
+          transform="translate(10 10.25)"
+          style={{
+            pointerEvents: "none",
+            userSelect: "none",
+            fontSize: "10px",
+            fontWeight: "600"
+          }}
+        >
+          {labelText}
+        </text>
+      </g>
+
+      <rect
+        x="1.35"
+        y="1.35"
+        width="8"
+        height="8"
+        transform="translate(116.5 202) rotate(-45)"
+        stroke="rgb(244, 0, 0)"
+        fill="rgb(0, 0, 0, 0)"
+      />
     </>
   );
 };

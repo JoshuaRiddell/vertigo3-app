@@ -108,7 +108,7 @@ export default class VideoPlayer extends React.Component {
 
     return (
       <div className="video-player-container">
-        <div
+        {/* <div
           id="video-controls"
           className="controls"
           style={{ width: this.props.playerWidth }}
@@ -129,31 +129,7 @@ export default class VideoPlayer extends React.Component {
               <FontAwesomeIcon icon={faPause} size="4x" />
             )}
           </button>
-          {/* <button href="#" className="round-button" onClick={this.fullScreen}>
-            <i className="fa fa-arrows-alt fa-5x" />
-          </button> */}
-
-          <Popup
-            trigger={
-              <button
-                href="#"
-                className="round-button"
-                onClick={this.fullScreen}
-                style={{ float: "right" }}
-              >
-                <FontAwesomeIcon icon={faCog} size="4x" />
-              </button>
-            }
-            position="bottom center"
-            closeOnDocumentClick
-          >
-            <div>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Asperiores dolor nulla animi, natus velit assumenda deserunt
-              molestias
-            </div>
-          </Popup>
-        </div>
+        </div> */}
 
         {showPressSelection && (
           <div

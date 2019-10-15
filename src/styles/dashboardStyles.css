@@ -241,7 +241,7 @@
   height: 385px;
   display: flex;
   flex-wrap: wrap;
-  padding: 42px 22px 28px;
+  padding: 30px 20px 22px;
   align-content: center;
   justify-content: space-between;
   border-top: 1px solid var(--white-color);
@@ -257,15 +257,14 @@
 .state-title {
   display: block;
   color: var(--white-color);
-  font-size: 18px;
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1.1;
   line-height: 1.5;
   margin-bottom: 3px;
 }
 .state-value {
   color: #cfcfcf;
-  font-size: 18px;
+  font-size: 20px;
 }
 .info-wrapper {
   max-width: 306px;
@@ -309,17 +308,19 @@
   right: 30px;
   width: calc(100% - 60px);
   display: flex;
+  z-index: 401;
 }
 .video-controller-wrapper .video-icon-wrapper {
   display: inline-block;
+  margin-right: 19px;
 }
 .video-controller-wrapper .video-icon {
   height: 80px;
   width: 80px;
 }
-.video-controller-wrapper .record-icon-wrapper {
+/* .video-controller-wrapper .record-icon-wrapper {
   margin-right: 19px;
-}
+} */
 .video-controller-wrapper .setting-icon-wrapper {
   margin-left: auto;
 }
@@ -344,6 +345,7 @@
   right: 13px;
   display: flex;
   flex-direction: column;
+  z-index: 1000;
 }
 .map-controller-wrapper .sizing-icon {
   width: 64px;
@@ -369,22 +371,23 @@
 }
 .sonar-controller-wrapper {
   position: absolute;
-  top: 45px;
-  right: 2px;
-  left: 14px;
+  top: 0px;
+  /* right: 0; */
+  /* left: 0; */
   width: 100%;
   display: flex;
+  justify-content: flex-end;
 }
 .sonar-controller-wrapper .sonar-icon-wrap {
   display: inline-block;
   margin-right: 10px;
 }
 .sonar-controller-wrapper .sonar-icon {
-  width: 64px;
-  height: 64px;
+  width: 60px;
+  height: 60px;
 }
 .sonar-icon-wrap.sizing-icon-wrapper {
-  margin-left: auto;
+  /* margin-left: auto; */
   margin-right: 25px;
 }
 .bottom-sec {
@@ -411,13 +414,13 @@
   justify-content: center;
   position: relative;
   max-width: 279px;
-  border: 3px solid;
+  border: 10px solid;
 }
 .data-item.active {
-  border: 3px solid #4a735e;
+  border: 10px solid #16ff00;
 }
 .data-item:hover {
-  border: 3px solid #4a735e;
+  border: 10px solid #16ff00;
 }
 .data-item .play-icon-wrap {
   position: absolute;
@@ -438,6 +441,7 @@
 }
 .data-item .data-img {
   max-width: 160px;
+  width: 80px;
 }
 .dr-pagination-wrapper {
   display: flex;
@@ -526,10 +530,14 @@
   justify-content: center;
   align-items: center;
 }
+.dr-popup-wrapper .popup-img-wrapper h1 {
+  font-size: 5.5em;
+  font-family: arial;
+}
 .dr-popup-wrapper .popup-label {
   position: absolute;
   width: 100%;
-  height: 47px;
+  height: 50px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -549,14 +557,16 @@
 }
 .dr-popup-wrapper .popup-text {
   display: inline-block;
-  line-height: 1.2;
-  font-size: 14px;
+  line-height: 1.3;
+  font-size: 18px;
 }
 .dr-popup-wrapper .dr-popup-label {
-  font-size: 16px;
+  font-size: 22px;
   line-height: 1.4;
   margin-bottom: 29px;
   display: inline-block;
+  font-weight: 600;
+  letter-spacing: 1px;
 }
 .dr-popup-wrapper .popup-img {
   max-width: 136px;
@@ -595,6 +605,150 @@
   color: var(--white-color);
   margin-right: 9px;
 }
+.percentage-bar-item {
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 1.1;
+}
+.percentage-bar-item.c-0 {
+  background-color: #94c2df;
+  color: black;
+}
+.percentage-bar-item.c-1 {
+  background-color: #85b5d3;
+  color: black;
+}
+.percentage-bar-item.c-2 {
+  background-color: #79a9c6;
+  color: black;
+}
+.percentage-bar-item.c-3 {
+  background-color: #6c9bb9;
+  color: black;
+}
+.percentage-bar-item.c-4 {
+  background-color: #608fad;
+  color: black;
+}
+.percentage-bar-item.c-5 {
+  background-color: #5583a0;
+  color: black;
+}
+.percentage-bar-item.c-6 {
+  background-color: #4c7996;
+  color: black;
+}
+.percentage-bar-item.c-7 {
+  background-color: #426e89;
+  color: white;
+}
+.percentage-bar-item.c-8 {
+  background-color: #39627c;
+  color: white;
+}
+.percentage-bar-item.c-9 {
+  background-color: #30576f;
+  color: white;
+}
+.percentage-bar-item.c-10 {
+  background-color: #284c62;
+  color: white;
+}
+.percentage-bar-item.c-11 {
+  background-color: #214056;
+  color: white;
+}
 .percentage-bar-item:last-child {
   margin-right: 0;
+}
+
+.popup-content {
+  z-index: 401 !important;
+}
+
+.record-btn {
+  fill: rgb(255, 255, 255);
+}
+.record-pulse {
+  animation-name: pulse;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes pulse {
+  0% {
+    fill: rgb(255, 255, 255);
+  }
+  50% {
+    fill: rgb(224, 108, 34);
+  }
+  100% {
+    fill: rgb(255, 255, 255);
+  }
+}
+
+.record-modal {
+  bottom: 54% !important;
+}
+.record-modal.title h2 {
+  font-size: 35px;
+}
+.record-modal.content {
+  font-size: 28px;
+}
+.record-modal.actions button {
+  font-size: 20px;
+}
+.leaflet-pane {
+  z-index: 0 !important;
+}
+.notification {
+  top: 47px !important;
+}
+.notification .MuiSnackbarContent-root {
+  background-color: rgb(233, 231, 231);
+}
+.notification .MuiSnackbarContent-root .MuiSnackbarContent-message {
+  margin: 0 auto;
+}
+.notification.message {
+  font-size: 25px;
+  font-weight: 500;
+  color: var(--red);
+}
+.flash-3 {
+  animation-name: flash-3;
+  animation-duration: 2s;
+  animation-iteration-count: 3;
+  animation-timing-function: linear;
+}
+@keyframes flash-3 {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1.2;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.flash-infinite {
+  animation-name: flash-infinite;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+@keyframes flash-infinite {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1.2;
+  }
+  100% {
+    opacity: 0;
+  }
 }

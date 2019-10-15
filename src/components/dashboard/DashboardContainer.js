@@ -4,7 +4,10 @@ import MapComponent from "./MapComponent";
 import Sonar from "./Sonar";
 import FullScreenFab from "./FullScreenFab";
 import NotificationBar from "./NotificationBar";
+import Popup from "reactjs-popup";
 import "../../styles/dashboardStyles.css";
+import SessionControls from "./SessionControls";
+import ExpandButton from "../../helpers/ExpandButton";
 
 export default class DashboardContainer extends React.Component {
   state = {
@@ -14,24 +17,34 @@ export default class DashboardContainer extends React.Component {
     activeMode: "surFace",
     hidePopup: false,
     percentBarMenu: false,
-    dataSelection: ""
+    dataSelection: "",
+    notification: {}
   };
 
-  showNotification = (msg, duration) => {
-    let notification = {
+  showNotification = (msg, duration, mode) => {
+    this.closeNotification();
+
+    let notificationObj = {
       showBar: true,
       msg,
-      duration
+      duration,
+      mode
     };
-    this.setState({ notification });
 
-    setTimeout(
-      () => this.setState({ notification: {} }),
-      duration ? duration : 2000
-    );
+    if (mode !== "PAUSE_SESSION" && mode !== "STOP_SESSION") {
+      notificationObj.timeoutId = setTimeout(
+        () => this.closeNotification(),
+        duration ? duration : 2000
+      );
+    }
+
+    this.setState({ notification: notificationObj });
   };
 
   closeNotification = () => {
+    const { notification } = this.state;
+    if (notification.timeoutId) clearTimeout(notification.timeoutId);
+
     this.setState({ notification: {} });
   };
 
@@ -50,6 +63,22 @@ export default class DashboardContainer extends React.Component {
     }
   };
 
+  expandingFrames = frame => {
+    const { expandSonar, expandMap } = this.state;
+    if (frame === "sonar") {
+      this.setState({
+        expandSonar: !expandSonar,
+        expandMap: false
+      });
+    }
+    if (frame === "map") {
+      this.setState({
+        expandMap: !expandMap,
+        expandSonar: false
+      });
+    }
+  };
+
   static propTypes = {};
 
   render() {
@@ -62,12 +91,58 @@ export default class DashboardContainer extends React.Component {
       percentBarMenu,
       dataSelection
     } = this.state;
-    // const activeView = (
 
-    // )
+    let frameOrder = [
+      <VideoPlayer
+        showNotification={this.showNotification}
+        playerWidth={1076}
+        playerHeight={900}
+      />,
+      <MapComponent mapHeight={450} expandMap={expandMap} />,
+      <Sonar expandSonar={expandSonar} activeMode={activeMode} />
+    ];
+
+    if (expandMap) {
+      frameOrder = [
+        <MapComponent mapHeight={900} expandMap={expandMap} />,
+        <VideoPlayer
+          showNotification={this.showNotification}
+          playerWidth={538}
+          playerHeight={450}
+        />,
+        <Sonar expandSonar={expandSonar} activeMode={activeMode} />
+      ];
+    }
+
+    if (expandSonar) {
+      frameOrder = [
+        <Sonar expandSonar={expandSonar} activeMode={activeMode} />,
+        <MapComponent mapHeight={450} expandMap={expandMap} />,
+        <VideoPlayer
+          showNotification={this.showNotification}
+          playerWidth={538}
+          playerHeight={450}
+        />
+      ];
+    }
+
+    const percentBar = [
+      "<0%",
+      "<2%",
+      "<10%",
+      "<20%",
+      "<30%",
+      "<40%",
+      "<50%",
+      "<60%",
+      "<70%",
+      "<80%",
+      "<90%",
+      "<100%"
+    ];
     return (
       <div class="main-container">
-        <div className="dev-mode-version">v0.0.3</div>
+        <div className="dev-mode-version">v0.0.4</div>
         <div class="top-sec">
           <div class="left-sidebar">
             <div class="nav-wrapper">
@@ -103,13 +178,16 @@ export default class DashboardContainer extends React.Component {
                 <span class="state-value">1.96 kts</span>
               </div>
               <div class="state-labels">
-                <span class="state-title" style={{ fontSize: 16 }}>
-                  Image qual
+                <span class="state-title">Img qty</span>
+                <span
+                  class="red-text"
+                  style={{ display: "block", fontSize: 20 }}
+                >
+                  Focus
                 </span>
-                <span class="red-text" style={{ display: "block" }}>
-                  focus
+                <span class="green-text" style={{ fontSize: 20 }}>
+                  Exposure
                 </span>
-                <span class="green-text">Exposure</span>
               </div>
               <div class="state-labels">
                 <span class="state-title">Time</span>
@@ -144,65 +222,57 @@ export default class DashboardContainer extends React.Component {
           </div>
 
           <div class="main-video-wrapper">
-            <div class="main-wrapper">
-              <img class="main-img" src="images/Rectangle 130.png" />
-            </div>
-            <div class="video-controller-wrapper">
-              <span class="video-icon-wrapper record-icon-wrapper">
-                <img
-                  src="images/record-icon.svg"
-                  class="video-icon record-icon"
-                />
-              </span>
-              <span class="video-icon-wrapper pause-icon-wrapper">
-                <img
-                  src="images/pause-icon.svg"
-                  class="video-icon pause-icon"
-                />
-              </span>
-              <span class="video-icon-wrapper setting-icon-wrapper">
-                <img
-                  src="images/setting-icon.svg"
-                  class="video-icon setting-icon"
-                />
-              </span>
-            </div>
+            <div class="main-wrapper">{frameOrder[0]}</div>
+            {!expandMap && !expandSonar && (
+              <div class="video-controller-wrapper">
+                <SessionControls showNotification={this.showNotification} />
+
+                <Popup
+                  trigger={
+                    <span
+                      href="#"
+                      class="video-icon-wrapper setting-icon-wrapper"
+                    >
+                      <img
+                        src="images/setting-icon.svg"
+                        class="video-icon setting-icon"
+                      />
+                    </span>
+                  }
+                  position="bottom center"
+                  closeOnDocumentClick
+                >
+                  <div>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Asperiores dolor nulla animi, natus velit assumenda deserunt
+                    molestias
+                  </div>
+                </Popup>
+              </div>
+            )}
           </div>
 
           <div class="right-sidebar">
             <div class="map-wrapper">
-              <img class="map-img" src="images/right-sideImg.png" />
+              {frameOrder[1]}
+
               <div class="map-controller-wrapper">
-                <span class="map-icon-wrap sizing-icon-wrapper">
-                  <img
-                    src="images/sizing-icon.svg"
-                    class="map-icon sizing-icon"
-                  />
-                </span>
-                <span class="map-icon-wrap zoom-icon-wrapper">
-                  <img src="images/zoom-icon.svg" class="map-icon zoom-icon" />
-                </span>
+                <ExpandButton
+                  classNames={"map-icon sizing-icon"}
+                  active={expandMap}
+                  handler={() => this.expandingFrames("map")}
+                />
               </div>
             </div>
+
             <div class="sonar-wrapper">
-              <img class="sonar-img" src="images/right-sideImg1.png" />
+              {frameOrder[2]}
               <div class="sonar-controller-wrapper">
-                <span class="sonar-icon-wrap empty-icon-wrapper">
-                  <img
-                    src="images/zoming-icon.svg"
-                    class="sonar-icon empty-icon"
-                  />
-                </span>
-                <span class="sonar-icon-wrap loop-icon-wrapper">
-                  <img
-                    src="images/loop-icon.svg"
-                    class="sonar-icon loop-icon"
-                  />
-                </span>
                 <span class="sonar-icon-wrap sizing-icon-wrapper">
-                  <img
-                    src="images/sizing-icon.svg"
-                    class="sonar-icon sizing-icon"
+                  <ExpandButton
+                    classNames={"sonar-icon sizing-icon"}
+                    active={expandSonar}
+                    handler={() => this.expandingFrames("sonar")}
                   />
                 </span>
               </div>
@@ -231,7 +301,11 @@ export default class DashboardContainer extends React.Component {
                 }`}
                 onClick={() => this.setDataSelection("hs")}
               >
-                <img class="data-img" src="images/Picture11.png" />
+                <img
+                  class="data-img"
+                  style={{ width: "auto" }}
+                  src="images/Picture11.png"
+                />
                 <span class="data-label">Hs</span>
                 <span class="play-icon-wrap">
                   <img class="play-icon" src="images/play-small-icon.svg" />
@@ -271,7 +345,11 @@ export default class DashboardContainer extends React.Component {
                 }`}
                 onClick={() => this.setDataSelection("zm")}
               >
-                <img class="data-img" src="images/Picture14.png" />
+                <img
+                  class="data-img"
+                  style={{ width: "auto" }}
+                  src="images/Picture14.png"
+                />
                 <span class="data-label">Zm</span>
                 <span class="play-icon-wrap">
                   <img class="play-icon" src="images/play-small-icon.svg" />
@@ -331,18 +409,9 @@ export default class DashboardContainer extends React.Component {
                   this.setState({ percentBarMenu: false, dataSelection: "" })
                 }
               >
-                <span class="percentage-bar-item">0%</span>
-                <span class="percentage-bar-item">2%</span>
-                <span class="percentage-bar-item">10%</span>
-                <span class="percentage-bar-item">20%</span>
-                <span class="percentage-bar-item">30%</span>
-                <span class="percentage-bar-item">40%</span>
-                <span class="percentage-bar-item">50%</span>
-                <span class="percentage-bar-item">60%</span>
-                <span class="percentage-bar-item">70%</span>
-                <span class="percentage-bar-item">80%</span>
-                <span class="percentage-bar-item">90%</span>
-                <span class="percentage-bar-item">100%</span>
+                {percentBar.map((item, index) => (
+                  <span class={`percentage-bar-item c-${index}`}>{item}</span>
+                ))}
               </div>
             )}
           </div>
@@ -363,7 +432,7 @@ export default class DashboardContainer extends React.Component {
                     <img src="images/Picture3.png" class="popup-img" />
                   </div>
                   <span class="popup-label bg-red-l">
-                    <span class="popup-text">Halophila Ovalis</span>
+                    <span class="popup-text">Halophila ovalis</span>
                   </span>
                 </div>
                 <div class="popup-item">
@@ -371,7 +440,7 @@ export default class DashboardContainer extends React.Component {
                     <img src="images/Picture4.png" class="popup-img" />
                   </div>
                   <span class="popup-label bg-green">
-                    <span class="popup-text">Cymodocea Serrulata</span>
+                    <span class="popup-text">Cymodocea serrulata</span>
                   </span>
                 </div>
                 <div class="popup-item">
@@ -379,7 +448,7 @@ export default class DashboardContainer extends React.Component {
                     <img src="images/Picture5.png" class="popup-img" />
                   </div>
                   <span class="popup-label bg-yellow">
-                    <span class="popup-text">Zostera Muelleri</span>
+                    <span class="popup-text">Zostera muelleri</span>
                   </span>
                 </div>
                 <div class="popup-item">
@@ -387,7 +456,7 @@ export default class DashboardContainer extends React.Component {
                     <img src="images/Picture6.png" class="popup-img" />
                   </div>
                   <span class="popup-label bg-blue-d">
-                    <span class="popup-text">Halodule Uninervis</span>
+                    <span class="popup-text">Halodule uninervis</span>
                   </span>
                 </div>
                 <div class="popup-item">
@@ -395,7 +464,7 @@ export default class DashboardContainer extends React.Component {
                     <img src="images/Picture7.png" class="popup-img" />
                   </div>
                   <span class="popup-label bg-orange">
-                    <span class="popup-text">Halophila Spinulosa</span>
+                    <span class="popup-text">Halophila spinulosa</span>
                   </span>
                 </div>
                 <div class="popup-item">
@@ -403,7 +472,7 @@ export default class DashboardContainer extends React.Component {
                     <img src="images/Picture8.png" class="popup-img" />
                   </div>
                   <span class="popup-label bg-violet">
-                    <span class="popup-text">Syringodium cordifolia</span>
+                    <span class="popup-text">Syringodium isoetifolium</span>
                   </span>
                 </div>
                 <div class="popup-item">
@@ -411,7 +480,7 @@ export default class DashboardContainer extends React.Component {
                     <img src="images/Picture9.png" class="popup-img" />
                   </div>
                   <span class="popup-label bg-blue-l">
-                    <span class="popup-text">Halophila Decipiens</span>
+                    <span class="popup-text">Halophila decipiens</span>
                   </span>
                 </div>
                 <div class="popup-item">
@@ -436,16 +505,21 @@ export default class DashboardContainer extends React.Component {
                 </div>
                 <div class="popup-item">
                   <div class="popup-img-wrapper">
-                    <img src="images/question.png" class="popup-img" />
+                    {/* <img src="images/question.png" class="popup-img" /> */}
+                    <h1>?</h1>
                   </div>
                   <span class="popup-label bg-red-d">
-                    <span class="popup-text">Unkonw</span>
+                    <span class="popup-text">Unknown or Other</span>
                   </span>
                 </div>
               </div>
             </div>
           </div>
         )}
+        <NotificationBar
+          {...notification}
+          closeNotification={this.closeNotification}
+        />
       </div>
     );
     // return (

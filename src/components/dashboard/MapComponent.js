@@ -26,7 +26,11 @@ export default class MapComponent extends React.Component {
     const { markersData } = this.state;
     return (
       <div>
-        <Map markersData={markersData} mapHeight={this.props.mapHeight} />
+        <Map
+          markersData={markersData}
+          mapHeight={this.props.mapHeight}
+          expandMap={this.props.expandMap}
+        />
         {/* <button onClick={this.addMarker}>Add marker</button>
         <ul>
           Markers data:

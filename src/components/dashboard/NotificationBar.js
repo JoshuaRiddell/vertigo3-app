@@ -21,7 +21,8 @@ export default function NotificationBar({
   showBar,
   msg = "",
   duration,
-  closeNotification
+  closeNotification,
+  mode
 }) {
   const classes = useStyles();
   const [transition, setTransition] = React.useState(undefined);
@@ -30,6 +31,15 @@ export default function NotificationBar({
     const audio = new Audio(notificationAudio);
     if (showBar) audio.play();
   });
+
+  let flashCountClass = "";
+
+  if (mode === "PAUSE_SESSION" || mode === "STOP_SESSION") {
+    flashCountClass = "flash-infinite";
+  }
+  if (mode === "RECORD_SESSION") {
+    flashCountClass = "flash-3";
+  }
 
   const handleClick = Transition => () => {
     setTransition(() => Transition);
@@ -42,25 +52,32 @@ export default function NotificationBar({
   return (
     <div>
       <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        key={`top,center`}
         open={showBar}
         onClose={handleClose}
         //TransitionComponent={transition}
-        autoHideDuration={duration ? duration : 6000}
+        autoHideDuration={duration ? duration : 3000}
         ContentProps={{
           "aria-describedby": "message-id"
         }}
-        message={<span id="message-id">{msg ? msg : "Hello World"}</span>}
-        action={[
-          <IconButton
-            key="close"
-            aria-label="close"
-            color="inherit"
-            className={classes.close}
-            onClick={closeNotification}
-          >
-            <CloseIcon />
-          </IconButton>
-        ]}
+        className={`notification ${flashCountClass}`}
+        message={
+          <span id="message-id" className="notification message">
+            {msg}
+          </span>
+        }
+        // action={[
+        //   <IconButton
+        //     key="close"
+        //     aria-label="close"
+        //     color="inherit"
+        //     className={classes.close}
+        //     onClick={closeNotification}
+        //   >
+        //     <CloseIcon />
+        //   </IconButton>
+        // ]}
       />
     </div>
   );

@@ -1,6 +1,6 @@
 {
   "name": "vertigo3-app",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "homepage": "https://sabbar-dev.github.io/vertigo3-app/",
   "dependencies": {
@@ -19,9 +19,13 @@
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
     "react-leaflet": "2.4.0",
+    "react-redux": "^7.1.1",
     "react-router-dom": "^5.1.1",
     "react-scripts": "3.1.2",
     "reactjs-popup": "1.5.0",
+    "redux": "^4.0.4",
+    "redux-state-sync": "^2.0.4",
+    "redux-thunk": "^2.3.0",
     "video-react": "0.11.2"
   },
   "scripts": {
