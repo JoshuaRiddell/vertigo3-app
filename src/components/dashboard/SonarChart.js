@@ -19,49 +19,56 @@ export default class SonarChart extends React.PureComponent {
       vSliderPosition: {
         // startPoint: { x: 1, y: 22.3 },
         // endPoint: { x: 1, y: 82.7 }
-        startPoint: { x: 1, y: 0 },
-        endPoint: { x: 1, y: 33.46 }
+        startPoint: { x: 245, y: 0 },
+        endPoint: { x: 245, y: 33.46 }
       },
 
       hSliderPosition: {
-        startPoint: { x: 120, y: 181 },
-        endPoint: { x: 120, y: 181 }
+        startPoint: { x: 120, y: 181.5 },
+        endPoint: { x: 120, y: 181.5 }
       }
     };
   }
 
+  componentDidMount() {
+    const { activeMode } = this.props;
+    this.updateCoordinatesByMode(activeMode);
+  }
   componentDidUpdate(prevProps, prevState) {
     const { activeMode } = this.props;
 
     if (activeMode !== prevProps.activeMode) {
-      if (activeMode === "surFace") {
-        this.setState({
-          vSliderPosition: {
-            startPoint: { x: 1, y: 0 },
-            endPoint: { x: 1, y: 33.46 }
-          }
-        });
-      }
-      if (activeMode === "seaBed") {
-        this.setState({
-          vSliderPosition: {
-            startPoint: { x: 1, y: 46.5 },
-            endPoint: { x: 1, y: 90.7 }
-          }
-        });
-      }
-
-      if (activeMode === "manual") {
-        this.setState({
-          vSliderPosition: {
-            startPoint: { x: 1, y: 22.3 },
-            endPoint: { x: 1, y: 82.7 }
-          }
-        });
-      }
+      this.updateCoordinatesByMode(activeMode);
     }
   }
 
+  updateCoordinatesByMode = activeMode => {
+    if (activeMode === "surFace") {
+      this.setState({
+        vSliderPosition: {
+          startPoint: { x: 245, y: 0 },
+          endPoint: { x: 245, y: 33.46 }
+        }
+      });
+    }
+    if (activeMode === "seaBed") {
+      this.setState({
+        vSliderPosition: {
+          startPoint: { x: 245, y: 46.5 },
+          endPoint: { x: 245, y: 90.7 }
+        }
+      });
+    }
+
+    if (activeMode === "manual") {
+      this.setState({
+        vSliderPosition: {
+          startPoint: { x: 245, y: 60 },
+          endPoint: { x: 245, y: 82.7 }
+        }
+      });
+    }
+  };
   handleMouseDown(keys) {
     this.setState({ draggingPointKeys: keys });
   }
@@ -202,9 +209,9 @@ export default class SonarChart extends React.PureComponent {
 
           <GliderHandle
             coordinates={boatToGliderPosition.endPoint}
-            onMouseDown={() =>
-              this.handleMouseDown("boatToGliderPosition.endPoint")
-            }
+            // onMouseDown={() =>
+            //   this.handleMouseDown("boatToGliderPosition.endPoint")
+            // }
           />
         </g>
 
@@ -257,9 +264,9 @@ export default class SonarChart extends React.PureComponent {
             <rect
               x="1.35"
               y="1.35"
-              width="6.66"
-              height="6.66"
-              transform="translate(117 177.5) rotate(-45)"
+              width="8"
+              height="8"
+              transform="translate(117 202) rotate(-45)"
               stroke="rgb(244, 0, 0)"
               fill="rgb(0, 0, 0, 0)"
             />
@@ -269,7 +276,7 @@ export default class SonarChart extends React.PureComponent {
               width="6.01"
               height="6.01"
               fill="red"
-              transform={`translate(${hSliderPosition.startPoint.x} 177.5) rotate(-45)`}
+              transform={`translate(${hSliderPosition.startPoint.x} 202) rotate(-45)`}
             />
           </>
         )}
@@ -339,7 +346,7 @@ const CircleHandle = ({ coordinates }) => (
   <ellipse
     transform="translate(0 25.25)"
     cx={coordinates.x}
-    cy={coordinates.y}
+    cy={coordinates.y - 5}
     rx={5}
     ry={5}
     fill="rgb(244, 0, 0)"
@@ -361,13 +368,13 @@ const VerticleToolTip = ({ coordinates, onMouseDown, mode }) => {
     <>
       <g
         style={{ cursor: "-webkit-grab" }}
-        transform={`translate(${-2} ${y - 3})`}
+        transform={`translate(${194} ${y - 3})`}
         onMouseDown={onMouseDown}
         onTouchStart={onMouseDown}
       >
         <path
           fill="rgb(244, 0, 0)"
-          d="M7.5,0V13h9.79L5.89,18.74A3,3,0,1,0,6,19.5a2.3,2.3,0,0,0,0-.26L29.23,13H48.5V0Z"
+          d="M46.93,0V14.91H35.72l10.73,5.41a4.64,4.64,0,1,1-.07,1.14L22.06,14.91H0V0Z"
         />
 
         <text

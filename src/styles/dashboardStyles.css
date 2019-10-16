@@ -463,7 +463,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--white-color);
+  color: var(--white-color) !important;
   font-size: 30px;
   line-height: 1;
 }
@@ -588,8 +588,10 @@
   border-radius: 8px;
   display: flex;
   position: absolute;
-  top: -140px;
-  left: 10%;
+  /* top: -140px;
+  left: 10%; */
+  top: 63%;
+  left: 12%;
 }
 .percentage-bar-item {
   background-color: #2e4442;
@@ -707,14 +709,14 @@
   top: 47px !important;
 }
 .notification .MuiSnackbarContent-root {
-  background-color: rgb(233, 231, 231);
+  background-color: rgba(233, 231, 231, 0);
 }
 .notification .MuiSnackbarContent-root .MuiSnackbarContent-message {
   margin: 0 auto;
 }
 .notification.message {
-  font-size: 25px;
-  font-weight: 500;
+  font-size: 30px;
+  font-weight: 600;
   color: var(--red);
 }
 .flash-3 {
@@ -751,4 +753,15 @@
   100% {
     opacity: 0;
   }
+}
+.settings-popup {
+  display: flex;
+  flex-direction: column;
+}
+.settings-popup .dr-close-btn {
+  place-self: flex-end;
+}
+.settings-popup p {
+  font-size: 24px;
+  margin: 10px 0 10px 0;
 }

@@ -16,9 +16,16 @@ class Map extends React.Component {
       [-16.886647, 139.05126],
       12
     );
-    L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 20
-    }).addTo(this.map);
+    //normal view
+    //http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
+    //sat view:
+    //http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}
+    L.tileLayer(
+      "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      {
+        maxZoom: 20
+      }
+    ).addTo(this.map);
     // add layer
     this.layer = L.layerGroup().addTo(this.map);
     this.updateMarkers(this.props.markersData);

@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import VideoPlayer from "./VideoPlayer";
 import MapComponent from "./MapComponent";
 import Sonar from "./Sonar";
@@ -8,8 +9,9 @@ import Popup from "reactjs-popup";
 import "../../styles/dashboardStyles.css";
 import SessionControls from "./SessionControls";
 import ExpandButton from "../../helpers/ExpandButton";
+import TraningSetModal from "./TraningSetModal";
 
-export default class DashboardContainer extends React.Component {
+class DashboardContainer extends React.Component {
   state = {
     expandFrame: false,
     expandSonar: false,
@@ -18,7 +20,8 @@ export default class DashboardContainer extends React.Component {
     hidePopup: false,
     percentBarMenu: false,
     dataSelection: "",
-    notification: {}
+    notification: {},
+    starFishCounter: 0
   };
 
   showNotification = (msg, duration, mode) => {
@@ -89,8 +92,12 @@ export default class DashboardContainer extends React.Component {
       activeMode,
       hidePopup,
       percentBarMenu,
-      dataSelection
+      dataSelection,
+      starFishCounter
     } = this.state;
+
+    const { trainingSet } = this.props;
+    const { showTrainingSet } = trainingSet;
 
     let frameOrder = [
       <VideoPlayer
@@ -142,13 +149,32 @@ export default class DashboardContainer extends React.Component {
     ];
     return (
       <div class="main-container">
-        <div className="dev-mode-version">v0.0.4</div>
+        {/* <div className="dev-mode-version">v0.0.4</div> */}
         <div class="top-sec">
           <div class="left-sidebar">
             <div class="nav-wrapper">
-              <div class="dr-btn btn-half nav-btn-bg-1 btn-l">Surface</div>
-              <div class="dr-btn btn-half bg-olive-dark btn-r">Seabed</div>
-              <div class="dr-btn btn-full nav-btn-bg-2">
+              <div
+                class={`dr-btn btn-half btn-l ${
+                  activeMode === "surFace" ? "nav-btn-bg-1" : "bg-olive-dark"
+                }`}
+                onClick={() => this.setState({ activeMode: "surFace" })}
+              >
+                Surface
+              </div>
+              <div
+                class={`dr-btn btn-half btn-r ${
+                  activeMode === "seaBed" ? "nav-btn-bg-1" : "bg-olive-dark"
+                }`}
+                onClick={() => this.setState({ activeMode: "seaBed" })}
+              >
+                Seabed
+              </div>
+              <div
+                class={`dr-btn btn-full ${
+                  activeMode === "manual" ? "nav-btn-bg-1" : "nav-btn-bg-2"
+                }`}
+                onClick={() => this.setState({ activeMode: "manual" })}
+              >
                 manual
                 <span>
                   <img src="images/remote.png" class="remote-icon" />
@@ -207,7 +233,7 @@ export default class DashboardContainer extends React.Component {
                 </div>
                 <div class="info-inner-wrapper">
                   <span class="info-label">Starfish</span>
-                  <span class="info-value">1076</span>
+                  <span class="info-value">{starFishCounter}</span>
                 </div>
                 <div class="info-inner-wrapper">
                   <span class="info-label">Seagrass</span>
@@ -240,13 +266,18 @@ export default class DashboardContainer extends React.Component {
                     </span>
                   }
                   position="bottom center"
-                  closeOnDocumentClick
+                  closeOnDocumentClick={false}
                 >
-                  <div>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Asperiores dolor nulla animi, natus velit assumenda deserunt
-                    molestias
-                  </div>
+                  {close => (
+                    <div className="settings-popup">
+                      <span class="dr-close-btn" onClick={close}>
+                        <img src="images/close-icon.svg" class="close-icon" />
+                      </span>
+                      <p>
+                        Version: <strong>0.0.5</strong>
+                      </p>
+                    </div>
+                  )}
                 </Popup>
               </div>
             )}
@@ -385,137 +416,72 @@ export default class DashboardContainer extends React.Component {
               <div class="dr-pagination-wrapper">
                 <ul class="dr-pagination">
                   <li class="first-item dr-pagination-item">
-                    <a href="#">Starfish</a>
+                    <a>Starfish</a>
                   </li>
                   <li class="second-item dr-pagination-item">
-                    <a href="#">1</a>
+                    <a
+                      onClick={() =>
+                        this.setState({
+                          starFishCounter: starFishCounter + 1
+                        })
+                      }
+                    >
+                      1
+                    </a>
                   </li>
                   <li class="third-item dr-pagination-item">
-                    <a href="#">2</a>
+                    <a
+                      onClick={() =>
+                        this.setState({
+                          starFishCounter: starFishCounter + 2
+                        })
+                      }
+                    >
+                      2
+                    </a>
                   </li>
                   <li class="fourth-item dr-pagination-item">
-                    <a href="#">5</a>
+                    <a
+                      onClick={() =>
+                        this.setState({
+                          starFishCounter: starFishCounter + 5
+                        })
+                      }
+                    >
+                      5
+                    </a>
                   </li>
                   <li class="fifth-item dr-pagination-item">
-                    <a href="#">10</a>
+                    <a
+                      onClick={() =>
+                        this.setState({
+                          starFishCounter: starFishCounter + 10
+                        })
+                      }
+                    >
+                      10
+                    </a>
                   </li>
                 </ul>
               </div>
             </div>
-            {percentBarMenu && (
-              <div
-                class="percentage-bar-wrapper"
-                onClick={() =>
-                  this.setState({ percentBarMenu: false, dataSelection: "" })
-                }
-              >
-                {percentBar.map((item, index) => (
-                  <span class={`percentage-bar-item c-${index}`}>{item}</span>
-                ))}
-              </div>
-            )}
           </div>
         </div>
-        {!hidePopup && (
+        {percentBarMenu && (
           <div class="popup-layer">
-            <div class="dr-popup-wrapper">
-              <span
-                class="dr-close-btn"
-                onClick={() => this.setState({ hidePopup: true })}
-              >
-                <img src="images/close-icon.svg" class="close-icon" />
-              </span>
-              <span class="dr-popup-label">Training set:</span>
-              <div class="dr-popup-inner-wrap">
-                <div class="popup-item">
-                  <div class="popup-img-wrapper">
-                    <img src="images/Picture3.png" class="popup-img" />
-                  </div>
-                  <span class="popup-label bg-red-l">
-                    <span class="popup-text">Halophila ovalis</span>
-                  </span>
-                </div>
-                <div class="popup-item">
-                  <div class="popup-img-wrapper">
-                    <img src="images/Picture4.png" class="popup-img" />
-                  </div>
-                  <span class="popup-label bg-green">
-                    <span class="popup-text">Cymodocea serrulata</span>
-                  </span>
-                </div>
-                <div class="popup-item">
-                  <div class="popup-img-wrapper">
-                    <img src="images/Picture5.png" class="popup-img" />
-                  </div>
-                  <span class="popup-label bg-yellow">
-                    <span class="popup-text">Zostera muelleri</span>
-                  </span>
-                </div>
-                <div class="popup-item">
-                  <div class="popup-img-wrapper">
-                    <img src="images/Picture6.png" class="popup-img" />
-                  </div>
-                  <span class="popup-label bg-blue-d">
-                    <span class="popup-text">Halodule uninervis</span>
-                  </span>
-                </div>
-                <div class="popup-item">
-                  <div class="popup-img-wrapper">
-                    <img src="images/Picture7.png" class="popup-img" />
-                  </div>
-                  <span class="popup-label bg-orange">
-                    <span class="popup-text">Halophila spinulosa</span>
-                  </span>
-                </div>
-                <div class="popup-item">
-                  <div class="popup-img-wrapper">
-                    <img src="images/Picture8.png" class="popup-img" />
-                  </div>
-                  <span class="popup-label bg-violet">
-                    <span class="popup-text">Syringodium isoetifolium</span>
-                  </span>
-                </div>
-                <div class="popup-item">
-                  <div class="popup-img-wrapper">
-                    <img src="images/Picture9.png" class="popup-img" />
-                  </div>
-                  <span class="popup-label bg-blue-l">
-                    <span class="popup-text">Halophila decipiens</span>
-                  </span>
-                </div>
-                <div class="popup-item">
-                  <div class="popup-img-wrapper"></div>
-                  <span class="popup-label"></span>
-                </div>
-                <div class="popup-item">
-                  <div class="popup-img-wrapper"></div>
-                  <span class="popup-label"></span>
-                </div>
-                <div class="popup-item">
-                  <div class="popup-img-wrapper">
-                    <img src="images/Picture17.png" class="popup-img" />
-                  </div>
-                  <span class="popup-label bg-pink">
-                    <span class="popup-text">Pentaceraster mammillatus</span>
-                  </span>
-                </div>
-                <div class="popup-item">
-                  <div class="popup-img-wrapper"></div>
-                  <span class="popup-label"></span>
-                </div>
-                <div class="popup-item">
-                  <div class="popup-img-wrapper">
-                    {/* <img src="images/question.png" class="popup-img" /> */}
-                    <h1>?</h1>
-                  </div>
-                  <span class="popup-label bg-red-d">
-                    <span class="popup-text">Unknown or Other</span>
-                  </span>
-                </div>
-              </div>
+            <div
+              class="percentage-bar-wrapper"
+              onClick={() =>
+                this.setState({ percentBarMenu: false, dataSelection: "" })
+              }
+            >
+              {percentBar.map((item, index) => (
+                <span class={`percentage-bar-item c-${index}`}>{item}</span>
+              ))}
             </div>
           </div>
         )}
+        {showTrainingSet && <TraningSetModal />}
         <NotificationBar
           {...notification}
           closeNotification={this.closeNotification}
@@ -650,3 +616,13 @@ export default class DashboardContainer extends React.Component {
     // );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    trainingSet: state.trainingSet
+  };
+};
+export default connect(
+  mapStateToProps,
+  {}
+)(DashboardContainer);

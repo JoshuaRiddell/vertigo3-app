@@ -8,8 +8,10 @@ import Popup from "reactjs-popup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPause, faCog } from "@fortawesome/free-solid-svg-icons";
 import testVidClip from "../../assets/underwater-test-vid.mp4";
+import { connect } from "react-redux";
+import { toggleTrainigSetModal } from "../../actions/trainingSetActions";
 
-export default class VideoPlayer extends React.Component {
+class VideoPlayer extends React.Component {
   constructor(props, context) {
     super(props, context);
 
@@ -62,7 +64,8 @@ export default class VideoPlayer extends React.Component {
       (type === "panend" || type === "pressup") &&
       Object.keys(values).length
     ) {
-      this.setState({ seletionValues: values, showPressSelection: true });
+      //this.setState({ seletionValues: values, showPressSelection: true });
+      this.props.toggleTrainigSetModal(true);
       console.log(type, values);
     }
   };
@@ -74,26 +77,37 @@ export default class VideoPlayer extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const { player } = this.state;
 
-    if (
-      prevState.player &&
-      prevState.player.isFullscreen !== player.isFullscreen &&
-      player.isFullscreen
-    ) {
-      this.setState({
-        player: {
-          ...this.state.player,
-          isFullscreen: false
-        }
-      });
-      const fullScreen = document.querySelectorAll(
-        ".video-react-fullscreen"
-      )[0];
+    // if (
+    //   prevState.player &&
+    //   prevState.player.isFullscreen !== player.isFullscreen &&
+    //   player.isFullscreen
+    // ) {
+    //   this.setState({
+    //     player: {
+    //       ...this.state.player,
+    //       isFullscreen: false
+    //     }
+    //   });
+    //   const fullScreen = document.querySelectorAll(
+    //     ".video-react-fullscreen"
+    //   )[0];
 
-      if (fullScreen && fullScreen.classList) {
-        document
-          .querySelectorAll(".video-react-fullscreen")[0]
-          .classList.remove("video-react-fullscreen");
-      }
+    //   if (fullScreen && fullScreen.classList) {
+    //     document
+    //       .querySelectorAll(".video-react-fullscreen")[0]
+    //       .classList.remove("video-react-fullscreen");
+    //   }
+    // }
+    const { trainingSet } = this.props;
+    const { showTrainingSet } = trainingSet;
+
+    if (
+      prevProps.trainingSet.showTrainingSet !== showTrainingSet &&
+      showTrainingSet === false
+    ) {
+      this.setState({ showPressSelection: false });
+      this.player.play();
+      this.refs.tapSelectionRef && this.refs.tapSelectionRef.clearCanvas();
     }
   }
 
@@ -131,7 +145,7 @@ export default class VideoPlayer extends React.Component {
           </button>
         </div> */}
 
-        {showPressSelection && (
+        {/* {showPressSelection && (
           <div
             className="popup"
             style={{
@@ -159,7 +173,7 @@ export default class VideoPlayer extends React.Component {
             <p>{`Width = ${Math.abs(seletionValues.width)}px`}</p>
             <p>{`Height = ${Math.abs(seletionValues.height)}px`}</p>
           </div>
-        )}
+        )} */}
 
         <TapSelection
           ref="tapSelectionRef"
@@ -195,3 +209,13 @@ export default class VideoPlayer extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    trainingSet: state.trainingSet
+  };
+};
+export default connect(
+  mapStateToProps,
+  { toggleTrainigSetModal }
+)(VideoPlayer);

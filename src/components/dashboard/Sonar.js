@@ -30,7 +30,7 @@ export default class Sonar extends React.Component {
           </span>
           <span
             class="sonar-icon-wrap loop-icon-wrapper"
-            style={expandSonar ? { marginRight: 20 } : { marginRight: 95 }}
+            style={expandSonar ? { marginRight: 50 } : { marginRight: 95 }}
           >
             <img
               src="images/loop-icon.svg"

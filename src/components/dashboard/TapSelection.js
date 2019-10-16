@@ -46,7 +46,14 @@ export default class TapSelection extends Component {
           },
           drag: true
         });
-
+        console.log(
+          offsetWidth,
+          offsetHeight,
+          offsetLeft,
+          offsetTop,
+          e,
+          srcEvent
+        );
         this.props.handleVideoPlayer.pause();
       }
     });
@@ -59,6 +66,12 @@ export default class TapSelection extends Component {
         const { drag, rect, canvas } = this.state;
         const { srcEvent } = e;
         const { offsetLeft, offsetTop } = this.state.selectionArea.current;
+        console.log(e);
+
+        if (srcEvent.type === "pointercancel") {
+          this.props.handleVideoPlayer.play();
+          this.setState({ rect: {}, drag: false });
+        }
         if (
           e.type === "tap" ||
           e.type === "pressup" ||
@@ -66,7 +79,6 @@ export default class TapSelection extends Component {
           e.type === "panend"
         ) {
           //return this.clearCanvas(e.type);
-
           //apply scale factor
           if (drag) {
             const width =
@@ -139,13 +151,13 @@ export default class TapSelection extends Component {
 
     //scale rect when drawing
     const x =
-      rect.startX > rect.mouseStartX ? rect.startX - 250 : rect.startX - 180;
+      rect.startX > rect.mouseStartX ? rect.startX - 320 : rect.startX - 180;
     const y =
-      rect.startY > rect.mouseStartY ? rect.startY - 50 : rect.startY - 5;
+      rect.startY > rect.mouseStartY ? rect.startY - 60 : rect.startY - 20;
 
     ctx.strokeRect(x, y, rect.width, rect.height);
 
-    console.log(ctx);
+    console.log(x, y);
     // console.log(
     //   "Top-Left = " +
     //     (rect.mouseStartX + rect.startX) +
