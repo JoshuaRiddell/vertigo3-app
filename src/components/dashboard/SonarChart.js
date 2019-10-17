@@ -92,7 +92,8 @@ export default class SonarChart extends React.PureComponent {
       clientX = e.touches[0].clientX;
       clientY = e.touches[0].clientY;
     }
-    const { viewBoxWidth, viewBoxHeight } = this.props;
+    const { viewBoxWidth, viewBoxHeight, activeMode } = this.props;
+
     const { draggingPointKeys } = this.state;
 
     if (!draggingPointKeys) {
@@ -119,16 +120,31 @@ export default class SonarChart extends React.PureComponent {
       });
     }
     if (parentKey === "vSliderPosition") {
-      if (viewBoxY > 2.1 && viewBoxY < 160) {
-        this.setState({
-          [parentKey]: {
-            ...this.state[parentKey],
-            [childKey]: {
-              ...this.state[parentKey][childKey],
-              y: viewBoxY
+      if (activeMode === "seaBed") {
+        if (viewBoxY > 2.1 && viewBoxY < 92.7) {
+          this.setState({
+            [parentKey]: {
+              ...this.state[parentKey],
+              [childKey]: {
+                ...this.state[parentKey][childKey],
+                y: viewBoxY
+              }
             }
-          }
-        });
+          });
+        }
+      }
+      if (activeMode === "surFace") {
+        if (viewBoxY > 2.1 && viewBoxY < 160) {
+          this.setState({
+            [parentKey]: {
+              ...this.state[parentKey],
+              [childKey]: {
+                ...this.state[parentKey][childKey],
+                y: viewBoxY
+              }
+            }
+          });
+        }
       }
     }
 
@@ -424,7 +440,7 @@ const HorizontalToolTip = ({ coordinates, onMouseDown, mode }) => {
     };
   }
   if (displacement < 0) {
-    labelText = `L ${Math.abs(displacement.toFixed(1))} m`;
+    labelText = `L ${Math.abs(displacement).toFixed(1)} m`;
 
     orientation = {
       current: "left",

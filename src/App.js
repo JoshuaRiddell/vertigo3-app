@@ -9,7 +9,7 @@ import "./App.css";
 import "./leaflet.css";
 import "./styles/bootstrap.min.css";
 class App extends Component {
-  componentDidMount() {
+  componentWillMount() {
     // Enable wake lock.
     // (must be wrapped in a user input event handler e.g. a mouse or touch handler)
     document.addEventListener("touchstart", this.enableNoSleep, false);
@@ -33,9 +33,12 @@ class App extends Component {
   enableNoSleep = e => {
     try {
       const noSleep = new NoSleep();
-
       noSleep.enable();
-      document.removeEventListener("touchstart", this.enableNoSleep, false);
+      setTimeout(
+        () =>
+          document.removeEventListener("touchstart", this.enableNoSleep, false),
+        500
+      );
     } catch (err) {
       console.log(err);
     }
