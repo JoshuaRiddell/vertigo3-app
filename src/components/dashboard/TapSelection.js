@@ -18,6 +18,7 @@ export default class TapSelection extends Component {
 
   componentDidMount() {
     const { offsetWidth, offsetHeight } = this.state.selectionArea.current;
+    const { disableAnnotations } = this.props;
 
     this.setState({ offsetWidth, offsetHeight });
     this.mc = new Hammer(this.state.selectionArea.current);
@@ -31,114 +32,116 @@ export default class TapSelection extends Component {
     this.mc.get("pan").set({ direction: Hammer.DIRECTION_HORIZONTAL });
     // this.mc.get("pan").set({ direction: Hammer.DIRECTION_ALL });
 
-    // listen to events...
-    this.mc.on("press", e => {
-      console.log(e.type + " gesture detected.");
-      if (e.type === "press") {
-        const { srcEvent } = e;
-        const { offsetLeft, offsetTop } = this.state.selectionArea.current;
-        this.setState({
-          rect: {
-            mouseStartX: srcEvent.pageX - offsetLeft,
-            mouseStartY: srcEvent.pageY - offsetTop,
-            startX: srcEvent.pageX - offsetLeft,
-            startY: srcEvent.pageY - offsetTop
-          },
-          drag: true
-        });
-        console.log(
-          offsetWidth,
-          offsetHeight,
-          offsetLeft,
-          offsetTop,
-          e,
-          srcEvent
-        );
-        this.props.handleVideoPlayer.pause();
-      }
-    });
-
-    // listen to events...
-    this.mc.on(
-      "panleft panright panup pandown panend pancancel pressup tap",
-      e => {
+    if (!disableAnnotations) {
+      // listen to events...
+      this.mc.on("press", e => {
         console.log(e.type + " gesture detected.");
-        const { drag, rect, canvas } = this.state;
-        const { srcEvent } = e;
-        const { offsetLeft, offsetTop } = this.state.selectionArea.current;
-        console.log(e);
-
-        if (srcEvent.type === "pointercancel") {
-          this.props.handleVideoPlayer.play();
-          this.setState({ rect: {}, drag: false });
+        if (e.type === "press") {
+          const { srcEvent } = e;
+          const { offsetLeft, offsetTop } = this.state.selectionArea.current;
+          this.setState({
+            rect: {
+              mouseStartX: srcEvent.pageX - offsetLeft,
+              mouseStartY: srcEvent.pageY - offsetTop,
+              startX: srcEvent.pageX - offsetLeft,
+              startY: srcEvent.pageY - offsetTop
+            },
+            drag: true
+          });
+          console.log(
+            offsetWidth,
+            offsetHeight,
+            offsetLeft,
+            offsetTop,
+            e,
+            srcEvent
+          );
+          this.props.handleVideoPlayer.pause();
         }
-        if (
-          e.type === "tap" ||
-          e.type === "pressup" ||
-          e.type === "pancancel" ||
-          e.type === "panend"
-        ) {
-          //return this.clearCanvas(e.type);
-          //apply scale factor
+      });
+
+      // listen to events...
+      this.mc.on(
+        "panleft panright panup pandown panend pancancel pressup tap",
+        e => {
+          console.log(e.type + " gesture detected.");
+          const { drag, rect, canvas } = this.state;
+          const { srcEvent } = e;
+          const { offsetLeft, offsetTop } = this.state.selectionArea.current;
+          console.log(e);
+
+          if (srcEvent.type === "pointercancel") {
+            this.props.handleVideoPlayer.play();
+            this.setState({ rect: {}, drag: false });
+          }
+          if (
+            e.type === "tap" ||
+            e.type === "pressup" ||
+            e.type === "pancancel" ||
+            e.type === "panend"
+          ) {
+            //return this.clearCanvas(e.type);
+            //apply scale factor
+            if (drag) {
+              const width =
+                rect.startX > rect.mouseStartX
+                  ? rect.width - 100
+                  : rect.width + 100;
+              const height =
+                rect.startY > rect.mouseStartY
+                  ? rect.height - 100
+                  : rect.height + 100;
+
+              const x =
+                rect.startX > rect.mouseStartX
+                  ? rect.startX - 100
+                  : rect.startX + 100;
+              const y =
+                rect.startY > rect.mouseStartY
+                  ? rect.startY - 100
+                  : rect.startY + 100;
+
+              this.setState({
+                rect: {
+                  ...rect,
+                  // startX: x,
+                  // startY: y,
+                  width: width,
+                  height: height
+                },
+                drag: false
+              });
+
+              canvas.current
+                .getContext("2d")
+                .clearRect(0, 0, canvas.current.width, canvas.current.height);
+
+              this.draw();
+            }
+            return this.props.getSelectionValue(e.type, rect);
+          }
           if (drag) {
-            const width =
-              rect.startX > rect.mouseStartX
-                ? rect.width - 100
-                : rect.width + 100;
-            const height =
-              rect.startY > rect.mouseStartY
-                ? rect.height - 100
-                : rect.height + 100;
-
-            const x =
-              rect.startX > rect.mouseStartX
-                ? rect.startX - 100
-                : rect.startX + 100;
-            const y =
-              rect.startY > rect.mouseStartY
-                ? rect.startY - 100
-                : rect.startY + 100;
-
+            let moveX = rect.mouseStartX - (srcEvent.pageX - offsetLeft);
+            let moveY = rect.mouseStartY - (srcEvent.pageY - offsetTop);
+            console.log(moveX, moveY, srcEvent);
             this.setState({
               rect: {
                 ...rect,
-                // startX: x,
-                // startY: y,
-                width: width,
-                height: height
-              },
-              drag: false
+                startX: rect.mouseStartX - moveX,
+                startY: rect.mouseStartY - moveY,
+                width: moveX * 2,
+                height: moveY * 2
+              }
             });
-
             canvas.current
               .getContext("2d")
               .clearRect(0, 0, canvas.current.width, canvas.current.height);
 
             this.draw();
           }
-          return this.props.getSelectionValue(e.type, rect);
         }
-        if (drag) {
-          let moveX = rect.mouseStartX - (srcEvent.pageX - offsetLeft);
-          let moveY = rect.mouseStartY - (srcEvent.pageY - offsetTop);
-          console.log(moveX, moveY, srcEvent);
-          this.setState({
-            rect: {
-              ...rect,
-              startX: rect.mouseStartX - moveX,
-              startY: rect.mouseStartY - moveY,
-              width: moveX * 2,
-              height: moveY * 2
-            }
-          });
-          canvas.current
-            .getContext("2d")
-            .clearRect(0, 0, canvas.current.width, canvas.current.height);
-
-          this.draw();
-        }
-      }
-    );
+      );
+    }
   }
 
   draw = () => {

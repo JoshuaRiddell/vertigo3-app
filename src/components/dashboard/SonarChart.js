@@ -119,7 +119,7 @@ export default class SonarChart extends React.PureComponent {
       });
     }
     if (parentKey === "vSliderPosition") {
-      if (viewBoxY > 0 && viewBoxY < 160) {
+      if (viewBoxY > 2.1 && viewBoxY < 160) {
         this.setState({
           [parentKey]: {
             ...this.state[parentKey],
@@ -133,7 +133,7 @@ export default class SonarChart extends React.PureComponent {
     }
 
     if (parentKey === "hSliderPosition") {
-      if (viewBoxX > 0 && viewBoxX < 230) {
+      if (viewBoxX > 0 && viewBoxX < 240) {
         this.setState({
           [parentKey]: {
             ...this.state[parentKey],
@@ -387,7 +387,7 @@ const VerticleToolTip = ({ coordinates, onMouseDown, mode }) => {
             userSelect: "none"
           }}
         >
-          {`${((Math.round(y * 100) * 0.1884) / 100).toFixed(1)} M`}
+          {`${((Math.round(y * 100) * 0.1884) / 100).toFixed(1)} m`}
         </text>
       </g>
     </>
@@ -417,14 +417,14 @@ const HorizontalToolTip = ({ coordinates, onMouseDown, mode }) => {
   displacement = (Math.round(x - centerPoint) * totalWidth * 0.0347) / 100;
 
   if (displacement > 0) {
-    labelText = `R ${displacement.toFixed(1)} M`;
+    labelText = `R ${displacement.toFixed(1)} m`;
     orientation = {
       current: "right",
       points: rightOrientation
     };
   }
   if (displacement < 0) {
-    labelText = `L ${Math.abs(displacement.toFixed(1))} M`;
+    labelText = `L ${Math.abs(displacement.toFixed(1))} m`;
 
     orientation = {
       current: "left",
@@ -432,7 +432,7 @@ const HorizontalToolTip = ({ coordinates, onMouseDown, mode }) => {
     };
   }
   if (displacement === 0) {
-    labelText = `${displacement.toFixed(1)} M`;
+    labelText = `${displacement.toFixed(1)} m`;
 
     orientation = {
       current: "left",
@@ -453,7 +453,7 @@ const HorizontalToolTip = ({ coordinates, onMouseDown, mode }) => {
 
         <text
           transform={`translate(${
-            orientation.current === "right" ? 5 : 10
+            orientation.current === "right" ? 2 : 10
           } 10.25)`}
           style={{
             pointerEvents: "none",

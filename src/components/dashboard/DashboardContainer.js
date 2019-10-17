@@ -133,6 +133,7 @@ class DashboardContainer extends React.Component {
           showNotification={this.showNotification}
           playerWidth={538}
           playerHeight={450}
+          disableAnnotations
         />,
         <Sonar expandSonar={expandSonar} activeMode={activeMode} />
       ];
@@ -146,6 +147,7 @@ class DashboardContainer extends React.Component {
           showNotification={this.showNotification}
           playerWidth={538}
           playerHeight={450}
+          disableAnnotations
         />
       ];
     }
@@ -224,11 +226,19 @@ class DashboardContainer extends React.Component {
                 <span class="state-title">Img qty</span>
                 <span
                   class="red-text"
-                  style={{ display: "block", fontSize: 20 }}
+                  style={{
+                    display: "block",
+                    fontSize: 24,
+                    fontWeight: 600,
+                    color: "#ff0018"
+                  }}
                 >
                   Focus
                 </span>
-                <span class="green-text" style={{ fontSize: 20 }}>
+                <span
+                  class="green-text"
+                  style={{ fontSize: 23, fontWeight: 600, color: "#00ff3a" }}
+                >
                   Exposure
                 </span>
               </div>

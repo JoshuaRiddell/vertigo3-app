@@ -180,6 +180,7 @@ class VideoPlayer extends React.Component {
           showVideoControls={this.showVideoControls}
           getSelectionValue={this.getSelectionValue}
           handleVideoPlayer={this.player}
+          disableAnnotations={this.props.disableAnnotations}
         >
           <Player
             fluid={false}
@@ -191,7 +192,7 @@ class VideoPlayer extends React.Component {
               this.player = player;
             }}
           >
-            <source src={testVidClip} />
+            <source src="https://www.dropbox.com/s/neibl2yhntub9n5/SampleVid.mp4?raw=1" />
             {/* <HLSSource
               isVideoChild
               //src="//d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8"

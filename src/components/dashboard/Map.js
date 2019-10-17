@@ -1,5 +1,6 @@
 import React from "react";
 import L from "leaflet";
+import gpsTrackData from "../../helpers/gpsTrackData";
 
 // const style = {
 //   width: "100%",
@@ -13,8 +14,8 @@ class Map extends React.Component {
   componentDidMount() {
     // create map
     this.map = L.map("map", { zoomControl: false }).setView(
-      [-23.895867, 152.3979],
-      12
+      [-23.908223, 152.386752],
+      14
     );
     //normal view
     //http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
@@ -30,15 +31,7 @@ class Map extends React.Component {
     this.layer = L.layerGroup().addTo(this.map);
     this.updateMarkers(this.props.markersData);
 
-    const pathData = [
-      [-23.884649, 152.396449],
-      [-23.876786, 152.399123],
-      [-23.869305, 152.408525],
-      [-23.869251, 152.425373],
-      [-23.876931, 152.441712],
-      [-23.894324, 152.447264],
-      [-23.916778, 152.431235]
-    ];
+    const pathData = gpsTrackData;
 
     for (let i = 0; i < pathData.length; i++) {
       setTimeout(() => {
@@ -73,7 +66,8 @@ class Map extends React.Component {
 
     var polyline = new customPolyline(this.state.path, {
       speed: "143",
-      bearing: "38"
+      bearing: "38",
+      color: "#ff0000"
     });
 
     polyline.addTo(this.map);
@@ -81,7 +75,7 @@ class Map extends React.Component {
 
   render() {
     const { expandMap } = this.props;
-    console.log(expandMap);
+
     return (
       <>
         {/* <div
