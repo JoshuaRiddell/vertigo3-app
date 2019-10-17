@@ -20,7 +20,10 @@ export default class Sonar extends React.Component {
     const { expandSonar } = this.props;
     return (
       <div className="sonar-container">
-        <div class="sonar-controller-wrapper">
+        <div
+          class="sonar-controller-wrapper"
+          style={expandSonar ? { top: 115 } : {}}
+        >
           <span class="sonar-icon-wrap empty-icon-wrapper">
             <img
               src="images/zoming-icon.svg"

@@ -20,8 +20,8 @@ class TraningSetModal extends Component {
             <img src="images/close-icon.svg" class="close-icon" />
           </span> */}
           <span class="dr-popup-label">Training set:</span>
-          <div class="dr-popup-inner-wrap" onClick={this.handlePopup}>
-            <div class="popup-item">
+          <div class="dr-popup-inner-wrap">
+            <div class="popup-item" onClick={this.handlePopup}>
               <div class="popup-img-wrapper">
                 <img src="images/Picture3.png" class="popup-img" />
               </div>
@@ -29,7 +29,7 @@ class TraningSetModal extends Component {
                 <span class="popup-text">Halophila ovalis</span>
               </span>
             </div>
-            <div class="popup-item">
+            <div class="popup-item" onClick={this.handlePopup}>
               <div class="popup-img-wrapper">
                 <img src="images/Picture4.png" class="popup-img" />
               </div>
@@ -37,7 +37,7 @@ class TraningSetModal extends Component {
                 <span class="popup-text">Cymodocea serrulata</span>
               </span>
             </div>
-            <div class="popup-item">
+            <div class="popup-item" onClick={this.handlePopup}>
               <div class="popup-img-wrapper">
                 <img src="images/Picture5.png" class="popup-img" />
               </div>
@@ -45,7 +45,7 @@ class TraningSetModal extends Component {
                 <span class="popup-text">Zostera muelleri</span>
               </span>
             </div>
-            <div class="popup-item">
+            <div class="popup-item" onClick={this.handlePopup}>
               <div class="popup-img-wrapper">
                 <img src="images/Picture6.png" class="popup-img" />
               </div>
@@ -53,7 +53,7 @@ class TraningSetModal extends Component {
                 <span class="popup-text">Halodule uninervis</span>
               </span>
             </div>
-            <div class="popup-item">
+            <div class="popup-item" onClick={this.handlePopup}>
               <div class="popup-img-wrapper">
                 <img src="images/Picture7.png" class="popup-img" />
               </div>
@@ -61,7 +61,7 @@ class TraningSetModal extends Component {
                 <span class="popup-text">Halophila spinulosa</span>
               </span>
             </div>
-            <div class="popup-item">
+            <div class="popup-item" onClick={this.handlePopup}>
               <div class="popup-img-wrapper">
                 <img src="images/Picture8.png" class="popup-img" />
               </div>
@@ -69,7 +69,7 @@ class TraningSetModal extends Component {
                 <span class="popup-text">Syringodium isoetifolium</span>
               </span>
             </div>
-            <div class="popup-item">
+            <div class="popup-item" onClick={this.handlePopup}>
               <div class="popup-img-wrapper">
                 <img src="images/Picture9.png" class="popup-img" />
               </div>
@@ -85,7 +85,7 @@ class TraningSetModal extends Component {
               <div class="popup-img-wrapper"></div>
               <span class="popup-label"></span>
             </div>
-            <div class="popup-item">
+            <div class="popup-item" onClick={this.handlePopup}>
               <div class="popup-img-wrapper">
                 <img src="images/Picture17.png" class="popup-img" />
               </div>
@@ -97,7 +97,7 @@ class TraningSetModal extends Component {
               <div class="popup-img-wrapper"></div>
               <span class="popup-label"></span>
             </div>
-            <div class="popup-item">
+            <div class="popup-item" onClick={this.handlePopup}>
               <div class="popup-img-wrapper">
                 {/* <img src="images/question.png" class="popup-img" /> */}
                 <h1>?</h1>

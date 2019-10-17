@@ -348,8 +348,11 @@
   z-index: 1000;
 }
 .map-controller-wrapper .sizing-icon {
-  width: 64px;
-  height: 64px;
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  top: 185px;
+  right: 493px;
 }
 .map-controller-wrapper .zoom-icon {
   width: 60px;
@@ -371,12 +374,10 @@
 }
 .sonar-controller-wrapper {
   position: absolute;
-  top: 0px;
-  /* right: 0; */
-  /* left: 0; */
-  width: 100%;
+  top: 55px;
+  left: 18px;
+  width: 25%;
   display: flex;
-  justify-content: flex-end;
 }
 .sonar-controller-wrapper .sonar-icon-wrap {
   display: inline-block;
@@ -390,6 +391,12 @@
   /* margin-left: auto; */
   margin-right: 25px;
 }
+.sonar-controller-wrapper .sizing-icon {
+  position: absolute;
+  left: -47px;
+  top: 152px;
+}
+
 .bottom-sec {
   height: 300px;
   position: relative;
@@ -474,6 +481,9 @@
 }
 .dr-pagination-item a:hover {
   text-decoration: none;
+}
+.dr-pagination-item a:active {
+  color: #0b76f0 !important;
 }
 .dr-pagination .first-item {
   background-color: var(--color-green-1);
@@ -561,7 +571,7 @@
   font-size: 18px;
 }
 .dr-popup-wrapper .dr-popup-label {
-  font-size: 22px;
+  font-size: 30px;
   line-height: 1.4;
   margin-bottom: 29px;
   display: inline-block;
@@ -706,18 +716,20 @@
   z-index: 0 !important;
 }
 .notification {
-  top: 47px !important;
+  top: 35px !important;
+  left: 48% !important;
 }
 .notification .MuiSnackbarContent-root {
   background-color: rgba(233, 231, 231, 0);
 }
 .notification .MuiSnackbarContent-root .MuiSnackbarContent-message {
-  margin: 0 auto;
+  /* margin: 0 auto; */
 }
 .notification.message {
-  font-size: 30px;
+  font-size: 42px;
   font-weight: 600;
   color: var(--red);
+  font-family: "Arial";
 }
 .flash-3 {
   animation-name: flash-3;
@@ -764,4 +776,22 @@
 .settings-popup p {
   font-size: 24px;
   margin: 10px 0 10px 0;
+}
+
+.flashValue {
+  animation-name: flash-value;
+  animation-duration: 500ms;
+  animation-iteration-count: 1;
+  animation-timing-function: linear;
+}
+@keyframes flash-value {
+  0% {
+    color: #fe780200;
+  }
+  50% {
+    color: #fffb00;
+  }
+  100% {
+    color: #fe780200;
+  }
 }

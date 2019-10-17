@@ -10,6 +10,7 @@ import "../../styles/dashboardStyles.css";
 import SessionControls from "./SessionControls";
 import ExpandButton from "../../helpers/ExpandButton";
 import TraningSetModal from "./TraningSetModal";
+import clickSound from "../../assets/click-sound.mp3";
 
 class DashboardContainer extends React.Component {
   state = {
@@ -21,7 +22,8 @@ class DashboardContainer extends React.Component {
     percentBarMenu: false,
     dataSelection: "",
     notification: {},
-    starFishCounter: 0
+    starFishCounter: 0,
+    flashValue: ""
   };
 
   showNotification = (msg, duration, mode) => {
@@ -81,7 +83,21 @@ class DashboardContainer extends React.Component {
       });
     }
   };
+  componentDidUpdate(prevProps, prevState) {
+    const { starFishCounter } = this.state;
 
+    if (starFishCounter !== prevState.starFishCounter) {
+      const audio = new Audio(clickSound);
+      audio.play();
+      this.setState({
+        flashValue: "flashValue",
+        flashValueTimeout: setTimeout(
+          () => this.setState({ flashValue: "" }),
+          500
+        )
+      });
+    }
+  }
   static propTypes = {};
 
   render() {
@@ -93,7 +109,8 @@ class DashboardContainer extends React.Component {
       hidePopup,
       percentBarMenu,
       dataSelection,
-      starFishCounter
+      starFishCounter,
+      flashValue
     } = this.state;
 
     const { trainingSet } = this.props;
@@ -233,7 +250,9 @@ class DashboardContainer extends React.Component {
                 </div>
                 <div class="info-inner-wrapper">
                   <span class="info-label">Starfish</span>
-                  <span class="info-value">{starFishCounter}</span>
+                  <span className={`info-value ${flashValue}`}>
+                    {starFishCounter}
+                  </span>
                 </div>
                 <div class="info-inner-wrapper">
                   <span class="info-label">Seagrass</span>
@@ -292,6 +311,7 @@ class DashboardContainer extends React.Component {
                   classNames={"map-icon sizing-icon"}
                   active={expandMap}
                   handler={() => this.expandingFrames("map")}
+                  frame={"map"}
                 />
               </div>
             </div>
@@ -299,13 +319,12 @@ class DashboardContainer extends React.Component {
             <div class="sonar-wrapper">
               {frameOrder[2]}
               <div class="sonar-controller-wrapper">
-                <span class="sonar-icon-wrap sizing-icon-wrapper">
-                  <ExpandButton
-                    classNames={"sonar-icon sizing-icon"}
-                    active={expandSonar}
-                    handler={() => this.expandingFrames("sonar")}
-                  />
-                </span>
+                <ExpandButton
+                  classNames={"sonar-icon sizing-icon"}
+                  active={expandSonar}
+                  handler={() => this.expandingFrames("sonar")}
+                  frame={"sonar"}
+                />
               </div>
             </div>
           </div>

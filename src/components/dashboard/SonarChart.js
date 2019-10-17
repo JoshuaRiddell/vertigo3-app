@@ -24,8 +24,8 @@ export default class SonarChart extends React.PureComponent {
       },
 
       hSliderPosition: {
-        startPoint: { x: 120, y: 181.5 },
-        endPoint: { x: 120, y: 181.5 }
+        startPoint: { x: 120, y: 179.5 },
+        endPoint: { x: 120, y: 179.5 }
       }
     };
   }
@@ -383,10 +383,11 @@ const VerticleToolTip = ({ coordinates, onMouseDown, mode }) => {
             pointerEvents: "none",
             userSelect: "none",
             fontSize: "10px",
-            fontWeight: "600"
+            fontWeight: "600",
+            userSelect: "none"
           }}
         >
-          {`${(Math.round(y * 100) / 100).toFixed(1)}m`}
+          {`${((Math.round(y * 100) * 0.1884) / 100).toFixed(1)} M`}
         </text>
       </g>
     </>
@@ -400,41 +401,66 @@ const HorizontalToolTip = ({ coordinates, onMouseDown, mode }) => {
   let displacement = 0;
   let labelText = ``;
 
+  let leftOrientation =
+    "6.04 0 6.04 15 15.82 15 7.42 19.73 5.35 20.78 3.54 18.96 0 22.5 3.54 26.04 7.07 22.5 5.38 20.81 7.51 20.24 27.77 15 48.04 15 48.04 0 6.04 0";
+  let rightOrientation =
+    "41.93 0 41.93 15 32.17 15 40.55 19.73 42.62 20.78 44.43 18.96 47.96 22.5 44.43 26.04 40.9 22.5 42.59 20.81 40.46 20.24 20.24 15 0 15 0 0 41.93 0";
+
+  let orientation = {
+    current: "left",
+    points: leftOrientation
+  };
+
   const centerPoint = 120;
   const totalWidth = 240;
 
-  displacement = (Math.round(x - centerPoint) * totalWidth) / 100;
+  displacement = (Math.round(x - centerPoint) * totalWidth * 0.0347) / 100;
 
   if (displacement > 0) {
-    labelText = `R${displacement}m`;
+    labelText = `R ${displacement.toFixed(1)} M`;
+    orientation = {
+      current: "right",
+      points: rightOrientation
+    };
   }
   if (displacement < 0) {
-    labelText = `L${Math.abs(displacement)}m`;
+    labelText = `L ${Math.abs(displacement.toFixed(1))} M`;
+
+    orientation = {
+      current: "left",
+      points: leftOrientation
+    };
   }
   if (displacement === 0) {
-    labelText = `${displacement}m`;
-  }
+    labelText = `${displacement.toFixed(1)} M`;
 
+    orientation = {
+      current: "left",
+      points: leftOrientation
+    };
+  }
   return (
     <>
       <g
         style={{ cursor: "-webkit-grab" }}
-        transform={`translate(${x} ${y})`}
+        transform={`translate(${
+          orientation.current === "right" ? x - 41 : x
+        } ${y})`}
         onMouseDown={onMouseDown}
         onTouchStart={onMouseDown}
       >
-        <polygon
-          fill="rgb(244, 0, 0)"
-          points="6.04 0 6.04 13 15.82 13 7.42 17.73 5.35 18.78 3.54 16.96 0 20.5 3.54 24.04 7.07 20.5 5.38 18.81 7.51 18.24 27.77 13 47.04 13 47.04 0 6.04 0"
-        />
+        <polygon fill="rgb(244, 0, 0)" points={orientation.points} />
 
         <text
-          transform="translate(10 10.25)"
+          transform={`translate(${
+            orientation.current === "right" ? 5 : 10
+          } 10.25)`}
           style={{
             pointerEvents: "none",
             userSelect: "none",
             fontSize: "10px",
-            fontWeight: "600"
+            fontWeight: "600",
+            userSelect: "none"
           }}
         >
           {labelText}

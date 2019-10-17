@@ -34,7 +34,7 @@ class SessionControls extends Component {
     console.log(!this.state.showConfirmModal);
     if (!this.state.showConfirmModal) {
       this.props.showNotification(
-        "Stop Recording Session ?",
+        "Stop recording session ?",
         0,
         "STOP_SESSION"
       );

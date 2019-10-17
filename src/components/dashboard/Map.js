@@ -13,7 +13,7 @@ class Map extends React.Component {
   componentDidMount() {
     // create map
     this.map = L.map("map", { zoomControl: false }).setView(
-      [-16.886647, 139.05126],
+      [-23.895867, 152.3979],
       12
     );
     //normal view
@@ -31,13 +31,13 @@ class Map extends React.Component {
     this.updateMarkers(this.props.markersData);
 
     const pathData = [
-      [-16.885394, 139.053434],
-      [-16.872355, 139.048864],
-      [-16.861054, 139.052021],
-      [-16.85818, 139.06477],
-      [-16.863576, 139.069434],
-      [-16.863876, 139.079434],
-      [-16.864976, 139.079999]
+      [-23.884649, 152.396449],
+      [-23.876786, 152.399123],
+      [-23.869305, 152.408525],
+      [-23.869251, 152.425373],
+      [-23.876931, 152.441712],
+      [-23.894324, 152.447264],
+      [-23.916778, 152.431235]
     ];
 
     for (let i = 0; i < pathData.length; i++) {
