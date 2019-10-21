@@ -22,17 +22,24 @@ export default class TapSelection extends Component {
         start: {},
         current: {}
     };
+
+    this.canvasClearId = null;
   }
 
   touchStart(e) {
     this.props.handleVideoPlayer.pause();
 
+    if (this.canvasClearId != null) { 
+        clearTimeout(this.canvasClearId);
+    }
+    this.clearCanvas();
+
     const x = e.nativeEvent.touches[0].pageX;
     const y = e.nativeEvent.touches[0].pageY;
 
     this.annotationState.dragging = false;
-    this.annotationState.start = {"x": x, "y": y}
-    this.annotationState.current = {"x": x, "y": y}
+    this.annotationState.start = {"x": x, "y": y};
+    this.annotationState.current = {"x": x, "y": y};
   }
 
   touchMove(e) {
@@ -50,6 +57,7 @@ export default class TapSelection extends Component {
     this.annotationState.dragging = false;
 
     this.draw();
+    this.canvasClearId = setTimeout(() => this.clearCanvas(), 1000);
   }
 
   componentDidMount() {
@@ -101,6 +109,9 @@ export default class TapSelection extends Component {
 
   clearCanvas = type => {
     const { canvas, rect } = this.state;
+
+    this.annotationState.start = {"x": 0, "y": 0}
+    this.annotationState.current = {"x": 0, "y": 0}
 
     this.setState({ drag: false, rect: {} });
 
