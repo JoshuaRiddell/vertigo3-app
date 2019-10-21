@@ -25,8 +25,6 @@ export default class TapSelection extends Component {
   }
 
   touchStart(e) {
-    console.log("Touch start");
-
     this.props.handleVideoPlayer.pause();
 
     const x = e.nativeEvent.touches[0].pageX;
@@ -38,8 +36,6 @@ export default class TapSelection extends Component {
   }
 
   touchMove(e) {
-    console.log("Touch move");
-
     const x = e.nativeEvent.touches[0].pageX;
     const y = e.nativeEvent.touches[0].pageY;
 
@@ -50,8 +46,6 @@ export default class TapSelection extends Component {
   }
 
   touchEnd(e) {
-    console.log("Touch end");
-
     this.props.handleVideoPlayer.play();
     this.annotationState.dragging = false;
 
@@ -88,8 +82,6 @@ export default class TapSelection extends Component {
     ctx.lineWidth = 3;
     ctx.strokeStyle = "#FF0000";
     ctx.fillStyle = "#FF0000";
-
-    console.log(left);
 
     var scaling_factor = 1.0;
     if (dragging) {
