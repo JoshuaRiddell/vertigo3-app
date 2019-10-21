@@ -34,6 +34,7 @@ export default class TapSelection extends Component {
 
     this.annotationState.dragging = false;
     this.annotationState.start = {"x": x, "y": y}
+    this.annotationState.current = {"x": x, "y": y}
   }
 
   touchMove(e) {
@@ -52,7 +53,6 @@ export default class TapSelection extends Component {
     console.log("Touch end");
 
     this.props.handleVideoPlayer.play();
-
     this.annotationState.dragging = false;
 
     this.draw();
@@ -64,10 +64,18 @@ export default class TapSelection extends Component {
 
     this.setState({ offsetWidth, offsetHeight });
 
-    console.log(this.state.selectionArea.current.offsetLeft);
-
     if (disableAnnotations) {
         // implement unbinding of events here
+
+        this.onTouchStart = null;
+        this.onTouchMove = null;
+        this.onTouchEnd = null;
+    } else {
+        // bind touch events to video
+
+        this.onTouchStart = this.touchStart;
+        this.onTouchMove = this.touchMove;
+        this.onTouchEnd = this.touchEnd;
     }
   }
 
@@ -170,7 +178,6 @@ export default class TapSelection extends Component {
   };
 
   componentWillUnmount() {
-    this.mc.destroy();
   }
 
   render() {
@@ -186,9 +193,9 @@ export default class TapSelection extends Component {
           e.preventDefault();
           return false;
         }}
-        onTouchStart={this.touchStart}
-        onTouchMove={this.touchMove}
-        onTouchEnd={this.touchEnd}
+        onTouchStart={this.onTouchStart}
+        onTouchMove={this.onTouchMove}
+        onTouchEnd={this.onTouchEnd}
       >
         {children}
         <canvas
