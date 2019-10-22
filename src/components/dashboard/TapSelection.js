@@ -9,11 +9,55 @@ export default class TapSelection extends Component {
       selectionArea: React.createRef(),
       canvas: React.createRef(),
       ripples: React.createRef(),
-      rect: {},
-      drag: false,
       spanStyles: {},
       count: 0
     };
+
+    this.touchStart = this.touchStart.bind(this);
+    this.touchMove = this.touchMove.bind(this);
+    this.touchEnd = this.touchEnd.bind(this);
+
+    this.annotationState = {
+        dragging: false,
+        start: {},
+        current: {}
+    };
+
+    this.canvasClearId = null;
+  }
+
+  touchStart(e) {
+    this.props.handleVideoPlayer.pause();
+
+    if (this.canvasClearId != null) { 
+        clearTimeout(this.canvasClearId);
+    }
+    this.clearCanvas();
+
+    const x = e.nativeEvent.touches[0].pageX;
+    const y = e.nativeEvent.touches[0].pageY;
+
+    this.annotationState.dragging = false;
+    this.annotationState.start = {"x": x, "y": y};
+    this.annotationState.current = {"x": x, "y": y};
+  }
+
+  touchMove(e) {
+    const x = e.nativeEvent.touches[0].pageX;
+    const y = e.nativeEvent.touches[0].pageY;
+
+    this.annotationState.dragging = true;
+    this.annotationState.current = {"x": x, "y": y}
+
+    this.draw();
+  }
+
+  touchEnd(e) {
+    this.props.handleVideoPlayer.play();
+    this.annotationState.dragging = false;
+
+    this.draw();
+    this.canvasClearId = setTimeout(() => this.clearCanvas(), 1000);
   }
 
   componentDidMount() {
@@ -21,161 +65,53 @@ export default class TapSelection extends Component {
     const { disableAnnotations } = this.props;
 
     this.setState({ offsetWidth, offsetHeight });
-    this.mc = new Hammer(this.state.selectionArea.current);
-    //this.ripple = new Hammer(this.state.ripples.current);
 
-    // this.ripple.on("tap", e => {
-    //   this.showRipple(e);
-    // });
-    // let the pan gesture support all directions.
-    // this will block the vertical scrolling on a touch-device while on the element
-    this.mc.get("pan").set({ direction: Hammer.DIRECTION_HORIZONTAL });
-    // this.mc.get("pan").set({ direction: Hammer.DIRECTION_ALL });
+    if (disableAnnotations) {
+        // implement unbinding of events here
 
-    if (!disableAnnotations) {
-      // listen to events...
-      this.mc.on("press", e => {
-        console.log(e.type + " gesture detected.");
-        if (e.type === "press") {
-          const { srcEvent } = e;
-          const { offsetLeft, offsetTop } = this.state.selectionArea.current;
-          this.setState({
-            rect: {
-              mouseStartX: srcEvent.pageX - offsetLeft,
-              mouseStartY: srcEvent.pageY - offsetTop,
-              startX: srcEvent.pageX - offsetLeft,
-              startY: srcEvent.pageY - offsetTop
-            },
-            drag: true
-          });
-          console.log(
-            offsetWidth,
-            offsetHeight,
-            offsetLeft,
-            offsetTop,
-            e,
-            srcEvent
-          );
-          this.props.handleVideoPlayer.pause();
-        }
-      });
+        this.onTouchStart = null;
+        this.onTouchMove = null;
+        this.onTouchEnd = null;
+    } else {
+        // bind touch events to video
 
-      // listen to events...
-      this.mc.on(
-        "panleft panright panup pandown panend pancancel pressup tap",
-        e => {
-          console.log(e.type + " gesture detected.");
-          const { drag, rect, canvas } = this.state;
-          const { srcEvent } = e;
-          const { offsetLeft, offsetTop } = this.state.selectionArea.current;
-          console.log(e);
-
-          if (srcEvent.type === "pointercancel") {
-            this.props.handleVideoPlayer.play();
-            this.setState({ rect: {}, drag: false });
-          }
-          if (
-            e.type === "tap" ||
-            e.type === "pressup" ||
-            e.type === "pancancel" ||
-            e.type === "panend"
-          ) {
-            //return this.clearCanvas(e.type);
-            //apply scale factor
-            if (drag) {
-              const width =
-                rect.startX > rect.mouseStartX
-                  ? rect.width - 100
-                  : rect.width + 100;
-              const height =
-                rect.startY > rect.mouseStartY
-                  ? rect.height - 100
-                  : rect.height + 100;
-
-              const x =
-                rect.startX > rect.mouseStartX
-                  ? rect.startX - 100
-                  : rect.startX + 100;
-              const y =
-                rect.startY > rect.mouseStartY
-                  ? rect.startY - 100
-                  : rect.startY + 100;
-
-              this.setState({
-                rect: {
-                  ...rect,
-                  // startX: x,
-                  // startY: y,
-                  width: width,
-                  height: height
-                },
-                drag: false
-              });
-
-              canvas.current
-                .getContext("2d")
-                .clearRect(0, 0, canvas.current.width, canvas.current.height);
-
-              this.draw();
-            }
-            return this.props.getSelectionValue(e.type, rect);
-          }
-          if (drag) {
-            let moveX = rect.mouseStartX - (srcEvent.pageX - offsetLeft);
-            let moveY = rect.mouseStartY - (srcEvent.pageY - offsetTop);
-            console.log(moveX, moveY, srcEvent);
-            this.setState({
-              rect: {
-                ...rect,
-                startX: rect.mouseStartX - moveX,
-                startY: rect.mouseStartY - moveY,
-                width: moveX * 2,
-                height: moveY * 2
-              }
-            });
-            canvas.current
-              .getContext("2d")
-              .clearRect(0, 0, canvas.current.width, canvas.current.height);
-
-            this.draw();
-          }
-        }
-      );
+        this.onTouchStart = this.touchStart;
+        this.onTouchMove = this.touchMove;
+        this.onTouchEnd = this.touchEnd;
     }
   }
 
   draw = () => {
-    const { drag, rect, canvas } = this.state;
+    const { dragging, start, current } = this.annotationState;
+    const { canvas } = this.state;
+    const { left, top } = this.state.selectionArea.current.getBoundingClientRect();
     let ctx = canvas.current.getContext("2d");
-    //ctx.setLineDash([2]);
+
     ctx.lineWidth = 3;
     ctx.strokeStyle = "#FF0000";
     ctx.fillStyle = "#FF0000";
 
-    //scale rect when drawing
-    const x =
-      rect.startX > rect.mouseStartX ? rect.startX - 320 : rect.startX - 180;
-    const y =
-      rect.startY > rect.mouseStartY ? rect.startY - 60 : rect.startY - 20;
+    var scaling_factor = 1.0;
+    if (dragging) {
+        scaling_factor = 0.8;
+    }
 
-    ctx.strokeRect(x, y, rect.width, rect.height);
+    const drag_width = scaling_factor * (current.x - start.x);
+    const drag_height = scaling_factor * (current.y - start.y);
+    const x = start.x - drag_width - left;
+    const y = start.y - drag_height - top;
+    const width = drag_width * 2;
+    const height = drag_height * 2;
 
-    console.log(x, y);
-    // console.log(
-    //   "Top-Left = " +
-    //     (rect.mouseStartX + rect.startX) +
-    //     ":" +
-    //     (rect.mouseStartY - rect.startY) +
-    //     "\n Width = " +
-    //     rect.width +
-    //     "px \n Height = " +
-    //     rect.height +
-    //     "px"
-    // );
+    ctx.clearRect(0, 0, canvas.current.width, canvas.current.height);
+    ctx.strokeRect(x, y, width, height);
   };
 
   clearCanvas = type => {
     const { canvas, rect } = this.state;
+
+    this.annotationState.start = {"x": 0, "y": 0}
+    this.annotationState.current = {"x": 0, "y": 0}
 
     this.setState({ drag: false, rect: {} });
 
@@ -245,13 +181,13 @@ export default class TapSelection extends Component {
   };
 
   componentWillUnmount() {
-    this.mc.destroy();
   }
 
   render() {
     const { drag, rect, offsetWidth, offsetHeight } = this.state;
 
     const { children = null, classes = "", onClickHandler = null } = this.props;
+
     return (
       <div
         ref={this.state.selectionArea}
@@ -260,6 +196,9 @@ export default class TapSelection extends Component {
           e.preventDefault();
           return false;
         }}
+        onTouchStart={this.onTouchStart}
+        onTouchMove={this.onTouchMove}
+        onTouchEnd={this.onTouchEnd}
       >
         {children}
         <canvas
