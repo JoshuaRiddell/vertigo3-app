@@ -10,54 +10,61 @@ export default class TapSelection extends Component {
       canvas: React.createRef(),
       ripples: React.createRef(),
       spanStyles: {},
-      count: 0
+      count: 0,
+      annotationState: {
+        dragging: false,
+        start: {},
+        current: {}
+      }
     };
 
     this.touchStart = this.touchStart.bind(this);
     this.touchMove = this.touchMove.bind(this);
     this.touchEnd = this.touchEnd.bind(this);
 
-    this.annotationState = {
-        dragging: false,
-        start: {},
-        current: {}
-    };
-
     this.canvasClearId = null;
   }
 
   touchStart(e) {
-    this.props.handleVideoPlayer.pause();
-
-    if (this.canvasClearId != null) { 
-        clearTimeout(this.canvasClearId);
-    }
     this.clearCanvas();
 
     const x = e.nativeEvent.touches[0].pageX;
     const y = e.nativeEvent.touches[0].pageY;
 
-    this.annotationState.dragging = false;
-    this.annotationState.start = {"x": x, "y": y};
-    this.annotationState.current = {"x": x, "y": y};
+    this.setState({
+      annotationState: {
+        dragging: false,
+        start: { x: x, y: y },
+        current: { x: x, y: y }
+      }
+    });
   }
 
   touchMove(e) {
     const x = e.nativeEvent.touches[0].pageX;
     const y = e.nativeEvent.touches[0].pageY;
 
-    this.annotationState.dragging = true;
-    this.annotationState.current = {"x": x, "y": y}
+    this.setState({
+      annotationState: {
+        ...this.state.annotationState,
+        dragging: true,
+        current: { x: x, y: y }
+      }
+    });
 
     this.draw();
+    if (!this.state.annotationState.dragging) {
+      this.props.handleVideoPlayer.pause();
+    }
   }
 
   touchEnd(e) {
-    this.props.handleVideoPlayer.play();
-    this.annotationState.dragging = false;
+    const { annotationState } = this.state;
 
+    if (annotationState.dragging) {
+      this.props.getSelectionValue(e.type, this.state.annotationState);
+    }
     this.draw();
-    this.canvasClearId = setTimeout(() => this.clearCanvas(), 1000);
   }
 
   componentDidMount() {
@@ -67,33 +74,36 @@ export default class TapSelection extends Component {
     this.setState({ offsetWidth, offsetHeight });
 
     if (disableAnnotations) {
-        // implement unbinding of events here
+      // implement unbinding of events here
 
-        this.onTouchStart = null;
-        this.onTouchMove = null;
-        this.onTouchEnd = null;
+      this.onTouchStart = null;
+      this.onTouchMove = null;
+      this.onTouchEnd = null;
     } else {
-        // bind touch events to video
+      // bind touch events to video
 
-        this.onTouchStart = this.touchStart;
-        this.onTouchMove = this.touchMove;
-        this.onTouchEnd = this.touchEnd;
+      this.onTouchStart = this.touchStart;
+      this.onTouchMove = this.touchMove;
+      this.onTouchEnd = this.touchEnd;
     }
   }
 
   draw = () => {
-    const { dragging, start, current } = this.annotationState;
+    const { dragging, start, current } = this.state.annotationState;
     const { canvas } = this.state;
-    const { left, top } = this.state.selectionArea.current.getBoundingClientRect();
+    const {
+      left,
+      top
+    } = this.state.selectionArea.current.getBoundingClientRect();
     let ctx = canvas.current.getContext("2d");
 
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 6;
     ctx.strokeStyle = "#FF0000";
     ctx.fillStyle = "#FF0000";
 
     var scaling_factor = 1.0;
     if (dragging) {
-        scaling_factor = 0.8;
+      scaling_factor = 0.8;
     }
 
     const drag_width = scaling_factor * (current.x - start.x);
@@ -108,12 +118,15 @@ export default class TapSelection extends Component {
   };
 
   clearCanvas = type => {
-    const { canvas, rect } = this.state;
+    const { canvas } = this.state;
 
-    this.annotationState.start = {"x": 0, "y": 0}
-    this.annotationState.current = {"x": 0, "y": 0}
-
-    this.setState({ drag: false, rect: {} });
+    this.setState({
+      annotationState: {
+        dragging: false,
+        start: { x: 0, y: 0 },
+        current: { x: 0, y: 0 }
+      }
+    });
 
     canvas.current
       .getContext("2d")
@@ -143,7 +156,7 @@ export default class TapSelection extends Component {
         count: count
       });
 
-      this.props.showVideoControls();
+      // this.props.showVideoControls();
     }
   };
 
@@ -180,8 +193,7 @@ export default class TapSelection extends Component {
     this.setState({ spanStyles: {}, count: 0 });
   };
 
-  componentWillUnmount() {
-  }
+  componentWillUnmount() {}
 
   render() {
     const { drag, rect, offsetWidth, offsetHeight } = this.state;

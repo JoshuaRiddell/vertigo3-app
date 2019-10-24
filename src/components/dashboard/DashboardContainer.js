@@ -10,7 +10,8 @@ import "../../styles/dashboardStyles.css";
 import SessionControls from "./SessionControls";
 import ExpandButton from "../../helpers/ExpandButton";
 import TraningSetModal from "./TraningSetModal";
-import clickSound from "../../assets/click-sound.mp3";
+import clickSound from "../../assets/Key-click.ogg";
+import soundDataSuccess from "../../assets/Data_sent.ogg";
 
 class DashboardContainer extends React.Component {
   state = {
@@ -55,6 +56,8 @@ class DashboardContainer extends React.Component {
 
   setDataSelection = selection => {
     const { dataSelection } = this.state;
+    const audio = new Audio(clickSound);
+    audio.play();
     if (dataSelection === selection) {
       this.setState({
         dataSelection: "",
@@ -98,6 +101,11 @@ class DashboardContainer extends React.Component {
       });
     }
   }
+  sendPercentageData = item => {
+    const audio = new Audio(soundDataSuccess);
+    audio.play();
+    this.setState({ percentBarMenu: false, dataSelection: "" });
+  };
   static propTypes = {};
 
   render() {
@@ -303,7 +311,7 @@ class DashboardContainer extends React.Component {
                         <img src="images/close-icon.svg" class="close-icon" />
                       </span>
                       <p>
-                        Version: <strong>0.0.6</strong>
+                        Version: <strong>0.0.7</strong>
                       </p>
                     </div>
                   )}
@@ -498,14 +506,15 @@ class DashboardContainer extends React.Component {
         </div>
         {percentBarMenu && (
           <div class="popup-layer">
-            <div
-              class="percentage-bar-wrapper"
-              onClick={() =>
-                this.setState({ percentBarMenu: false, dataSelection: "" })
-              }
-            >
+            <div class="percentage-bar-wrapper">
               {percentBar.map((item, index) => (
-                <span class={`percentage-bar-item c-${index}`}>{item}</span>
+                <span
+                  key={`percentage-bar-item c-${index}`}
+                  class={`percentage-bar-item c-${index}`}
+                  onClick={() => this.sendPercentageData(item)}
+                >
+                  {item}
+                </span>
               ))}
             </div>
           </div>

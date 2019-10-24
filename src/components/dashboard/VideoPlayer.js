@@ -8,6 +8,7 @@ import Popup from "reactjs-popup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPause, faCog } from "@fortawesome/free-solid-svg-icons";
 import testVidClip from "../../assets/underwater-test-vid.mp4";
+import sampleVidClip from "../../assets/sample-vid-2.mp4";
 import { connect } from "react-redux";
 import { toggleTrainigSetModal } from "../../actions/trainingSetActions";
 
@@ -60,14 +61,15 @@ class VideoPlayer extends React.Component {
   };
 
   getSelectionValue = (type, values) => {
-    if (
-      (type === "panend" || type === "pressup") &&
-      Object.keys(values).length
-    ) {
-      //this.setState({ seletionValues: values, showPressSelection: true });
-      this.props.toggleTrainigSetModal(true);
-      console.log(type, values);
-    }
+    console.log(type, values);
+    // if (
+    //   (type === "panend" || type === "pressup") &&
+    //   Object.keys(values).length
+    // ) {
+    //   console.log(type, values);
+    // }
+    this.props.toggleTrainigSetModal(true);
+    this.setState({ seletionValues: values, showPressSelection: true });
   };
 
   fullScreen() {
@@ -192,7 +194,7 @@ class VideoPlayer extends React.Component {
               this.player = player;
             }}
           >
-            <source src="https://www.dropbox.com/s/neibl2yhntub9n5/SampleVid.mp4?raw=1" />
+            <source src={sampleVidClip} />
             {/* <HLSSource
               isVideoChild
               //src="//d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8"

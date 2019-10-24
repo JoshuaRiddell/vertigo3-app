@@ -6,7 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
 import notificationAudio from "../../assets/for-sure.mp3";
-
+import warningAudio from "../../assets/Warning-1.ogg";
 const useStyles = makeStyles(theme => ({
   close: {
     padding: theme.spacing(0.5)
@@ -27,10 +27,21 @@ export default function NotificationBar({
   const classes = useStyles();
   const [transition, setTransition] = React.useState(undefined);
 
+  const audio = new Audio(
+    mode === "STOP_SESSION" ? warningAudio : notificationAudio
+  );
+  // React.useEffect(() => {
+  //   // if (showBar) audio.play();
+  //   audio.play();
+  // });
   React.useEffect(() => {
-    const audio = new Audio(notificationAudio);
-    if (showBar) audio.play();
-  });
+    if (showBar) {
+      audio.play();
+    }
+    if (mode) {
+      audio.play();
+    }
+  }, [mode, showBar]);
 
   let flashCountClass = "";
 

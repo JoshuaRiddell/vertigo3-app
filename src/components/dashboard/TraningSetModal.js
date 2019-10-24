@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { toggleTrainigSetModal } from "../../actions/trainingSetActions";
-
+import soundDataSuccess from "../../assets/Data_sent.ogg";
 class TraningSetModal extends Component {
   handlePopup = () => {
     const { trainingSet } = this.props;
     const { showTrainingSet } = trainingSet;
+    //do api stuff
+    const audio = new Audio(soundDataSuccess);
+    audio.play();
 
     this.props.toggleTrainigSetModal(false);
   };
