@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Hammer from "hammerjs";
+import soundDataSuccess from "../../assets/Data_sent.ogg";
 
 export default class TapSelection extends Component {
   constructor() {
@@ -187,6 +188,10 @@ export default class TapSelection extends Component {
     this.setState({
       bounce: setTimeout(() => cleanup(), delay)
     });
+
+    //api call
+    const audio = new Audio(soundDataSuccess);
+    audio.play();
   };
 
   cleanUp = () => {

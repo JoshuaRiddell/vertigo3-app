@@ -90,7 +90,7 @@ class DashboardContainer extends React.Component {
     const { starFishCounter } = this.state;
 
     if (starFishCounter !== prevState.starFishCounter) {
-      const audio = new Audio(clickSound);
+      const audio = new Audio(soundDataSuccess);
       audio.play();
       this.setState({
         flashValue: "flashValue",
@@ -311,7 +311,7 @@ class DashboardContainer extends React.Component {
                         <img src="images/close-icon.svg" class="close-icon" />
                       </span>
                       <p>
-                        Version: <strong>0.0.7</strong>
+                        Version: <strong>0.0.8</strong>
                       </p>
                     </div>
                   )}
