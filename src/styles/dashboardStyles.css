@@ -296,6 +296,7 @@
 }
 .main-wrapper {
   height: 100%;
+  overflow: hidden;
 }
 .main-video-wrapper .main-img {
   width: 100%;

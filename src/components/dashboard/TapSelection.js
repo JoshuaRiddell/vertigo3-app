@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Hammer from "hammerjs";
 import soundDataSuccess from "../../assets/Data_sent.ogg";
+import interact from "interactjs";
 
 export default class TapSelection extends Component {
   constructor() {
@@ -16,54 +17,63 @@ export default class TapSelection extends Component {
         dragging: false,
         start: {},
         current: {}
-      }
+      },
+      activateGestures: false
     };
 
     this.touchStart = this.touchStart.bind(this);
     this.touchMove = this.touchMove.bind(this);
     this.touchEnd = this.touchEnd.bind(this);
-
+    this.showRipple = this.showRipple.bind(this);
+    this.callCleanUp = this.callCleanUp.bind(this);
     this.canvasClearId = null;
   }
 
   touchStart(e) {
-    this.clearCanvas();
+    const { gesturesTimeout } = this.state;
+    if (gesturesTimeout) clearTimeout(gesturesTimeout);
 
-    const x = e.nativeEvent.touches[0].pageX;
-    const y = e.nativeEvent.touches[0].pageY;
+    if (e.nativeEvent.touches.length === 1) {
+      this.clearCanvas();
 
-    this.setState({
-      annotationState: {
-        dragging: false,
-        start: { x: x, y: y },
-        current: { x: x, y: y }
-      }
-    });
+      const x = e.nativeEvent.touches[0].pageX;
+      const y = e.nativeEvent.touches[0].pageY;
+
+      this.setState({
+        annotationState: {
+          dragging: false,
+          start: { x: x, y: y },
+          current: { x: x, y: y }
+        }
+      });
+    }
   }
 
   touchMove(e) {
-    const x = e.nativeEvent.touches[0].pageX;
-    const y = e.nativeEvent.touches[0].pageY;
+    if (e.nativeEvent.touches.length === 1) {
+      const x = e.nativeEvent.touches[0].pageX;
+      const y = e.nativeEvent.touches[0].pageY;
 
-    this.setState({
-      annotationState: {
-        ...this.state.annotationState,
-        dragging: true,
-        current: { x: x, y: y }
+      this.setState({
+        annotationState: {
+          ...this.state.annotationState,
+          dragging: true,
+          current: { x: x, y: y }
+        }
+      });
+
+      this.draw();
+      if (!this.state.annotationState.dragging) {
+        this.props.handleVideoPlayer.pause();
       }
-    });
-
-    this.draw();
-    if (!this.state.annotationState.dragging) {
-      this.props.handleVideoPlayer.pause();
     }
   }
 
   touchEnd(e) {
-    const { annotationState } = this.state;
-
+    const { annotationState, scaling } = this.state;
     if (annotationState.dragging) {
       this.props.getSelectionValue(e.type, this.state.annotationState);
+      this.setState({ activateGestures: false });
     }
     this.draw();
   }
@@ -74,21 +84,57 @@ export default class TapSelection extends Component {
 
     this.setState({ offsetWidth, offsetHeight });
 
-    if (disableAnnotations) {
-      // implement unbinding of events here
+    this.onTouchStart = null;
+    this.onTouchMove = null;
+    this.onTouchEnd = null;
+    this.refs.ripples.onmousedown = null;
+    this.refs.ripples.onmouseup = null;
+  }
+  activateGestures = e => {
+    const { activateGestures, gesturesTimeout } = this.state;
 
-      this.onTouchStart = null;
-      this.onTouchMove = null;
-      this.onTouchEnd = null;
+    if (!activateGestures) {
+      this.props.handleVideoPlayer.pause();
+      this.setState({
+        activateGestures: true,
+        gesturesTimeout: setTimeout(() => {
+          this.props.handleVideoPlayer.play();
+          this.setState({ activateGestures: false });
+        }, 3000)
+      });
     } else {
-      // bind touch events to video
+      if (gesturesTimeout) clearTimeout(gesturesTimeout);
 
+      this.props.handleVideoPlayer.play();
+      this.setState({ activateGestures: false, gesturesTimeout: "" });
+    }
+  };
+  componentDidUpdate(prevProps, prevState) {
+    const { activateGestures } = this.state;
+    if (
+      prevState.activateGestures !== activateGestures &&
+      activateGestures === true
+    ) {
       this.onTouchStart = this.touchStart;
       this.onTouchMove = this.touchMove;
       this.onTouchEnd = this.touchEnd;
+      this.refs.ripples.onmousedown = this.showRipple;
+      this.refs.ripples.onmouseup = this.callCleanUp;
+      this.onClick = null;
+    }
+
+    if (
+      prevState.activateGestures !== activateGestures &&
+      activateGestures === false
+    ) {
+      this.onTouchStart = null;
+      this.onTouchMove = null;
+      this.onTouchEnd = null;
+      this.refs.ripples.onmousedown = null;
+      this.refs.ripples.onmouseup = null;
+      this.onClick = this.activateGestures;
     }
   }
-
   draw = () => {
     const { dragging, start, current } = this.state.annotationState;
     const { canvas } = this.state;
@@ -156,7 +202,6 @@ export default class TapSelection extends Component {
         spanStyles: { ...this.state.spanStyles, [count]: spanStyles },
         count: count
       });
-
       // this.props.showVideoControls();
     }
   };
@@ -180,30 +225,30 @@ export default class TapSelection extends Component {
   };
 
   /* Debounce Code to call the Ripple removing function */
-  callCleanUp = (cleanup, delay) => {
-    const { bounce } = this.state;
-
-    clearTimeout(bounce);
+  callCleanUp = () => {
+    const { bounce, gesturesTimeout } = this.state;
+    if (bounce) clearTimeout(bounce);
 
     this.setState({
-      bounce: setTimeout(() => cleanup(), delay)
+      bounce: setTimeout(
+        () => this.setState({ spanStyles: {}, count: 0 }),
+        2000
+      )
     });
-
     //api call
     const audio = new Audio(soundDataSuccess);
     audio.play();
   };
 
-  cleanUp = () => {
-    this.setState({ spanStyles: {}, count: 0 });
-  };
-
-  componentWillUnmount() {}
-
   render() {
-    const { drag, rect, offsetWidth, offsetHeight } = this.state;
+    const { drag, offsetWidth, offsetHeight } = this.state;
 
-    const { children = null, classes = "", onClickHandler = null } = this.props;
+    const {
+      children = null,
+      classes = "",
+      onClickHandler = null,
+      disableAnnotations
+    } = this.props;
 
     return (
       <div
@@ -216,8 +261,10 @@ export default class TapSelection extends Component {
         onTouchStart={this.onTouchStart}
         onTouchMove={this.onTouchMove}
         onTouchEnd={this.onTouchEnd}
+        onClick={!disableAnnotations ? this.activateGestures : null}
       >
         {children}
+
         <canvas
           id="canvas"
           className="selection-area"
@@ -231,10 +278,10 @@ export default class TapSelection extends Component {
           }}
         />
         <div
-          //ref={this.state.ripples}
+          ref="ripples"
           className="rippleContainer"
-          onMouseDown={this.showRipple}
-          onMouseUp={() => this.callCleanUp(this.cleanUp, 2000)}
+          onMouseDown={this.onmousedown}
+          onMouseUp={this.onmouseup}
           onContextMenu={e => {
             e.preventDefault();
             return false;
