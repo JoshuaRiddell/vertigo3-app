@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import Hammer from "hammerjs";
 import soundDataSuccess from "../../assets/Data_sent.ogg";
-import interact from "interactjs";
 
 export default class TapSelection extends Component {
   constructor() {
@@ -90,6 +89,7 @@ export default class TapSelection extends Component {
     this.refs.ripples.onmousedown = null;
     this.refs.ripples.onmouseup = null;
   }
+
   activateGestures = e => {
     const { activateGestures, gesturesTimeout } = this.state;
 
