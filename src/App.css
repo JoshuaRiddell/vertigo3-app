@@ -164,6 +164,11 @@ body {
   position: absolute;
   left: 0;
   top: 0;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.gesturesActive {
+  outline: 10px solid #2a5bfb;
+  outline-offset: -5px;
 }
 .popup {
   position: absolute;

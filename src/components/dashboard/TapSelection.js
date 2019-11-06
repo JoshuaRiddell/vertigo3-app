@@ -16,79 +16,231 @@ export default class TapSelection extends Component {
         dragging: false,
         start: {},
         current: {}
-      }
+      },
+      zoomState: {
+        zooming: false,
+        scale: 1,
+        startZoomPosition: { x: 0, y: 0 },
+        currentZoomPosition: { x: 0, y: 0 }
+      },
+      activateGestures: false
     };
-
-    this.touchStart = this.touchStart.bind(this);
-    this.touchMove = this.touchMove.bind(this);
-    this.touchEnd = this.touchEnd.bind(this);
-
-    this.canvasClearId = null;
   }
 
-  touchStart(e) {
-    this.clearCanvas();
+  touchStart = e => {
+    const { gesturesTimeout } = this.state;
+    const {
+      center: { x, y }
+    } = e;
 
-    const x = e.nativeEvent.touches[0].pageX;
-    const y = e.nativeEvent.touches[0].pageY;
+    if (gesturesTimeout) clearTimeout(gesturesTimeout);
 
+    // this.clearCanvas();
     this.setState({
+      zoomState: {
+        ...this.state.zoomState,
+        zooming: false
+      },
       annotationState: {
-        dragging: false,
+        dragging: true,
         start: { x: x, y: y },
         current: { x: x, y: y }
       }
     });
-  }
+  };
 
-  touchMove(e) {
-    const x = e.nativeEvent.touches[0].pageX;
-    const y = e.nativeEvent.touches[0].pageY;
+  touchMove = e => {
+    const {
+      center: { x, y }
+    } = e;
 
-    this.setState({
-      annotationState: {
-        ...this.state.annotationState,
-        dragging: true,
-        current: { x: x, y: y }
-      }
-    });
+    const { annotationState } = this.state;
+    if (annotationState.dragging) {
+      this.setState({
+        annotationState: {
+          ...this.state.annotationState,
+          dragging: true,
+          current: { x: x, y: y }
+        }
+      });
 
-    this.draw();
+      this.draw();
+    } else {
+      this.pinchZoom(e);
+    }
     if (!this.state.annotationState.dragging) {
       this.props.handleVideoPlayer.pause();
     }
-  }
+  };
 
-  touchEnd(e) {
+  touchEnd = e => {
     const { annotationState } = this.state;
-
-    if (annotationState.dragging) {
+    if (annotationState.dragging && e.distance > 10) {
       this.props.getSelectionValue(e.type, this.state.annotationState);
+      this.setState({ activateGestures: false });
+    } else {
+      this.setState({
+        annotationState: {
+          dragging: false,
+          start: {},
+          current: {}
+        }
+      });
     }
     this.draw();
-  }
+  };
 
   componentDidMount() {
-    const { offsetWidth, offsetHeight } = this.state.selectionArea.current;
+    const { selectionArea } = this.state;
+    const { offsetWidth, offsetHeight } = selectionArea.current;
     const { disableAnnotations } = this.props;
 
     this.setState({ offsetWidth, offsetHeight });
 
-    if (disableAnnotations) {
-      // implement unbinding of events here
+    this.refs.ripples.onmousedown = null;
+    this.refs.ripples.onmouseup = null;
 
-      this.onTouchStart = null;
-      this.onTouchMove = null;
-      this.onTouchEnd = null;
-    } else {
-      // bind touch events to video
+    this.hammerTime = new Hammer(selectionArea.current, {});
 
-      this.onTouchStart = this.touchStart;
-      this.onTouchMove = this.touchMove;
-      this.onTouchEnd = this.touchEnd;
-    }
+    this.hammerTime.get("pinch").set({
+      enable: true
+    });
+
+    !disableAnnotations && this.hammerTime.on("tap", this.activateGestures);
   }
 
+  activateGestures = e => {
+    const { activateGestures, gesturesTimeout } = this.state;
+
+    if (!activateGestures) {
+      this.props.handleVideoPlayer.pause();
+      this.setState({
+        activateGestures: true,
+        gesturesTimeout: setTimeout(() => {
+          this.props.handleVideoPlayer.play();
+          this.setState({ activateGestures: false });
+        }, 3000)
+      });
+    } else {
+      if (gesturesTimeout) clearTimeout(gesturesTimeout);
+      this.zoomReset();
+
+      this.props.handleVideoPlayer.play();
+      this.setState({
+        activateGestures: false,
+        gesturesTimeout: ""
+      });
+      this.showRipple(e);
+    }
+  };
+
+  pinchZoom = ev => {
+    const { gesturesTimeout, zoomState, annotationState } = this.state;
+    if (gesturesTimeout) clearTimeout(gesturesTimeout);
+
+    let posX = zoomState.currentZoomPosition.x,
+      posY = zoomState.currentZoomPosition.y,
+      scale = zoomState.scale,
+      last_scale = 1,
+      last_posX = 0,
+      last_posY = 0,
+      max_pos_x = 0,
+      max_pos_y = 0,
+      transform = "",
+      el = ev.target;
+    //pinch
+    if (ev.type == "pinch") {
+      scale = Math.max(0.999, Math.min(last_scale * ev.scale, 4));
+    }
+
+    //pan
+    if (scale != 1) {
+      posX = last_posX + ev.deltaX;
+      posY = last_posY + ev.deltaY;
+      max_pos_x = Math.ceil(((scale - 1) * el.clientWidth) / 2);
+      max_pos_y = Math.ceil(((scale - 1) * el.clientHeight) / 2);
+
+      if (posX > max_pos_x) {
+        posX = max_pos_x;
+      }
+      if (posX < -max_pos_x) {
+        posX = -max_pos_x;
+      }
+      if (posY > max_pos_y) {
+        posY = max_pos_y;
+      }
+      if (posY < -max_pos_y) {
+        posY = -max_pos_y;
+      }
+    }
+
+    if (ev.type == "pinchend") {
+      last_scale = scale;
+    }
+
+    if (scale != 1) {
+      transform =
+        "translate3d(" +
+        posX +
+        "px," +
+        posY +
+        "px, 0) " +
+        "scale3d(" +
+        scale +
+        ", " +
+        scale +
+        ", 1)";
+    }
+
+    if (transform) {
+      this.setState({
+        annotationState: {
+          ...annotationState,
+          drag: false
+        },
+        zoomState: {
+          scale,
+          zooming: true,
+          currentZoomPosition: { x: posX, y: posY }
+        }
+      });
+    }
+  };
+
+  zoomReset = () => {
+    const { zoomResetTimeoutId } = this.state;
+
+    if (zoomResetTimeoutId) clearTimeout(zoomResetTimeoutId);
+
+    this.setState({
+      zoomState: {
+        zooming: false,
+        scale: 1,
+        startZoomPosition: { x: 0, y: 0 },
+        currentZoomPosition: { x: 0, y: 0 }
+      }
+    });
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    const { activateGestures } = this.state;
+    if (
+      prevState.activateGestures !== activateGestures &&
+      activateGestures === true
+    ) {
+      this.hammerTime.on("press", this.touchStart);
+      this.hammerTime.on("pan", this.touchMove);
+      this.hammerTime.on("pinch pinchend", this.pinchZoom);
+      this.hammerTime.on("panend pancancel pressup", this.touchEnd);
+    }
+
+    if (
+      prevState.activateGestures !== activateGestures &&
+      activateGestures === false
+    ) {
+      this.hammerTime.off("press pan pinch pinchend panend pancancel pressup");
+    }
+  }
   draw = () => {
     const { dragging, start, current } = this.state.annotationState;
     const { canvas } = this.state;
@@ -119,7 +271,7 @@ export default class TapSelection extends Component {
   };
 
   clearCanvas = type => {
-    const { canvas } = this.state;
+    const { canvas, zoomState } = this.state;
 
     this.setState({
       annotationState: {
@@ -128,7 +280,7 @@ export default class TapSelection extends Component {
         current: { x: 0, y: 0 }
       }
     });
-
+    this.zoomReset();
     canvas.current
       .getContext("2d")
       .clearRect(0, 0, canvas.current.width, canvas.current.height);
@@ -138,31 +290,37 @@ export default class TapSelection extends Component {
 
   showRipple = e => {
     e.preventDefault();
-    if (e.button === 0) {
-      const rippleContainer = e.currentTarget;
-      const size = rippleContainer.offsetWidth;
-      const pos = rippleContainer.getBoundingClientRect();
-      const x = e.pageX - pos.x - size / 2;
-      const y = e.pageY - pos.y - size / 2;
 
-      const spanStyles = {
-        top: y + "px",
-        left: x + "px",
-        height: size + "px",
-        width: size + "px"
-      };
-      const count = this.state.count + 1;
-      this.setState({
-        spanStyles: { ...this.state.spanStyles, [count]: spanStyles },
-        count: count
-      });
+    //api call
+    const audio = new Audio(soundDataSuccess);
+    audio.play();
 
-      // this.props.showVideoControls();
-    }
+    const { center } = e;
+    const { selectionArea, bounce } = this.state;
+    const rippleContainer = selectionArea.current;
+    const size = rippleContainer.offsetWidth;
+    const pos = rippleContainer.getBoundingClientRect();
+    const x = center.x - pos.x - size / 2;
+    const y = center.y - pos.y - size / 2;
+
+    const spanStyles = {
+      top: y + "px",
+      left: x + "px",
+      height: size + "px",
+      width: size + "px"
+    };
+    const count = this.state.count + 1;
+    if (bounce) clearTimeout(bounce);
+
+    this.setState({
+      spanStyles: { ...this.state.spanStyles, [1]: spanStyles },
+      count: count,
+      bounce: setTimeout(() => this.setState({ spanStyles: {}, count: 0 }), 500)
+    });
   };
 
   renderRippleSpan = () => {
-    const { showRipple = false, spanStyles = {} } = this.state;
+    const { spanStyles = {} } = this.state;
     const spanArray = Object.keys(spanStyles);
     if (spanArray && spanArray.length > 0) {
       return spanArray.map((key, index) => {
@@ -179,31 +337,21 @@ export default class TapSelection extends Component {
     }
   };
 
-  /* Debounce Code to call the Ripple removing function */
-  callCleanUp = (cleanup, delay) => {
-    const { bounce } = this.state;
-
-    clearTimeout(bounce);
-
-    this.setState({
-      bounce: setTimeout(() => cleanup(), delay)
-    });
-
-    //api call
-    const audio = new Audio(soundDataSuccess);
-    audio.play();
-  };
-
-  cleanUp = () => {
-    this.setState({ spanStyles: {}, count: 0 });
-  };
-
-  componentWillUnmount() {}
-
   render() {
-    const { drag, rect, offsetWidth, offsetHeight } = this.state;
+    const {
+      annotationState: { dragging },
+      offsetWidth,
+      offsetHeight,
+      zoomState: { zooming, currentZoomPosition, scale },
+      activateGestures
+    } = this.state;
 
-    const { children = null, classes = "", onClickHandler = null } = this.props;
+    const {
+      children = null,
+      classes = "",
+      onClickHandler = null,
+      disableAnnotations
+    } = this.props;
 
     return (
       <div
@@ -213,28 +361,45 @@ export default class TapSelection extends Component {
           e.preventDefault();
           return false;
         }}
-        onTouchStart={this.onTouchStart}
-        onTouchMove={this.onTouchMove}
-        onTouchEnd={this.onTouchEnd}
       >
-        {children}
+        <div
+          className="zoomFrame"
+          style={
+            zooming
+              ? {
+                  transform: `translate3d(${currentZoomPosition.x}px, ${currentZoomPosition.y}px, 0) scale3d(${scale}, ${scale}, 1)`
+                }
+              : {
+                  transform: `translate3d(${currentZoomPosition.x}px, ${currentZoomPosition.y}px, 0) scale3d(${scale}, ${scale}, 1)`,
+                  transition: "-webkit-transform 0.3s ease-in-out",
+                  transition: "transform 0.3s ease-in-out"
+                }
+          }
+        >
+          {children}
+        </div>
+
         <canvas
           id="canvas"
-          className="selection-area"
+          className={`selection-area ${
+            activateGestures ? "gesturesActive" : ""
+          }`}
           ref={this.state.canvas}
           width={offsetWidth}
           height={offsetHeight}
-          style={drag ? { border: "4px solid green" } : {}}
+          style={
+            dragging
+              ? { outline: "10px solid #24ea00", outlineOffset: "-8px" }
+              : {}
+          }
           onContextMenu={e => {
             e.preventDefault();
             return false;
           }}
         />
         <div
-          //ref={this.state.ripples}
+          ref="ripples"
           className="rippleContainer"
-          onMouseDown={this.showRipple}
-          onMouseUp={() => this.callCleanUp(this.cleanUp, 2000)}
           onContextMenu={e => {
             e.preventDefault();
             return false;
