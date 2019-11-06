@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "6c2fdc39c65480d9053bb6d73f00cd03",
+    "revision": "20d1c01ca10be382a5475c4200943598",
     "url": "/vertigo3-app/index.html"
   },
   {
-    "revision": "adbe95a536cf47b80053",
+    "revision": "8d33ff8570a14b4bbe7d",
     "url": "/vertigo3-app/static/css/2.b91a2650.chunk.css"
   },
   {
-    "revision": "d5c85f51ddbc288b5570",
-    "url": "/vertigo3-app/static/css/main.ab2cd5a9.chunk.css"
+    "revision": "e7717db761c90b2284d4",
+    "url": "/vertigo3-app/static/css/main.7fc989bf.chunk.css"
   },
   {
-    "revision": "adbe95a536cf47b80053",
-    "url": "/vertigo3-app/static/js/2.20f4c295.chunk.js"
+    "revision": "8d33ff8570a14b4bbe7d",
+    "url": "/vertigo3-app/static/js/2.bc60fa8a.chunk.js"
   },
   {
-    "revision": "d5c85f51ddbc288b5570",
-    "url": "/vertigo3-app/static/js/main.f34b4abc.chunk.js"
+    "revision": "e7717db761c90b2284d4",
+    "url": "/vertigo3-app/static/js/main.547a6b66.chunk.js"
   },
   {
     "revision": "259646d364b3bccbc7d6",
