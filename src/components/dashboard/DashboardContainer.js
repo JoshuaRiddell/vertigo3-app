@@ -311,7 +311,7 @@ class DashboardContainer extends React.Component {
                         <img src="images/close-icon.svg" class="close-icon" />
                       </span>
                       <p>
-                        Version: <strong>0.0.8</strong>
+                        Version: <strong>0.0.9</strong>
                       </p>
                     </div>
                   )}

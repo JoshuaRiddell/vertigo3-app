@@ -19,7 +19,8 @@ class VideoPlayer extends React.Component {
     this.state = {
       source: "",
       showPressSelection: false,
-      seletionValues: {}
+      seletionValues: {},
+      activeAnnotations: false
     };
 
     this.togglePlay = this.togglePlay.bind(this);
@@ -79,27 +80,6 @@ class VideoPlayer extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const { player } = this.state;
 
-    // if (
-    //   prevState.player &&
-    //   prevState.player.isFullscreen !== player.isFullscreen &&
-    //   player.isFullscreen
-    // ) {
-    //   this.setState({
-    //     player: {
-    //       ...this.state.player,
-    //       isFullscreen: false
-    //     }
-    //   });
-    //   const fullScreen = document.querySelectorAll(
-    //     ".video-react-fullscreen"
-    //   )[0];
-
-    //   if (fullScreen && fullScreen.classList) {
-    //     document
-    //       .querySelectorAll(".video-react-fullscreen")[0]
-    //       .classList.remove("video-react-fullscreen");
-    //   }
-    // }
     const { trainingSet } = this.props;
     const { showTrainingSet } = trainingSet;
 
@@ -124,59 +104,6 @@ class VideoPlayer extends React.Component {
 
     return (
       <div className="video-player-container">
-        {/* <div
-          id="video-controls"
-          className="controls"
-          style={{ width: this.props.playerWidth }}
-        >
-          <button
-            className={startRecord ? "notRec Rec" : "notRec"}
-            onClick={() => {
-              this.setState({ startRecord: !startRecord });
-              this.props.showNotification(
-                !startRecord ? "Recording Stated" : "Recording Stopped"
-              );
-            }}
-          />
-          <button href="#" className="round-button" onClick={this.togglePlay}>
-            {player && player.paused ? (
-              <FontAwesomeIcon icon={faPlay} size="4x" />
-            ) : (
-              <FontAwesomeIcon icon={faPause} size="4x" />
-            )}
-          </button>
-        </div> */}
-
-        {/* {showPressSelection && (
-          <div
-            className="popup"
-            style={{
-              top: seletionValues.startX,
-              left: seletionValues.startY
-            }}
-          >
-            <button
-              style={{ float: "right" }}
-              onClick={() => {
-                this.setState({ showPressSelection: false });
-                this.player.play();
-                this.refs.tapSelectionRef &&
-                  this.refs.tapSelectionRef.clearCanvas();
-              }}
-            >
-              X
-            </button>
-            <h3> Annotations </h3>
-            <p>{`Top = ${seletionValues.mouseStartX +
-              seletionValues.startX}`}</p>
-            <p>
-              {`Left = ${seletionValues.mouseStartY - seletionValues.startY}`}
-            </p>
-            <p>{`Width = ${Math.abs(seletionValues.width)}px`}</p>
-            <p>{`Height = ${Math.abs(seletionValues.height)}px`}</p>
-          </div>
-        )} */}
-
         <TapSelection
           ref="tapSelectionRef"
           showVideoControls={this.showVideoControls}
@@ -185,6 +112,7 @@ class VideoPlayer extends React.Component {
           disableAnnotations={this.props.disableAnnotations}
         >
           <Player
+            ref="videoPlayer"
             fluid={false}
             width={this.props.playerWidth}
             height={this.props.playerHeight}
