@@ -1,7 +1,9 @@
 import React from "react";
 import boatIcon from "../../assets/sonar-boat-2.png";
 import gliderIcon from "../../assets/glider-icon.svg";
-export default class SonarChart extends React.PureComponent {
+import { connect } from "react-redux";
+import { setSonarStateSnapshot } from "../../actions/sonarActions";
+class SonarChart extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -34,12 +36,23 @@ export default class SonarChart extends React.PureComponent {
     const { activeMode } = this.props;
     this.updateCoordinatesByMode(activeMode);
   }
+
   componentDidUpdate(prevProps, prevState) {
-    const { activeMode } = this.props;
+    const { activeMode, sonarState } = this.props;
 
     if (activeMode !== prevProps.activeMode) {
       this.updateCoordinatesByMode(activeMode);
     }
+
+    if (prevProps.sonarState !== sonarState) {
+      if (sonarState && Object.keys(sonarState).length) {
+        this.setState({ ...sonarState });
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.setSonarStateSnapshot(this.state);
   }
 
   updateCoordinatesByMode = activeMode => {
@@ -495,3 +508,13 @@ const HorizontalToolTip = ({ coordinates, onMouseDown, mode }) => {
     </>
   );
 };
+
+const mapStateToProps = state => {
+  return {
+    sonarState: state.sonarState
+  };
+};
+export default connect(
+  mapStateToProps,
+  { setSonarStateSnapshot }
+)(SonarChart);

@@ -2,7 +2,6 @@ import React from "react";
 import { Player, ControlBar } from "video-react";
 import "video-react/dist/video-react.css";
 import HLSSource from "./HlsSource";
-// import TouchRipples from "./TouchRipples";
 import TapSelection from "./TapSelection";
 import Popup from "reactjs-popup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,6 +10,7 @@ import testVidClip from "../../assets/underwater-test-vid.mp4";
 import sampleVidClip from "../../assets/sample-vid-2.mp4";
 import { connect } from "react-redux";
 import { toggleTrainigSetModal } from "../../actions/trainingSetActions";
+import { setPlayerStateSnapshot } from "../../actions/videoPlayerActions";
 
 class VideoPlayer extends React.Component {
   constructor(props, context) {
@@ -28,8 +28,8 @@ class VideoPlayer extends React.Component {
   }
 
   componentDidMount() {
-    // subscribe state change
     this.player.subscribeToStateChange(this.handleStateChange.bind(this));
+    // subscribe state change
     this.player.play();
   }
 
@@ -63,12 +63,6 @@ class VideoPlayer extends React.Component {
 
   getSelectionValue = (type, values) => {
     console.log(type, values);
-    // if (
-    //   (type === "panend" || type === "pressup") &&
-    //   Object.keys(values).length
-    // ) {
-    //   console.log(type, values);
-    // }
     this.props.toggleTrainigSetModal(true);
     this.setState({ seletionValues: values, showPressSelection: true });
   };
@@ -79,6 +73,7 @@ class VideoPlayer extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { player } = this.state;
+    const { videoPlayerState } = this.props;
 
     const { trainingSet } = this.props;
     const { showTrainingSet } = trainingSet;
@@ -91,17 +86,21 @@ class VideoPlayer extends React.Component {
       this.player.play();
       this.refs.tapSelectionRef && this.refs.tapSelectionRef.clearCanvas();
     }
+    if (prevProps.videoPlayerState !== videoPlayerState) {
+      if (videoPlayerState && Object.keys(videoPlayerState).length) {
+        const { currentTime } = videoPlayerState;
+        this.player.seek(currentTime);
+        // this.player.played.start(currentTime);
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    const { player } = this.player.getState();
+    this.props.setPlayerStateSnapshot(player);
   }
 
   render() {
-    const {
-      showControls,
-      player,
-      showPressSelection,
-      seletionValues,
-      startRecord
-    } = this.state;
-
     return (
       <div className="video-player-container">
         <TapSelection
@@ -112,28 +111,19 @@ class VideoPlayer extends React.Component {
           disableAnnotations={this.props.disableAnnotations}
         >
           <Player
-            ref="videoPlayer"
             fluid={false}
             width={this.props.playerWidth}
             height={this.props.playerHeight}
             loop
-            autoplay
+            autoplay={true}
+            preload="auto"
+            src={sampleVidClip}
+            // src={testVidClip}
             ref={player => {
               this.player = player;
             }}
           >
-            <source src={sampleVidClip} />
-            {/* <HLSSource
-              isVideoChild
-              //src="//d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8"
-              src="underwater-test-vid.mp4"
-             type='application video/mp4' 
-            /> */}
-            <ControlBar
-              disableDefaultControls={
-                player && player.isFullscreen ? false : true
-              }
-            />
+            <ControlBar autoHide={false} />
           </Player>
         </TapSelection>
       </div>
@@ -143,10 +133,11 @@ class VideoPlayer extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    trainingSet: state.trainingSet
+    trainingSet: state.trainingSet,
+    videoPlayerState: state.videoPlayerState
   };
 };
 export default connect(
   mapStateToProps,
-  { toggleTrainigSetModal }
+  { toggleTrainigSetModal, setPlayerStateSnapshot }
 )(VideoPlayer);

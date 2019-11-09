@@ -26,24 +26,24 @@ export default class SeaBedInfo extends Component {
     const { starFishCounter } = this.props;
     return (
       <React.Fragment>
-        <span class="info-text">
-          <div class="info-inner-wrapper">
-            <span class="info-label">Coral cover</span>
-            <span class="info-value">23%</span>
+        <span className="info-text">
+          <div className="info-inner-wrapper">
+            <span className="info-label">Coral cover</span>
+            <span className="info-value">23%</span>
           </div>
-          <div class="info-inner-wrapper">
-            <span class="info-label">Starfish</span>
+          <div className="info-inner-wrapper">
+            <span className="info-label">Starfish</span>
             <span className={`info-value ${flashValue}`}>
               {starFishCounter}
             </span>
           </div>
-          <div class="info-inner-wrapper">
-            <span class="info-label">Seagrass</span>
-            <span class="info-value">3%</span>
+          <div className="info-inner-wrapper">
+            <span className="info-label">Seagrass</span>
+            <span className="info-value">3%</span>
           </div>
-          <div class="info-inner-wrapper">
-            <span class="info-label">Sand</span>
-            <span class="info-value">36%</span>
+          <div className="info-inner-wrapper">
+            <span className="info-label">Sand</span>
+            <span className="info-value">36%</span>
           </div>
         </span>
       </React.Fragment>
