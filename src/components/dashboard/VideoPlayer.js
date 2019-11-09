@@ -28,9 +28,11 @@ class VideoPlayer extends React.Component {
   }
 
   componentDidMount() {
-    this.player.subscribeToStateChange(this.handleStateChange.bind(this));
-    // subscribe state change
-    this.player.play();
+    if (this.player) {
+      this.player.subscribeToStateChange(this.handleStateChange.bind(this));
+      // subscribe state change
+      this.player.play();
+    }
   }
 
   handleStateChange(state) {
@@ -72,10 +74,7 @@ class VideoPlayer extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { player } = this.state;
-    const { videoPlayerState } = this.props;
-
-    const { trainingSet } = this.props;
+    const { videoPlayerState, trainingSet, videoUrl } = this.props;
     const { showTrainingSet } = trainingSet;
 
     if (
@@ -86,12 +85,17 @@ class VideoPlayer extends React.Component {
       this.player.play();
       this.refs.tapSelectionRef && this.refs.tapSelectionRef.clearCanvas();
     }
+
     if (prevProps.videoPlayerState !== videoPlayerState) {
       if (videoPlayerState && Object.keys(videoPlayerState).length) {
         const { currentTime } = videoPlayerState;
         this.player.seek(currentTime);
         // this.player.played.start(currentTime);
       }
+    }
+
+    if (prevProps.videoUrl !== videoUrl) {
+      this.player.play();
     }
   }
 
@@ -117,7 +121,7 @@ class VideoPlayer extends React.Component {
             loop
             autoplay={true}
             preload="auto"
-            src={sampleVidClip}
+            src={this.props.videoUrl}
             // src={testVidClip}
             ref={player => {
               this.player = player;

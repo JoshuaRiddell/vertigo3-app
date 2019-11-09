@@ -13,6 +13,7 @@ import TraningSetModal from "./TraningSetModal";
 import GliderStats from "./GliderStats";
 import SeaBedInfo from "./SeaBedInfo";
 import SeagrassSection from "./SeagrassSection";
+import sampleVidClip from "../../assets/sample-vid-2.mp4";
 
 class DashboardContainer extends React.Component {
   state = {
@@ -24,9 +25,18 @@ class DashboardContainer extends React.Component {
     percentBarMenu: false,
     dataSelection: "",
     notification: {},
-    starFishCounter: 0
+    starFishCounter: 0,
+    videoUrl: ""
   };
 
+  componentDidMount() {
+    // const video = document.getElementById("video-1");
+    fetch(sampleVidClip)
+      .then(response => response.blob())
+      .then(blob =>
+        this.setState({ videoUrl: window.URL.createObjectURL(blob) })
+      );
+  }
   showNotification = (msg, duration, mode) => {
     this.closeNotification();
 
@@ -97,6 +107,7 @@ class DashboardContainer extends React.Component {
         showNotification={this.showNotification}
         playerWidth={1076}
         playerHeight={900}
+        videoUrl={videoUrl}
       />,
       <MapComponent mapHeight={450} expandMap={expandMap} />,
       <Sonar expandSonar={expandSonar} activeMode={activeMode} />
@@ -111,6 +122,7 @@ class DashboardContainer extends React.Component {
           playerWidth={538}
           playerHeight={450}
           disableAnnotations
+          videoUrl={videoUrl}
         />,
         <Sonar expandSonar={expandSonar} activeMode={activeMode} />
       ];
@@ -126,6 +138,7 @@ class DashboardContainer extends React.Component {
           playerWidth={538}
           playerHeight={450}
           disableAnnotations
+          videoUrl={videoUrl}
         />
       ];
     }
