@@ -14,99 +14,99 @@ class TraningSetModal extends Component {
   };
   render() {
     return (
-      <div class="popup-layer">
-        <div class="dr-popup-wrapper">
+      <div className="popup-layer">
+        <div className="dr-popup-wrapper">
           {/* <span
-            class="dr-close-btn"
+            className="dr-close-btn"
             onClick={() => this.setState({ hidePopup: true })}
           >
-            <img src="images/close-icon.svg" class="close-icon" />
+            <img src="images/close-icon.svg" className="close-icon" />
           </span> */}
-          <span class="dr-popup-label">Training set:</span>
-          <div class="dr-popup-inner-wrap">
-            <div class="popup-item" onClick={this.handlePopup}>
-              <div class="popup-img-wrapper">
-                <img src="images/Picture3.png" class="popup-img" />
+          <span className="dr-popup-label">Training set:</span>
+          <div className="dr-popup-inner-wrap">
+            <div className="popup-item" onClick={this.handlePopup}>
+              <div className="popup-img-wrapper">
+                <img src="images/Picture3.png" className="popup-img" />
               </div>
-              <span class="popup-label bg-red-l">
-                <span class="popup-text">Halophila ovalis</span>
+              <span className="popup-label bg-red-l">
+                <span className="popup-text">Halophila ovalis</span>
               </span>
             </div>
-            <div class="popup-item" onClick={this.handlePopup}>
-              <div class="popup-img-wrapper">
-                <img src="images/Picture4.png" class="popup-img" />
+            <div className="popup-item" onClick={this.handlePopup}>
+              <div className="popup-img-wrapper">
+                <img src="images/Picture4.png" className="popup-img" />
               </div>
-              <span class="popup-label bg-green">
-                <span class="popup-text">Cymodocea serrulata</span>
+              <span className="popup-label bg-green">
+                <span className="popup-text">Cymodocea serrulata</span>
               </span>
             </div>
-            <div class="popup-item" onClick={this.handlePopup}>
-              <div class="popup-img-wrapper">
-                <img src="images/Picture5.png" class="popup-img" />
+            <div className="popup-item" onClick={this.handlePopup}>
+              <div className="popup-img-wrapper">
+                <img src="images/Picture5.png" className="popup-img" />
               </div>
-              <span class="popup-label bg-yellow">
-                <span class="popup-text">Zostera muelleri</span>
+              <span className="popup-label bg-yellow">
+                <span className="popup-text">Zostera muelleri</span>
               </span>
             </div>
-            <div class="popup-item" onClick={this.handlePopup}>
-              <div class="popup-img-wrapper">
-                <img src="images/Picture6.png" class="popup-img" />
+            <div className="popup-item" onClick={this.handlePopup}>
+              <div className="popup-img-wrapper">
+                <img src="images/Picture6.png" className="popup-img" />
               </div>
-              <span class="popup-label bg-blue-d">
-                <span class="popup-text">Halodule uninervis</span>
+              <span className="popup-label bg-blue-d">
+                <span className="popup-text">Halodule uninervis</span>
               </span>
             </div>
-            <div class="popup-item" onClick={this.handlePopup}>
-              <div class="popup-img-wrapper">
-                <img src="images/Picture7.png" class="popup-img" />
+            <div className="popup-item" onClick={this.handlePopup}>
+              <div className="popup-img-wrapper">
+                <img src="images/Picture7.png" className="popup-img" />
               </div>
-              <span class="popup-label bg-orange">
-                <span class="popup-text">Halophila spinulosa</span>
+              <span className="popup-label bg-orange">
+                <span className="popup-text">Halophila spinulosa</span>
               </span>
             </div>
-            <div class="popup-item" onClick={this.handlePopup}>
-              <div class="popup-img-wrapper">
-                <img src="images/Picture8.png" class="popup-img" />
+            <div className="popup-item" onClick={this.handlePopup}>
+              <div className="popup-img-wrapper">
+                <img src="images/Picture8.png" className="popup-img" />
               </div>
-              <span class="popup-label bg-violet">
-                <span class="popup-text">Syringodium isoetifolium</span>
+              <span className="popup-label bg-violet">
+                <span className="popup-text">Syringodium isoetifolium</span>
               </span>
             </div>
-            <div class="popup-item" onClick={this.handlePopup}>
-              <div class="popup-img-wrapper">
-                <img src="images/Picture9.png" class="popup-img" />
+            <div className="popup-item" onClick={this.handlePopup}>
+              <div className="popup-img-wrapper">
+                <img src="images/Picture9.png" className="popup-img" />
               </div>
-              <span class="popup-label bg-blue-l">
-                <span class="popup-text">Halophila decipiens</span>
+              <span className="popup-label bg-blue-l">
+                <span className="popup-text">Halophila decipiens</span>
               </span>
             </div>
-            <div class="popup-item">
-              <div class="popup-img-wrapper"></div>
-              <span class="popup-label"></span>
+            <div className="popup-item">
+              <div className="popup-img-wrapper"></div>
+              <span className="popup-label"></span>
             </div>
-            <div class="popup-item">
-              <div class="popup-img-wrapper"></div>
-              <span class="popup-label"></span>
+            <div className="popup-item">
+              <div className="popup-img-wrapper"></div>
+              <span className="popup-label"></span>
             </div>
-            <div class="popup-item" onClick={this.handlePopup}>
-              <div class="popup-img-wrapper">
-                <img src="images/Picture17.png" class="popup-img" />
+            <div className="popup-item" onClick={this.handlePopup}>
+              <div className="popup-img-wrapper">
+                <img src="images/Picture17.png" className="popup-img" />
               </div>
-              <span class="popup-label bg-pink">
-                <span class="popup-text">Pentaceraster mammillatus</span>
+              <span className="popup-label bg-pink">
+                <span className="popup-text">Pentaceraster mammillatus</span>
               </span>
             </div>
-            <div class="popup-item">
-              <div class="popup-img-wrapper"></div>
-              <span class="popup-label"></span>
+            <div className="popup-item">
+              <div className="popup-img-wrapper"></div>
+              <span className="popup-label"></span>
             </div>
-            <div class="popup-item" onClick={this.handlePopup}>
-              <div class="popup-img-wrapper">
-                {/* <img src="images/question.png" class="popup-img" /> */}
+            <div className="popup-item" onClick={this.handlePopup}>
+              <div className="popup-img-wrapper">
+                {/* <img src="images/question.png" className="popup-img" /> */}
                 <h1>?</h1>
               </div>
-              <span class="popup-label bg-red-d">
-                <span class="popup-text">Unknown or Other</span>
+              <span className="popup-label bg-red-d">
+                <span className="popup-text">Unknown or Other</span>
               </span>
             </div>
           </div>

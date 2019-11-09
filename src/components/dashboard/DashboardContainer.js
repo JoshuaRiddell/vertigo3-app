@@ -84,7 +84,8 @@ class DashboardContainer extends React.Component {
       expandSonar,
       activeMode,
       starFishCounter,
-      flashValue
+      flashValue,
+      videoUrl
     } = this.state;
 
     const { trainingSet } = this.props;
@@ -92,6 +93,7 @@ class DashboardContainer extends React.Component {
 
     let frameOrder = [
       <VideoPlayer
+        key={"videoPlayer"}
         showNotification={this.showNotification}
         playerWidth={1076}
         playerHeight={900}
@@ -104,6 +106,7 @@ class DashboardContainer extends React.Component {
       frameOrder = [
         <MapComponent mapHeight={900} expandMap={expandMap} />,
         <VideoPlayer
+          key={"videoPlayer"}
           showNotification={this.showNotification}
           playerWidth={538}
           playerHeight={450}
@@ -118,6 +121,7 @@ class DashboardContainer extends React.Component {
         <Sonar expandSonar={expandSonar} activeMode={activeMode} />,
         <MapComponent mapHeight={450} expandMap={expandMap} />,
         <VideoPlayer
+          key={"videoPlayer"}
           showNotification={this.showNotification}
           playerWidth={538}
           playerHeight={450}
@@ -127,13 +131,13 @@ class DashboardContainer extends React.Component {
     }
 
     return (
-      <div class="main-container">
+      <div className="main-container">
         {/* <div className="dev-mode-version">v0.0.4</div> */}
-        <div class="top-sec">
-          <div class="left-sidebar">
-            <div class="nav-wrapper">
+        <div className="top-sec">
+          <div className="left-sidebar">
+            <div className="nav-wrapper">
               <div
-                class={`dr-btn btn-half btn-l ${
+                className={`dr-btn btn-half btn-l ${
                   activeMode === "surFace" ? "nav-btn-bg-1" : "bg-olive-dark"
                 }`}
                 onClick={() => this.setState({ activeMode: "surFace" })}
@@ -141,7 +145,7 @@ class DashboardContainer extends React.Component {
                 Surface
               </div>
               <div
-                class={`dr-btn btn-half btn-r ${
+                className={`dr-btn btn-half btn-r ${
                   activeMode === "seaBed" ? "nav-btn-bg-1" : "bg-olive-dark"
                 }`}
                 onClick={() => this.setState({ activeMode: "seaBed" })}
@@ -149,23 +153,23 @@ class DashboardContainer extends React.Component {
                 Seabed
               </div>
               <div
-                class={`dr-btn btn-full ${
+                className={`dr-btn btn-full ${
                   activeMode === "manual" ? "nav-btn-bg-1" : "nav-btn-bg-2"
                 }`}
                 onClick={() => this.setState({ activeMode: "manual" })}
               >
                 manual
                 <span>
-                  <img src="images/remote.png" class="remote-icon" />
+                  <img src="images/remote.png" className="remote-icon" />
                 </span>
               </div>
             </div>
 
-            <div class="state-wrapper bg-olive-light">
+            <div className="state-wrapper bg-olive-light">
               <GliderStats />
             </div>
 
-            <div class="info-wrapper bg-olive-dark">
+            <div className="info-wrapper bg-olive-dark">
               <SeaBedInfo
                 starFishCounter={starFishCounter}
                 flashValue={flashValue}
@@ -173,21 +177,21 @@ class DashboardContainer extends React.Component {
             </div>
           </div>
 
-          <div class="main-video-wrapper">
-            <div class="main-wrapper">{frameOrder[0]}</div>
+          <div className="main-video-wrapper">
+            <div className="main-wrapper">{frameOrder[0]}</div>
             {!expandMap && !expandSonar && (
-              <div class="video-controller-wrapper">
+              <div className="video-controller-wrapper">
                 <SessionControls showNotification={this.showNotification} />
 
                 <Popup
                   trigger={
                     <span
                       href="#"
-                      class="video-icon-wrapper setting-icon-wrapper"
+                      className="video-icon-wrapper setting-icon-wrapper"
                     >
                       <img
                         src="images/setting-icon.svg"
-                        class="video-icon setting-icon"
+                        className="video-icon setting-icon"
                       />
                     </span>
                   }
@@ -196,11 +200,14 @@ class DashboardContainer extends React.Component {
                 >
                   {close => (
                     <div className="settings-popup">
-                      <span class="dr-close-btn" onClick={close}>
-                        <img src="images/close-icon.svg" class="close-icon" />
+                      <span className="dr-close-btn" onClick={close}>
+                        <img
+                          src="images/close-icon.svg"
+                          className="close-icon"
+                        />
                       </span>
                       <p>
-                        Version: <strong>0.0.10</strong>
+                        Version: <strong>0.0.11</strong>
                       </p>
                     </div>
                   )}
@@ -209,11 +216,11 @@ class DashboardContainer extends React.Component {
             )}
           </div>
 
-          <div class="right-sidebar">
-            <div class="map-wrapper">
+          <div className="right-sidebar">
+            <div className="map-wrapper">
               {frameOrder[1]}
 
-              <div class="map-controller-wrapper">
+              <div className="map-controller-wrapper">
                 <ExpandButton
                   classNames={"map-icon sizing-icon"}
                   active={expandMap}
@@ -223,9 +230,9 @@ class DashboardContainer extends React.Component {
               </div>
             </div>
 
-            <div class="sonar-wrapper">
+            <div className="sonar-wrapper">
               {frameOrder[2]}
-              <div class="sonar-controller-wrapper">
+              <div className="sonar-controller-wrapper">
                 <ExpandButton
                   classNames={"sonar-icon sizing-icon"}
                   active={expandSonar}

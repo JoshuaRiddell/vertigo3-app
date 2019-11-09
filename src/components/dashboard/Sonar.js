@@ -21,23 +21,23 @@ export default class Sonar extends React.Component {
     return (
       <div className="sonar-container">
         <div
-          class="sonar-controller-wrapper"
+          className="sonar-controller-wrapper"
           style={expandSonar ? { top: 115 } : {}}
         >
-          <span class="sonar-icon-wrap empty-icon-wrapper">
+          <span className="sonar-icon-wrap empty-icon-wrapper">
             <img
               src="images/zoming-icon.svg"
-              class="sonar-icon empty-icon"
+              className="sonar-icon empty-icon"
               style={expandSonar ? { width: 80, height: 80 } : {}}
             />
           </span>
           <span
-            class="sonar-icon-wrap loop-icon-wrapper"
+            className="sonar-icon-wrap loop-icon-wrapper"
             style={expandSonar ? { marginRight: 50 } : { marginRight: 95 }}
           >
             <img
               src="images/loop-icon.svg"
-              class="sonar-icon loop-icon"
+              className="sonar-icon loop-icon"
               style={expandSonar ? { width: 80, height: 80 } : {}}
             />
           </span>

@@ -48,123 +48,123 @@ export default class SeagrassSection extends Component {
     const { percentBarMenu, dataSelection } = this.state;
     return (
       <React.Fragment>
-        <div class="bottom-sec">
-          <div class="data-wrapper">
-            <div class="data-inner-wrap">
+        <div className="bottom-sec">
+          <div className="data-wrapper">
+            <div className="data-inner-wrap">
               <div
-                class={`data-item border-brown bg-brown ${
+                className={`data-item border-brown bg-brown ${
                   dataSelection === "ho" ? "active" : ""
                 }`}
                 onClick={() => this.setDataSelection("ho")}
               >
-                <img class="data-img" src="images/Picture10.png" />
-                <span class="data-label">Ho</span>
-                <span class="play-icon-wrap">
-                  <img class="play-icon" src="images/play-small-icon.svg" />
+                <img className="data-img" src="images/Picture10.png" />
+                <span className="data-label">Ho</span>
+                <span className="play-icon-wrap">
+                  <img className="play-icon" src="images/play-small-icon.svg" />
                 </span>
               </div>
               <div
-                class={`data-item border-violet bg-violet ${
+                className={`data-item border-violet bg-violet ${
                   dataSelection === "hs" ? "active" : ""
                 }`}
                 onClick={() => this.setDataSelection("hs")}
               >
                 <img
-                  class="data-img"
+                  className="data-img"
                   style={{ width: "auto" }}
                   src="images/Picture11.png"
                 />
-                <span class="data-label">Hs</span>
-                <span class="play-icon-wrap">
-                  <img class="play-icon" src="images/play-small-icon.svg" />
+                <span className="data-label">Hs</span>
+                <span className="play-icon-wrap">
+                  <img className="play-icon" src="images/play-small-icon.svg" />
                 </span>
               </div>
             </div>
-            <div class="data-inner-wrap">
+            <div className="data-inner-wrap">
               <div
-                class={`data-item border-blue-d bg-blue-d ${
+                className={`data-item border-blue-d bg-blue-d ${
                   dataSelection === "cs" ? "active" : ""
                 }`}
                 onClick={() => this.setDataSelection("cs")}
               >
-                <img class="data-img" src="images/Picture12.png" />
-                <span class="data-label">Cs</span>
-                <span class="play-icon-wrap">
-                  <img class="play-icon" src="images/play-small-icon.svg" />
+                <img className="data-img" src="images/Picture12.png" />
+                <span className="data-label">Cs</span>
+                <span className="play-icon-wrap">
+                  <img className="play-icon" src="images/play-small-icon.svg" />
                 </span>
               </div>
               <div
-                class={`data-item border-blue-l bg-blue-l ${
+                className={`data-item border-blue-l bg-blue-l ${
                   dataSelection === "si" ? "active" : ""
                 }`}
                 onClick={() => this.setDataSelection("si")}
               >
-                <img class="data-img" src="images/Picture13.png" />
-                <span class="data-label">Si</span>
-                <span class="play-icon-wrap">
-                  <img class="play-icon" src="images/play-small-icon.svg" />
+                <img className="data-img" src="images/Picture13.png" />
+                <span className="data-label">Si</span>
+                <span className="play-icon-wrap">
+                  <img className="play-icon" src="images/play-small-icon.svg" />
                 </span>
               </div>
             </div>
-            <div class="data-inner-wrap">
+            <div className="data-inner-wrap">
               <div
-                class={`data-item border-yellow-l bg-yellow-l ${
+                className={`data-item border-yellow-l bg-yellow-l ${
                   dataSelection === "zm" ? "active" : ""
                 }`}
                 onClick={() => this.setDataSelection("zm")}
               >
                 <img
-                  class="data-img"
+                  className="data-img"
                   style={{ width: "auto" }}
                   src="images/Picture14.png"
                 />
-                <span class="data-label">Zm</span>
-                <span class="play-icon-wrap">
-                  <img class="play-icon" src="images/play-small-icon.svg" />
+                <span className="data-label">Zm</span>
+                <span className="play-icon-wrap">
+                  <img className="play-icon" src="images/play-small-icon.svg" />
                 </span>
               </div>
               <div
-                class={`data-item border-yellow-d bg-yellow-d ${
+                className={`data-item border-yellow-d bg-yellow-d ${
                   dataSelection === "hd" ? "active" : ""
                 }`}
                 onClick={() => this.setDataSelection("hd")}
               >
-                <img class="data-img" src="images/Picture15.png" />
-                <span class="data-label">Hd</span>
-                <span class="play-icon-wrap">
-                  <img class="play-icon" src="images/play-small-icon.svg" />
+                <img className="data-img" src="images/Picture15.png" />
+                <span className="data-label">Hd</span>
+                <span className="play-icon-wrap">
+                  <img className="play-icon" src="images/play-small-icon.svg" />
                 </span>
               </div>
             </div>
-            <div class="data-inner-wrap data-inner-wrap_lg">
+            <div className="data-inner-wrap data-inner-wrap_lg">
               <div
-                class={`data-item border-orange bg-orange ${
+                className={`data-item border-orange bg-orange ${
                   dataSelection === "hu" ? "active" : ""
                 }`}
                 onClick={() => this.setDataSelection("hu")}
               >
-                <img class="data-img" src="images/Picture16.png" />
-                <span class="data-label">Hu</span>
-                <span class="play-icon-wrap">
-                  <img class="play-icon" src="images/play-small-icon.svg" />
+                <img className="data-img" src="images/Picture16.png" />
+                <span className="data-label">Hu</span>
+                <span className="play-icon-wrap">
+                  <img className="play-icon" src="images/play-small-icon.svg" />
                 </span>
               </div>
 
-              <div class="dr-pagination-wrapper">
-                <ul class="dr-pagination">
-                  <li class="first-item dr-pagination-item">
+              <div className="dr-pagination-wrapper">
+                <ul className="dr-pagination">
+                  <li className="first-item dr-pagination-item">
                     <a>Starfish</a>
                   </li>
-                  <li class="second-item dr-pagination-item">
+                  <li className="second-item dr-pagination-item">
                     <a onClick={() => this.props.setStarFishCounter(1)}>1</a>
                   </li>
-                  <li class="third-item dr-pagination-item">
+                  <li className="third-item dr-pagination-item">
                     <a onClick={() => this.props.setStarFishCounter(2)}>2</a>
                   </li>
-                  <li class="fourth-item dr-pagination-item">
+                  <li className="fourth-item dr-pagination-item">
                     <a onClick={() => this.props.setStarFishCounter(5)}>5</a>
                   </li>
-                  <li class="fifth-item dr-pagination-item">
+                  <li className="fifth-item dr-pagination-item">
                     <a onClick={() => this.props.setStarFishCounter(10)}>10</a>
                   </li>
                 </ul>
@@ -173,12 +173,12 @@ export default class SeagrassSection extends Component {
           </div>
         </div>
         {percentBarMenu && (
-          <div class="popup-layer">
-            <div class="percentage-bar-wrapper">
+          <div className="popup-layer">
+            <div className="percentage-bar-wrapper">
               {percentBar.map((item, index) => (
                 <span
                   key={`percentage-bar-item c-${index}`}
-                  class={`percentage-bar-item c-${index}`}
+                  className={`percentage-bar-item c-${index}`}
                   onClick={() => this.sendPercentageData(item)}
                 >
                   {item}

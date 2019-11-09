@@ -18,8 +18,8 @@ export default function ExpandButton({ active, handler, classNames, frame }) {
           y2="0.5"
           gradientUnits="objectBoundingBox"
         >
-          <stop offset="0" stop-color="#fff" />
-          <stop offset="1" stop-color="#d1d3d4" />
+          <stop offset="0" stopColor="#fff" />
+          <stop offset="1" stopColor="#d1d3d4" />
         </linearGradient>
         <linearGradient
           id="linear-gradient-2"
@@ -28,8 +28,8 @@ export default function ExpandButton({ active, handler, classNames, frame }) {
           y2="0.5"
           gradientUnits="objectBoundingBox"
         >
-          <stop offset="0" stop-color="#d1d3d4" />
-          <stop offset="1" stop-color="#fff" />
+          <stop offset="0" stopColor="#d1d3d4" />
+          <stop offset="1" stopColor="#fff" />
         </linearGradient>
       </defs>
       <g
@@ -264,13 +264,13 @@ export default function ExpandButton({ active, handler, classNames, frame }) {
             transform="translate(1868 400)"
           >
             <path
-              class="st0"
+              className="st0"
               d="M17.3,11.8h4.6v9.7H12V17H0V0h17.3V11.8z M13.4,20.2h7.1v-7h-3.2V17h-3.9V20.2z M13.4,15.6h2.5v-2.4h-2.5V15.6
     z M1.4,1.4v14.3H12v-3.8h3.9V1.4H1.4z"
               fill={active ? "#e06c22" : "#fff"}
             />
             <path
-              class="st0"
+              className="st0"
               d="M10.4,11.2L5,5.9v2.6c0,0.4-0.3,0.7-0.7,0.7S3.6,8.9,3.6,8.5v-5h5.1c0.4,0,0.7,0.3,0.7,0.7
     c0,0.4-0.3,0.7-0.7,0.7H6l5.4,5.3L10.4,11.2z"
               fill={active ? "#e06c22" : "#fff"}
@@ -285,13 +285,13 @@ export default function ExpandButton({ active, handler, classNames, frame }) {
             transform="translate(1868 400)"
           >
             <path
-              class="st0"
+              className="st0"
               d="M17.3,9.7h4.6V0H12v4.5H0v17h17.3V9.7z M13.4,1.4h7.1v7h-3.2V4.5h-3.9V1.4z M13.4,5.9h2.5v2.4h-2.5V5.9z
 M1.4,20.2V5.9H12v3.8h3.9v10.5H1.4z"
               fill={active ? "#e06c22" : "#fff"}
             />
             <path
-              class="st0"
+              className="st0"
               d="M10.4,10.4L5,15.7v-2.6c0-0.4-0.3-0.7-0.7-0.7s-0.7,0.3-0.7,0.7v5h5.1c0.4,0,0.7-0.3,0.7-0.7S9,16.6,8.7,16.6
 H6l5.4-5.3L10.4,10.4z"
               fill={active ? "#e06c22" : "#fff"}
