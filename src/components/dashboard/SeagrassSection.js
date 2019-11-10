@@ -5,13 +5,24 @@ import soundDataSuccess from "../../assets/Data_sent.ogg";
 export default class SeagrassSection extends Component {
   state = {
     percentBarMenu: false,
-    dataSelection: ""
+    dataSelection: "",
+    sedimentPopup: false,
+    sedimentPopupData: [
+      { name: "Shale" },
+      { name: "Gravel" },
+      { name: "Sand" },
+      { name: "Silt" },
+      { name: "Clay" }
+    ],
+    sedimentPopupActiveItem: ""
   };
 
   setDataSelection = selection => {
     const { dataSelection } = this.state;
-    const audio = new Audio(clickSound);
-    audio.play();
+    this.feedBackSounds("click");
+    if (selection === "sediment") {
+      return this.setState({ sedimentPopup: !this.state.sedimentPopup });
+    }
     if (dataSelection === selection) {
       this.setState({
         dataSelection: "",
@@ -25,11 +36,32 @@ export default class SeagrassSection extends Component {
     }
   };
 
-  sendPercentageData = item => {
-    const audio = new Audio(soundDataSuccess);
-    audio.play();
-    this.setState({ percentBarMenu: false, dataSelection: "" });
+  setSedimentItem = item => {
+    this.feedBackSounds("click");
+    this.setState({ sedimentPopupActiveItem: item.name });
   };
+
+  sendPercentageData = item => {
+    this.feedBackSounds("success");
+    this.setState({
+      percentBarMenu: false,
+      dataSelection: "",
+      sedimentPopupActiveItem: "",
+      sedimentPopup: false
+    });
+  };
+
+  feedBackSounds = type => {
+    if (type === "click") {
+      const audio = new Audio(clickSound);
+      audio.play();
+    }
+    if (type === "success") {
+      const audio = new Audio(soundDataSuccess);
+      audio.play();
+    }
+  };
+
   render() {
     const percentBar = [
       "<0%",
@@ -45,7 +77,13 @@ export default class SeagrassSection extends Component {
       "<90%",
       "<100%"
     ];
-    const { percentBarMenu, dataSelection } = this.state;
+    const {
+      percentBarMenu,
+      dataSelection,
+      sedimentPopup,
+      sedimentPopupData,
+      sedimentPopupActiveItem
+    } = this.state;
     return (
       <React.Fragment>
         <div className="bottom-sec">
@@ -137,17 +175,41 @@ export default class SeagrassSection extends Component {
               </div>
             </div>
             <div className="data-inner-wrap data-inner-wrap_lg">
-              <div
-                className={`data-item border-orange bg-orange ${
-                  dataSelection === "hu" ? "active" : ""
-                }`}
-                onClick={() => this.setDataSelection("hu")}
-              >
-                <img className="data-img" src="images/Picture16.png" />
-                <span className="data-label">Hu</span>
-                <span className="play-icon-wrap">
-                  <img className="play-icon" src="images/play-small-icon.svg" />
-                </span>
+              <div style={{ width: "650px", display: "flex" }}>
+                <div
+                  style={{ marginRight: "85px" }}
+                  className={`data-item border-orange bg-orange ${
+                    dataSelection === "hu" ? "active" : ""
+                  }`}
+                  onClick={() => this.setDataSelection("hu")}
+                >
+                  <img className="data-img" src="images/Picture16.png" />
+                  <span className="data-label">Hu</span>
+                  <span className="play-icon-wrap">
+                    <img
+                      className="play-icon"
+                      src="images/play-small-icon.svg"
+                    />
+                  </span>
+                </div>
+
+                <div
+                  style={{ height: "141.78px" }}
+                  className={`data-item border-olive-light bg-olive-light ${
+                    sedimentPopup ? "active" : ""
+                  }`}
+                  onClick={() => this.setDataSelection("sediment")}
+                >
+                  <span className="data-label" style={{ fontSize: "36px" }}>
+                    Sediment
+                  </span>
+                  <span className="play-icon-wrap">
+                    <img
+                      className="play-icon"
+                      src="images/play-small-icon.svg"
+                    />
+                  </span>
+                </div>
               </div>
 
               <div className="dr-pagination-wrapper">
@@ -183,6 +245,50 @@ export default class SeagrassSection extends Component {
                 >
                   {item}
                 </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {sedimentPopup && (
+          <div className="popup-layer">
+            <div className="sediment-pop-wrapper">
+              {sedimentPopupData.map((item, index) => (
+                <div
+                  key={`sediment-pop-item c-${index}`}
+                  className="sediment-popup-menu"
+                >
+                  <span
+                    className={`sediment-pop-item ${
+                      sedimentPopupActiveItem === item.name ? "active" : ""
+                    }`}
+                    onClick={() => this.setSedimentItem(item)}
+                  >
+                    {item.name}
+                    <img
+                      className="play-icon"
+                      src="images/play-small-icon.svg"
+                    />
+                  </span>
+                  <span
+                    key={`sediment-pop-submenu c-${index}`}
+                    className={`sediment-pop-submenu ${
+                      sedimentPopupActiveItem === item.name ? "active" : ""
+                    }`}
+                  >
+                    <div className="sediment-horizantal-submenu">
+                      {percentBar.map((item, index) => (
+                        <span
+                          key={`percentage-bar-item c-${index}`}
+                          className={`percentage-bar-item c-${index}`}
+                          onClick={() => this.sendPercentageData(item)}
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </span>
+                </div>
               ))}
             </div>
           </div>

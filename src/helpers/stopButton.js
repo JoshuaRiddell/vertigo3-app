@@ -2,7 +2,7 @@ import React from "react";
 
 export default function stopButton({ active, handler }) {
   return (
-    <span class="video-icon-wrapper record-icon-wrapper" onClick={handler}>
+    <span className="video-icon-wrapper record-icon-wrapper" onClick={handler}>
       {/* <img src={recordIcon} class="video-icon record-icon" /> */}
       <svg
         id="Group_175"
@@ -20,8 +20,8 @@ export default function stopButton({ active, handler }) {
             y2="0.5"
             gradientUnits="objectBoundingBox"
           >
-            <stop offset="0" stop-color="#fff" />
-            <stop offset="1" stop-color="#d1d3d4" />
+            <stop offset="0" stopColor="#fff" />
+            <stop offset="1" stopColor="#d1d3d4" />
           </linearGradient>
           <linearGradient
             id="linear-gradient-2"
@@ -30,8 +30,8 @@ export default function stopButton({ active, handler }) {
             y2="0.5"
             gradientUnits="objectBoundingBox"
           >
-            <stop offset="0" stop-color="#d1d3d4" />
-            <stop offset="1" stop-color="#fff" />
+            <stop offset="0" stopColor="#d1d3d4" />
+            <stop offset="1" stopColor="#fff" />
           </linearGradient>
         </defs>
         <ellipse

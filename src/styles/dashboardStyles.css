@@ -95,6 +95,9 @@
 .data-wrapper .border-orange {
   border-color: var(--color-orange);
 }
+.data-wrapper .border-olive-light {
+  border-color: var(--olive-light);
+}
 .data-wrapper .border-yellow-d {
   border-color: var(--color-yellow-dark);
 }
@@ -427,9 +430,7 @@
 .data-item.active {
   border: 10px solid #16ff00;
 }
-.data-item:hover {
-  border: 10px solid #16ff00;
-}
+
 .data-item .play-icon-wrap {
   position: absolute;
   top: 18px;
@@ -454,7 +455,7 @@
 .dr-pagination-wrapper {
   display: flex;
   align-items: flex-end;
-  height: 50%;
+  height: 52%;
 }
 .dr-pagination {
   display: flex;
@@ -607,6 +608,57 @@
   left: 10%; */
   top: 63%;
   left: 12%;
+}
+.sediment-pop-wrapper {
+  background-color: var(--white-color);
+  padding: 20px 30px 0px 30px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 25%;
+  left: 28%;
+}
+.sediment-popup-menu {
+  display: flex;
+}
+.sediment-pop-submenu {
+  position: absolute;
+  left: 215px;
+  background-color: white;
+  padding: 15px 20px 15px 20px;
+  margin: -6px 0 0 0px;
+  display: none;
+}
+.sediment-pop-submenu.active {
+  display: block;
+}
+.sediment-horizantal-submenu {
+  display: flex;
+}
+.sediment-horizantal-submenu .percentage-bar-item {
+  width: 75px;
+  height: 70px;
+  padding: 20px 40px;
+}
+.sediment-pop-item {
+  background-color: #2e4442;
+  padding: 28px 43px;
+  border-radius: 8px;
+  display: inline-block;
+  width: 150px;
+  height: 84px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  font-size: 26px;
+  color: var(--white-color);
+  margin: 0px 0 30px 0;
+  line-height: 1;
+}
+.sediment-pop-item.active {
+  outline: 6px solid #16ff00;
+  outline-offset: -5px;
 }
 .percentage-bar-item {
   background-color: #2e4442;

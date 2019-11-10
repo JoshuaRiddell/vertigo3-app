@@ -102,6 +102,7 @@ class VideoPlayer extends React.Component {
   componentWillUnmount() {
     const { player } = this.player.getState();
     this.props.setPlayerStateSnapshot(player);
+    this.player = null;
   }
 
   render() {

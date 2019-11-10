@@ -220,7 +220,7 @@ class DashboardContainer extends React.Component {
                         />
                       </span>
                       <p>
-                        Version: <strong>0.0.11</strong>
+                        Version: <strong>0.0.12</strong>
                       </p>
                     </div>
                   )}
