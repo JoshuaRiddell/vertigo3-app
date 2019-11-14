@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "a5b231da819816a0f926062889dfea60",
+    "revision": "e33906809a25ac5dcf2be6723b7043e2",
     "url": "/vertigo3-app/index.html"
   },
   {
-    "revision": "d66de047e818beeb2be4",
+    "revision": "94c7aaf978b92a206247",
     "url": "/vertigo3-app/static/css/2.b91a2650.chunk.css"
   },
   {
-    "revision": "7f7a5da72ed5ab558fec",
-    "url": "/vertigo3-app/static/css/main.307f9edd.chunk.css"
+    "revision": "9aa655f9c34ea943c087",
+    "url": "/vertigo3-app/static/css/main.181ba1da.chunk.css"
   },
   {
-    "revision": "d66de047e818beeb2be4",
-    "url": "/vertigo3-app/static/js/2.380f15ac.chunk.js"
+    "revision": "94c7aaf978b92a206247",
+    "url": "/vertigo3-app/static/js/2.4ea2132a.chunk.js"
   },
   {
-    "revision": "7f7a5da72ed5ab558fec",
-    "url": "/vertigo3-app/static/js/main.5d152b0e.chunk.js"
+    "revision": "9aa655f9c34ea943c087",
+    "url": "/vertigo3-app/static/js/main.dd81adca.chunk.js"
   },
   {
     "revision": "259646d364b3bccbc7d6",
@@ -44,12 +44,36 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/vertigo3-app/static/media/Warning-1.4bde09fb.ogg"
   },
   {
+    "revision": "18173c07180f1bf7533cd11ddd0b4096",
+    "url": "/vertigo3-app/static/media/cymodocea-serrulata.18173c07.png"
+  },
+  {
     "revision": "1362051084b74874e8fb581ddbf746ff",
     "url": "/vertigo3-app/static/media/for-sure.13620510.mp3"
   },
   {
     "revision": "cb9daba2ce0b0a8ca8e212be45f48296",
     "url": "/vertigo3-app/static/media/glider-icon.cb9daba2.svg"
+  },
+  {
+    "revision": "d872bc019417219043db9c55717d6505",
+    "url": "/vertigo3-app/static/media/halodule-uninervis.d872bc01.png"
+  },
+  {
+    "revision": "2643df7031e1076c92151639443f5b03",
+    "url": "/vertigo3-app/static/media/halophila-decipiens.2643df70.png"
+  },
+  {
+    "revision": "6c3d2513b468d2d5f2061f8ae94889e7",
+    "url": "/vertigo3-app/static/media/halophila-ovalis.6c3d2513.png"
+  },
+  {
+    "revision": "ee043c5c010b2b30b61516557fd592f0",
+    "url": "/vertigo3-app/static/media/halophila-spinulosa.ee043c5c.png"
+  },
+  {
+    "revision": "1bec405411a46bb152b97e89b844f246",
+    "url": "/vertigo3-app/static/media/pentaceraster-mammillatus.1bec4054.png"
   },
   {
     "revision": "59ecf91b9a195907131a0db109dfa7ef",
@@ -64,7 +88,15 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/vertigo3-app/static/media/sonar-image.ac59e381.png"
   },
   {
+    "revision": "2f3609ff3350cce3a241afcea0e547e3",
+    "url": "/vertigo3-app/static/media/syringodium-isoetifolium.2f3609ff.png"
+  },
+  {
     "revision": "5a07032b1f549e62e20779b66497ea22",
     "url": "/vertigo3-app/static/media/underwater-test-vid.5a07032b.mp4"
+  },
+  {
+    "revision": "bd76d9be23be053cac9f0eac654f14ea",
+    "url": "/vertigo3-app/static/media/zostera-muelleri.bd76d9be.png"
   }
 ]);
