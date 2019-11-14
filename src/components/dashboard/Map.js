@@ -32,6 +32,25 @@ class Map extends React.Component {
       }
     ).addTo(this.map);
     // add layer
+
+    //path to follow
+    const customPolyline = L.Polyline.extend({
+      options: {
+        speed: "",
+        bearing: ""
+      }
+    });
+
+    const polyline = new customPolyline(gpsTrackData, {
+      speed: "143",
+      bearing: "38",
+      color: "#fee60f",
+      dashArray: 10,
+      dashOffset: 50
+    });
+
+    polyline.addTo(this.map);
+
     this.layer = L.layerGroup().addTo(this.map);
     //this.updateMarkers(this.props.markersData);
 
@@ -90,7 +109,7 @@ class Map extends React.Component {
             pathIndex: i
           });
           resolve(clearTimeout(this.state.timeoutId));
-        }, 3000)
+        }, 2000)
       });
     });
   };
@@ -98,14 +117,14 @@ class Map extends React.Component {
   updatePath() {
     const { mapState } = this.props;
     this.layer.clearLayers();
-    var customPolyline = L.Polyline.extend({
+    const customPolyline = L.Polyline.extend({
       options: {
         speed: "",
         bearing: ""
       }
     });
 
-    var polyline = new customPolyline(mapState.path, {
+    const polyline = new customPolyline(mapState.path, {
       speed: "143",
       bearing: "38",
       color: "#ff0000"
@@ -133,7 +152,8 @@ const mapStateToProps = state => {
     mapState: state.mapState
   };
 };
-export default connect(
-  mapStateToProps,
-  { setMapStateSnapshot, setMapZoomLevel, setViewPosition }
-)(Map);
+export default connect(mapStateToProps, {
+  setMapStateSnapshot,
+  setMapZoomLevel,
+  setViewPosition
+})(Map);

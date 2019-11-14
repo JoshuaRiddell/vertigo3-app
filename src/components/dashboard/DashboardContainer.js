@@ -220,7 +220,7 @@ class DashboardContainer extends React.Component {
                         />
                       </span>
                       <p>
-                        Version: <strong>0.0.13</strong>
+                        Version: <strong>0.0.14</strong>
                       </p>
                     </div>
                   )}
@@ -275,7 +275,4 @@ const mapStateToProps = state => {
     trainingSet: state.trainingSet
   };
 };
-export default connect(
-  mapStateToProps,
-  {}
-)(DashboardContainer);
+export default connect(mapStateToProps, {})(DashboardContainer);
