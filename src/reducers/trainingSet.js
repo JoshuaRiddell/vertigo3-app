@@ -1,7 +1,9 @@
 import types from "../actions/types";
+import traningSet from "../data-sets/traningSet";
 
 const initialState = {
-  showTrainingSet: false
+  showTrainingSet: false,
+  dataSet: traningSet
 };
 
 export default function(state = initialState, actions) {

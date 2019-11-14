@@ -82,6 +82,8 @@ class VideoPlayer extends React.Component {
       showTrainingSet === false
     ) {
       this.setState({ showPressSelection: false });
+      const { player } = this.player.getState();
+      this.player.seek(player.currentTime + 3);
       this.player.play();
       this.refs.tapSelectionRef && this.refs.tapSelectionRef.clearCanvas();
     }

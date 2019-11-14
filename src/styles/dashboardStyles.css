@@ -517,8 +517,8 @@
   padding: 32px 14px 28px;
   max-width: 620px;
   position: absolute;
-  top: 33%;
-  left: 55%;
+  top: 406px;
+  right: -262px;
   transform: translate(-50%, -50%);
   background-color: var(--white-color);
   border-radius: 8px;

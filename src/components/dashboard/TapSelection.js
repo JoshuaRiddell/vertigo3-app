@@ -74,19 +74,28 @@ export default class TapSelection extends Component {
   };
 
   touchEnd = e => {
-    const { annotationState } = this.state;
+    const { annotationState, gesturesTimeout } = this.state;
     if (annotationState.dragging && e.distance > 10) {
       this.props.getSelectionValue(e.type, this.state.annotationState);
       this.setState({ activateGestures: false });
     } else {
+      if (gesturesTimeout) clearTimeout(gesturesTimeout);
       this.setState({
         annotationState: {
           dragging: false,
           start: {},
           current: {}
-        }
+        },
+        gesturesTimeout: setTimeout(() => {
+          this.setState({ activateGestures: false });
+          this.zoomReset();
+          const { player } = this.props.handleVideoPlayer.getState();
+          this.props.handleVideoPlayer.seek(player.currentTime + 3);
+          this.props.handleVideoPlayer.play();
+        }, 3000)
       });
     }
+
     this.draw();
   };
 
@@ -117,6 +126,8 @@ export default class TapSelection extends Component {
       this.setState({
         activateGestures: true,
         gesturesTimeout: setTimeout(() => {
+          const { player } = this.props.handleVideoPlayer.getState();
+          this.props.handleVideoPlayer.seek(player.currentTime + 3);
           this.props.handleVideoPlayer.play();
           this.setState({ activateGestures: false });
         }, 3000)
