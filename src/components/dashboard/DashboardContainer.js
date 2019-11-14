@@ -82,7 +82,7 @@ class DashboardContainer extends React.Component {
 
   setStarFishCounter = count => {
     const { starFishCounter } = this.state;
-    this.setState({ starFishCounter: starFishCounter + 1 });
+    this.setState({ starFishCounter: starFishCounter + count });
   };
 
   static propTypes = {};
