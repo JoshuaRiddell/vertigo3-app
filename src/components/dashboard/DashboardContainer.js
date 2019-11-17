@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import VideoPlayer from "./VideoPlayer";
 import MapComponent from "./MapComponent";
 import Sonar from "./Sonar";
-import FullScreenFab from "./FullScreenFab";
 import NotificationBar from "./NotificationBar";
 import Popup from "reactjs-popup";
 import "../../styles/dashboardStyles.css";
@@ -14,13 +13,14 @@ import GliderStats from "./GliderStats";
 import SeaBedInfo from "./SeaBedInfo";
 import SeagrassSection from "./SeagrassSection";
 import sampleVidClip from "../../assets/sample-vid-2.mp4";
+import ControlModes from "./ControlModes";
+import clickSound from "../../assets/Key-click.ogg";
 
 class DashboardContainer extends React.Component {
   state = {
     expandFrame: false,
     expandSonar: false,
     expandMap: false,
-    activeMode: "surFace",
     hidePopup: false,
     percentBarMenu: false,
     dataSelection: "",
@@ -78,6 +78,9 @@ class DashboardContainer extends React.Component {
         expandSonar: false
       });
     }
+
+    const audio = new Audio(clickSound);
+    audio.play();
   };
 
   setStarFishCounter = count => {
@@ -92,7 +95,6 @@ class DashboardContainer extends React.Component {
       notification,
       expandMap,
       expandSonar,
-      activeMode,
       starFishCounter,
       flashValue,
       videoUrl
@@ -110,7 +112,7 @@ class DashboardContainer extends React.Component {
         videoUrl={videoUrl}
       />,
       <MapComponent mapHeight={450} expandMap={expandMap} />,
-      <Sonar expandSonar={expandSonar} activeMode={activeMode} />
+      <Sonar expandSonar={expandSonar} />
     ];
 
     if (expandMap) {
@@ -124,13 +126,13 @@ class DashboardContainer extends React.Component {
           disableAnnotations
           videoUrl={videoUrl}
         />,
-        <Sonar expandSonar={expandSonar} activeMode={activeMode} />
+        <Sonar expandSonar={expandSonar} />
       ];
     }
 
     if (expandSonar) {
       frameOrder = [
-        <Sonar expandSonar={expandSonar} activeMode={activeMode} />,
+        <Sonar expandSonar={expandSonar} />,
         <MapComponent mapHeight={450} expandMap={expandMap} />,
         <VideoPlayer
           key={"videoPlayer"}
@@ -145,38 +147,9 @@ class DashboardContainer extends React.Component {
 
     return (
       <div className="main-container">
-        {/* <div className="dev-mode-version">v0.0.4</div> */}
         <div className="top-sec">
           <div className="left-sidebar">
-            <div className="nav-wrapper">
-              <div
-                className={`dr-btn btn-half btn-l ${
-                  activeMode === "surFace" ? "nav-btn-bg-1" : "bg-olive-dark"
-                }`}
-                onClick={() => this.setState({ activeMode: "surFace" })}
-              >
-                Surface
-              </div>
-              <div
-                className={`dr-btn btn-half btn-r ${
-                  activeMode === "seaBed" ? "nav-btn-bg-1" : "bg-olive-dark"
-                }`}
-                onClick={() => this.setState({ activeMode: "seaBed" })}
-              >
-                Seabed
-              </div>
-              <div
-                className={`dr-btn btn-full ${
-                  activeMode === "manual" ? "nav-btn-bg-1" : "nav-btn-bg-2"
-                }`}
-                onClick={() => this.setState({ activeMode: "manual" })}
-              >
-                manual
-                <span>
-                  <img src="images/remote.png" className="remote-icon" />
-                </span>
-              </div>
-            </div>
+            <ControlModes />
 
             <div className="state-wrapper bg-olive-light">
               <GliderStats />
@@ -220,7 +193,7 @@ class DashboardContainer extends React.Component {
                         />
                       </span>
                       <p>
-                        Version: <strong>0.0.14</strong>
+                        Version: <strong>0.0.15</strong>
                       </p>
                     </div>
                   )}

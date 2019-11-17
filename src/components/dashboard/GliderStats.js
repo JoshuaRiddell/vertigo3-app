@@ -1,12 +1,38 @@
 import React, { Component } from "react";
 
+import openSocket from "socket.io-client";
+
+const basePath = process.env.REACT_APP_API_BASE_PATH;
+const socket = openSocket(`${basePath}/status/updates`);
+
 export default class GliderStats extends Component {
+  state = {
+    status: []
+  };
+  //componentDidUpdate() {
+  // socket.connect();
+
+  // socket.on("json", this.updateState);
+  //}
+
+  // componentWillUnmount() {
+  //   socket.off("json");
+  //   socket.disconnect();
+  // }
+
+  updateState = status => {
+    this.setState({ status });
+  };
+
   render() {
+    const [depthM, depthKM] = this.state.status;
     return (
       <React.Fragment>
         <div className="state-labels">
           <span className="state-title">Depth</span>
-          <span className="state-value">24.1 m</span>
+          <span className="state-value">
+            {depthM ? `${depthM.value.toFixed(1)} m` : "24.1 m"}
+          </span>
         </div>
         <div className="state-labels">
           <span className="state-title">Speed</span>

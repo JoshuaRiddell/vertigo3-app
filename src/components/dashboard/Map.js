@@ -1,6 +1,6 @@
 import React from "react";
 import L from "leaflet";
-import gpsTrackData from "../../helpers/gpsTrackData";
+import gpsTrackData from "../../data-sets/gpsTrackData";
 import { connect } from "react-redux";
 import {
   setMapStateSnapshot,

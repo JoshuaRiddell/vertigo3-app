@@ -76,7 +76,10 @@ export default class TapSelection extends Component {
   touchEnd = e => {
     const { annotationState, gesturesTimeout } = this.state;
     if (annotationState.dragging && e.distance > 10) {
-      this.props.getSelectionValue(e.type, this.state.annotationState);
+      this.props.getSelectionValue(e.type, {
+        topLeft: annotationState.start,
+        bottomRight: annotationState.current
+      });
       this.setState({ activateGestures: false });
     } else {
       if (gesturesTimeout) clearTimeout(gesturesTimeout);
@@ -135,7 +138,8 @@ export default class TapSelection extends Component {
     } else {
       if (gesturesTimeout) clearTimeout(gesturesTimeout);
       this.zoomReset();
-
+      const { player } = this.props.handleVideoPlayer.getState();
+      this.props.handleVideoPlayer.seek(player.currentTime + 1);
       this.props.handleVideoPlayer.play();
       this.setState({
         activateGestures: false,
@@ -302,10 +306,6 @@ export default class TapSelection extends Component {
   showRipple = e => {
     e.preventDefault();
 
-    //api call
-    const audio = new Audio(soundDataSuccess);
-    audio.play();
-
     const { center } = e;
     const { selectionArea, bounce } = this.state;
     const rippleContainer = selectionArea.current;
@@ -328,6 +328,12 @@ export default class TapSelection extends Component {
       count: count,
       bounce: setTimeout(() => this.setState({ spanStyles: {}, count: 0 }), 500)
     });
+
+    //api call
+    const audio = new Audio(soundDataSuccess);
+    audio.play();
+
+    this.props.getSelectionValue(e.type, { x, y });
   };
 
   renderRippleSpan = () => {

@@ -1,21 +1,7 @@
 import React from "react";
 import SonarChart from "./SonarChart";
-import HorizontalSlider from "./HorizontalRangeSlider";
-import VerticalRangeSlider from "./VerticalRangeSlider";
 
 export default class Sonar extends React.Component {
-  state = {
-    verticalValues: {
-      min: 5,
-      max: 20
-    },
-    horizantalValues: {
-      min: 5,
-      max: 10
-    }
-  };
-  static propTypes = {};
-
   render() {
     const { expandSonar } = this.props;
     return (
@@ -46,7 +32,6 @@ export default class Sonar extends React.Component {
           className="bezierCurves"
           viewBoxWidth={250}
           viewBoxHeight={210}
-          activeMode={this.props.activeMode}
         />
       </div>
     );

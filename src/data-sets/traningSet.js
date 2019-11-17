@@ -11,46 +11,54 @@ const traningSet = [
   {
     title: "Halophila ovalis",
     img: halophilaOvalis,
-    labelColorClass: "bg-red-l"
+    labelColorClass: "bg-red-l",
+    shortName: "ho"
   },
   {
     title: "Cymodocea serrulata",
     img: cymodoceaSerrulata,
-    labelColorClass: "bg-green"
+    labelColorClass: "bg-green",
+    shortName: "cs"
   },
   {
     title: "Zostera muelleri",
     img: zosteraMuelleri,
-    labelColorClass: "bg-yellow"
+    labelColorClass: "bg-yellow",
+    shortName: "zm"
   },
   {
     title: "Halodule uninervis",
     img: haloduleUninervis,
-    labelColorClass: "bg-blue-d"
+    labelColorClass: "bg-blue-d",
+    shortName: "hu"
   },
   {
     title: "Halophila spinulosa",
     img: halophilaSpinulosa,
-    labelColorClass: "bg-orange"
+    labelColorClass: "bg-orange",
+    shortName: "hs"
   },
   {
     title: "Syringodium isoetifolium",
     img: syringodiumIsoetifolium,
-    labelColorClass: "bg-violet"
+    labelColorClass: "bg-violet",
+    shortName: "si"
   },
   {
     title: "Halophila decipiens",
     img: halophilaDecipiens,
-    labelColorClass: "bg-blue-l"
+    labelColorClass: "bg-blue-l",
+    shortName: "hd"
   },
-  { title: "", img: "", labelColorClass: "" },
-  { title: "", img: "", labelColorClass: "" },
+  { title: "", img: "", labelColorClass: "", shortName: "" },
+  { title: "", img: "", labelColorClass: "", shortName: "" },
   {
     title: "Pentaceraster mammillatus",
     img: pentacerasterMammillatus,
-    labelColorClass: "bg-pink"
+    labelColorClass: "bg-pink",
+    shortName: "pm"
   },
-  { title: "", img: "", labelColorClass: "" }
+  { title: "", img: "", labelColorClass: "", shortName: "" }
 ];
 
 export default traningSet;

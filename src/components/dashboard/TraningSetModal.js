@@ -1,16 +1,27 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { toggleTrainigSetModal } from "../../actions/trainingSetActions";
+import {
+  toggleTrainigSetModal,
+  sendDragAnnotationData
+} from "../../actions/trainingSetActions";
 import soundDataSuccess from "../../assets/Data_sent.ogg";
 class TraningSetModal extends Component {
-  handlePopup = () => {
+  handlePopup = itemClass => {
     const { trainingSet } = this.props;
-    const { showTrainingSet } = trainingSet;
+    const { showTrainingSet, annotation, point } = trainingSet;
     //do api stuff
+
+    this.props.sendDragAnnotationData({
+      annotation: {
+        ...annotation,
+        class: itemClass
+      },
+      point
+    });
+
     const audio = new Audio(soundDataSuccess);
     audio.play();
-
-    this.props.toggleTrainigSetModal(false);
+    // this.props.toggleTrainigSetModal(false);
   };
   render() {
     const { trainingSet } = this.props;
@@ -24,7 +35,7 @@ class TraningSetModal extends Component {
               <div
                 key={index}
                 className="popup-item"
-                onClick={this.handlePopup}
+                onClick={item.img ? () => this.handlePopup(item.title) : null}
               >
                 <div className="popup-img-wrapper">
                   {item.img && <img src={item.img} className="popup-img" />}
@@ -40,7 +51,10 @@ class TraningSetModal extends Component {
                 </span>
               </div>
             ))}
-            <div className="popup-item" onClick={this.handlePopup}>
+            <div
+              className="popup-item"
+              onClick={() => this.handlePopup("Unknown")}
+            >
               <div className="popup-img-wrapper">
                 {/* <img src="images/question.png" className="popup-img" /> */}
                 <h1>?</h1>
@@ -61,6 +75,7 @@ const mapStateToProps = state => {
     trainingSet: state.trainingSet
   };
 };
-export default connect(mapStateToProps, { toggleTrainigSetModal })(
-  TraningSetModal
-);
+export default connect(mapStateToProps, {
+  toggleTrainigSetModal,
+  sendDragAnnotationData
+})(TraningSetModal);

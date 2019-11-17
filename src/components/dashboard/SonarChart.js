@@ -3,6 +3,12 @@ import boatIcon from "../../assets/sonar-boat-2.png";
 import gliderIcon from "../../assets/glider-icon.svg";
 import { connect } from "react-redux";
 import { setSonarStateSnapshot } from "../../actions/sonarActions";
+
+import openSocket from "socket.io-client";
+
+const basePath = process.env.REACT_APP_API_BASE_PATH;
+const socket = openSocket(`${basePath}/control/parameters`);
+
 class SonarChart extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -33,14 +39,45 @@ class SonarChart extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { activeMode } = this.props;
+    const {
+      controlModes: { activeMode }
+    } = this.props;
     this.updateCoordinatesByMode(activeMode);
+
+    //socket.connect();
+
+    //socket.on("json", positionState => {
+    // const { mode } = controlModeState;
+    // let changedMode = "";
+
+    // if (mode === "surface") {
+    //   changedMode = "surFace";
+    // }
+
+    // if (mode === "seabed") {
+    //   changedMode = "seaBed";
+    // }
+
+    // if (mode === "manual") {
+    //   changedMode = "manual";
+    // }
+    //console.log(positionState);
+    // this.props.changeControlMode(changedMode);
+    //});
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { activeMode, sonarState } = this.props;
+  // componentWillUnmount() {
+  //   socket.off("json");
+  //   socket.disconnect();
+  // }
 
-    if (activeMode !== prevProps.activeMode) {
+  componentDidUpdate(prevProps, prevState) {
+    const {
+      controlModes: { activeMode },
+      sonarState
+    } = this.props;
+
+    if (activeMode !== prevProps.controlModes.activeMode) {
       this.updateCoordinatesByMode(activeMode);
     }
 
@@ -88,7 +125,6 @@ class SonarChart extends React.PureComponent {
 
   handleMouseUp() {
     this.setState({ draggingPointKeys: null });
-    // document.documentElement.style.overflow = "auto";
   }
 
   handleMouseMove(e, type) {
@@ -105,21 +141,24 @@ class SonarChart extends React.PureComponent {
       clientX = e.touches[0].clientX;
       clientY = e.touches[0].clientY;
     }
-    const { viewBoxWidth, viewBoxHeight, activeMode } = this.props;
+
+    const {
+      viewBoxWidth,
+      viewBoxHeight,
+      controlModes: { activeMode }
+    } = this.props;
 
     const { draggingPointKeys } = this.state;
 
     if (!draggingPointKeys) {
       return;
     }
-    document.documentElement.style.overflow = "hidden";
 
     const svgRect = this.node.getBoundingClientRect();
 
     const svgX = clientX - svgRect.left;
     const svgY = clientY - svgRect.top;
     const viewBoxX = (svgX * viewBoxWidth) / svgRect.width;
-
     const viewBoxY = (svgY * viewBoxHeight) / svgRect.height;
 
     const [parentKey, childKey] = draggingPointKeys.split(".");
@@ -132,28 +171,50 @@ class SonarChart extends React.PureComponent {
         }
       });
     }
+
     if (parentKey === "vSliderPosition") {
       if (activeMode === "seaBed") {
         if (viewBoxY > 2.1 && viewBoxY < 92.7) {
+          const labelVal = (
+            (Math.round(viewBoxY * 100) * 0.1884) /
+            100
+          ).toFixed(1);
+
+          socket.emit("json", [
+            { name: "seabed_height", value: labelVal, unit: "m" }
+          ]);
+
           this.setState({
             [parentKey]: {
               ...this.state[parentKey],
               [childKey]: {
                 ...this.state[parentKey][childKey],
-                y: viewBoxY
+                y: viewBoxY,
+                labelVal
               }
             }
           });
         }
       }
+
       if (activeMode === "surFace") {
         if (viewBoxY > 2.1 && viewBoxY < 160) {
+          const labelVal = (
+            (Math.round(viewBoxY * 100) * 0.1884) /
+            100
+          ).toFixed(1);
+
+          socket.emit("json", [
+            { name: "surface_depth", value: labelVal, unit: "m" }
+          ]);
+
           this.setState({
             [parentKey]: {
               ...this.state[parentKey],
               [childKey]: {
                 ...this.state[parentKey][childKey],
-                y: viewBoxY
+                y: viewBoxY,
+                labelVal
               }
             }
           });
@@ -163,12 +224,23 @@ class SonarChart extends React.PureComponent {
 
     if (parentKey === "hSliderPosition") {
       if (viewBoxX > 0 && viewBoxX < 240) {
+        const centerPoint = 120;
+        const totalWidth = 240;
+
+        let displacement =
+          (Math.round(viewBoxX - centerPoint) * totalWidth * 0.0347) / 100;
+
+        socket.emit("json", [
+          { name: "track", value: displacement.toFixed(1), unit: "m" }
+        ]);
+
         this.setState({
           [parentKey]: {
             ...this.state[parentKey],
             [childKey]: {
               ...this.state[parentKey][childKey],
-              x: viewBoxX
+              x: viewBoxX,
+              labelVal: displacement
             }
           }
         });
@@ -178,7 +250,11 @@ class SonarChart extends React.PureComponent {
   }
 
   render() {
-    const { viewBoxWidth, viewBoxHeight, activeMode } = this.props;
+    const {
+      viewBoxWidth,
+      viewBoxHeight,
+      controlModes: { activeMode }
+    } = this.props;
     const {
       boatToGliderPosition,
       vSliderPosition,
@@ -511,10 +587,8 @@ const HorizontalToolTip = ({ coordinates, onMouseDown, mode }) => {
 
 const mapStateToProps = state => {
   return {
-    sonarState: state.sonarState
+    sonarState: state.sonarState,
+    controlModes: state.controlModes
   };
 };
-export default connect(
-  mapStateToProps,
-  { setSonarStateSnapshot }
-)(SonarChart);
+export default connect(mapStateToProps, { setSonarStateSnapshot })(SonarChart);

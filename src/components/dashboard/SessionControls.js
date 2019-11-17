@@ -12,26 +12,66 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
+import openSocket from "socket.io-client";
+
+const basePath = process.env.REACT_APP_API_BASE_PATH;
+const socket = openSocket(`${basePath}/session/state`);
+
 class SessionControls extends Component {
   state = {
     showConfirmModal: false
   };
-  // componentDidMount() {
-  //   console.log(this.props);
-  //   this.setMode("PREVIEW");
-  // }
+
+  componentDidMount() {
+    socket.connect();
+
+    socket.on("json", sessionState => {
+      const { active, paused } = sessionState;
+      let mode = "";
+      //record session
+      if (active && !paused) {
+        mode = "RECORD_SESSION";
+      }
+      //pause session
+      if (paused && !active) {
+        mode = "PAUSE_SESSION";
+      }
+      //stop session
+      if (!active && !paused) {
+        mode = "STOP_SESSION";
+      }
+      console.log({ sessionState, mode });
+      this.props.setActiveMode(mode, this.props.showNotification);
+    });
+  }
+
+  componentWillUnmount() {
+    socket.off("json");
+    socket.disconnect();
+  }
 
   setMode = mode => {
-    console.log(mode);
     const { activeMode } = this.props.session;
     if (activeMode === mode) return;
 
-    this.props.setActiveMode(mode, this.props.showNotification);
+    if (mode === "PREVIEW" || mode === "STOP_SESSION") {
+      if (mode === "STOP_SESSION") {
+        socket.emit("json", { active: false, paused: false });
+      }
+    }
+
+    if (mode === "RECORD_SESSION") {
+      socket.emit("json", { active: true, paused: false });
+    }
+
+    if (mode === "PAUSE_SESSION") {
+      socket.emit("json", { active: false, paused: true });
+    }
   };
 
   showModal = () => {
     this.setState({ showConfirmModal: !this.state.showConfirmModal });
-    console.log(!this.state.showConfirmModal);
+
     if (!this.state.showConfirmModal) {
       this.props.showNotification(
         "Stop recording session ?",
@@ -110,7 +150,4 @@ const mapStateToProps = state => {
     session: state.session
   };
 };
-export default connect(
-  mapStateToProps,
-  { setActiveMode }
-)(SessionControls);
+export default connect(mapStateToProps, { setActiveMode })(SessionControls);
