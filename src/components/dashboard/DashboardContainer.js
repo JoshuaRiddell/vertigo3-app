@@ -1,20 +1,25 @@
 import React from "react";
 import { connect } from "react-redux";
+import Popup from "reactjs-popup";
+
 import VideoPlayer from "./VideoPlayer";
 import MapComponent from "./MapComponent";
 import Sonar from "./Sonar";
 import NotificationBar from "./NotificationBar";
-import Popup from "reactjs-popup";
-import "../../styles/dashboardStyles.css";
 import SessionControls from "./SessionControls";
 import ExpandButton from "../../helpers/ExpandButton";
 import TraningSetModal from "./TraningSetModal";
 import GliderStats from "./GliderStats";
 import SeaBedInfo from "./SeaBedInfo";
 import SeagrassSection from "./SeagrassSection";
+import SystemsCheck from "./SystemsCheck";
+
+import { systemsCheckModal } from "../../actions/systemsCheckActions";
+
 import sampleVidClip from "../../assets/sample-vid-2.mp4";
 import ControlModes from "./ControlModes";
 import clickSound from "../../assets/Key-click.ogg";
+import "../../styles/dashboardStyles.css";
 
 class DashboardContainer extends React.Component {
   state = {
@@ -193,8 +198,18 @@ class DashboardContainer extends React.Component {
                         />
                       </span>
                       <p>
-                        Version: <strong>0.0.15</strong>
+                        Version: <strong>0.0.16</strong>
                       </p>
+                      <button
+                        onClick={() => {
+                          this.props.systemsCheckModal(true);
+                          close();
+                        }}
+                        className="link-btn"
+                        style={{ margin: 0, padding: 0, textAlign: "left" }}
+                      >
+                        System Status
+                      </button>
                     </div>
                   )}
                 </Popup>
@@ -238,6 +253,8 @@ class DashboardContainer extends React.Component {
           {...notification}
           closeNotification={this.closeNotification}
         />
+
+        <SystemsCheck />
       </div>
     );
   }
@@ -248,4 +265,6 @@ const mapStateToProps = state => {
     trainingSet: state.trainingSet
   };
 };
-export default connect(mapStateToProps, {})(DashboardContainer);
+export default connect(mapStateToProps, { systemsCheckModal })(
+  DashboardContainer
+);

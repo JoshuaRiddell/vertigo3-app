@@ -1,24 +1,34 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { systemStatusChange } from "../../actions/systemsCheckActions";
 
 import openSocket from "socket.io-client";
 
 const basePath = process.env.REACT_APP_API_BASE_PATH;
-const socket = openSocket(`${basePath}/status/updates`);
+const socket = openSocket(`${basePath}/status/updates`).connect();
 
-export default class GliderStats extends Component {
+class GliderStats extends Component {
   state = {
     status: []
   };
-  //componentDidUpdate() {
-  // socket.connect();
+  componentDidMount() {
+    socket.on("json", this.updateState);
 
-  // socket.on("json", this.updateState);
-  //}
+    socket.on("connect", () =>
+      this.props.systemStatusChange({ gliderStats: true })
+    );
+    socket.on("disconnect", () =>
+      this.props.systemStatusChange({ gliderStats: false })
+    );
 
-  // componentWillUnmount() {
-  //   socket.off("json");
-  //   socket.disconnect();
-  // }
+    if (!socket.connected) {
+      this.props.systemStatusChange({ gliderStats: false });
+    }
+  }
+
+  componentWillUnmount() {
+    socket.removeAllListeners("json");
+  }
 
   updateState = status => {
     this.setState({ status });
@@ -82,3 +92,12 @@ export default class GliderStats extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    systemStatus: state.systemStatus
+  };
+};
+export default connect(mapStateToProps, {
+  systemStatusChange
+})(GliderStats);

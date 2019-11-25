@@ -38,13 +38,14 @@ export default class TapSelection extends Component {
     // this.clearCanvas();
     this.setState({
       zoomState: {
-        ...this.state.zoomState,
+        startZoomPosition: { x, y },
+        currentZoomPosition: { x, y },
         zooming: false
       },
       annotationState: {
         dragging: true,
-        start: { x: x, y: y },
-        current: { x: x, y: y }
+        start: { x, y },
+        current: { x, y }
       }
     });
   };
@@ -156,9 +157,9 @@ export default class TapSelection extends Component {
     let posX = zoomState.currentZoomPosition.x,
       posY = zoomState.currentZoomPosition.y,
       scale = zoomState.scale,
-      last_scale = 1,
-      last_posX = 0,
-      last_posY = 0,
+      last_scale = zoomState.lastScale || 1,
+      last_posX = zoomState.startZoomPosition.x,
+      last_posY = zoomState.startZoomPosition.y,
       max_pos_x = 0,
       max_pos_y = 0,
       transform = "",
@@ -215,8 +216,10 @@ export default class TapSelection extends Component {
         },
         zoomState: {
           scale,
+          lastScale: last_scale,
           zooming: true,
-          currentZoomPosition: { x: posX, y: posY }
+          currentZoomPosition: { x: posX, y: posY },
+          startZoomPosition: { x: last_posX, y: last_posY }
         }
       });
     }

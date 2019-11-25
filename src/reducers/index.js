@@ -5,6 +5,7 @@ import videoPlayerState from "./videoPlayerState";
 import sonarState from "./sonarState";
 import mapState from "./mapState";
 import controlModes from "./controlModes";
+import systemStatus from "./systemStatus";
 
 export default combineReducers({
   session,
@@ -12,5 +13,6 @@ export default combineReducers({
   videoPlayerState,
   sonarState,
   mapState,
-  controlModes
+  controlModes,
+  systemStatus
 });

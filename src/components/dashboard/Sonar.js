@@ -5,7 +5,11 @@ export default class Sonar extends React.Component {
   render() {
     const { expandSonar } = this.props;
     return (
-      <div className="sonar-container">
+      // Todo: Zoom functionality
+      <div
+        className="sonar-container"
+        style={expandSonar ? { backgroundPositionY: `116px` } : {}}
+      >
         <div
           className="sonar-controller-wrapper"
           style={expandSonar ? { top: 115 } : {}}
@@ -30,8 +34,8 @@ export default class Sonar extends React.Component {
         </div>
         <SonarChart
           className="bezierCurves"
-          viewBoxWidth={250}
-          viewBoxHeight={210}
+          viewBoxWidth={538}
+          viewBoxHeight={450}
         />
       </div>
     );

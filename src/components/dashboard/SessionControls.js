@@ -1,21 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setActiveMode } from "../../actions/sessionActions";
+import { systemStatusChange } from "../../actions/systemsCheckActions";
+
 import PauseButton from "../../helpers/pauseButton";
 import RecordButton from "../../helpers/recordButton";
 import StopButton from "../../helpers/stopButton";
-
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-
+import ConfirmModal from "../../helpers/ConfirmModal";
 import openSocket from "socket.io-client";
 
 const basePath = process.env.REACT_APP_API_BASE_PATH;
-const socket = openSocket(`${basePath}/session/state`);
+const socket = openSocket(`${basePath}/session/state`).connect();
 
 class SessionControls extends Component {
   state = {
@@ -23,8 +18,6 @@ class SessionControls extends Component {
   };
 
   componentDidMount() {
-    socket.connect();
-
     socket.on("json", sessionState => {
       const { active, paused } = sessionState;
       let mode = "";
@@ -43,11 +36,21 @@ class SessionControls extends Component {
       console.log({ sessionState, mode });
       this.props.setActiveMode(mode, this.props.showNotification);
     });
+
+    socket.on("connect", () =>
+      this.props.systemStatusChange({ sessionControls: true })
+    );
+    socket.on("disconnect", () =>
+      this.props.systemStatusChange({ sessionControls: false })
+    );
+
+    if (!socket.connected) {
+      this.props.systemStatusChange({ sessionControls: false });
+    }
   }
 
   componentWillUnmount() {
-    socket.off("json");
-    socket.disconnect();
+    socket.removeAllListeners("json");
   }
 
   setMode = mode => {
@@ -108,29 +111,19 @@ class SessionControls extends Component {
         />
         {sessionPause && <StopButton handler={this.showModal} />}
 
-        <Dialog
-          open={showConfirmModal}
-          onClose={this.showModal}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          className="record-modal"
-        >
-          <DialogTitle id="alert-dialog-title" className="record-modal title">
-            {"Stop Session"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText
-              id="alert-dialog-description"
-              className="record-modal content"
-            >
-              Are you sure you want to stop the current session ?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions className="record-modal actions">
-            <Button onClick={this.showModal} color="primary">
+        <ConfirmModal open={showConfirmModal} onClose={this.showModal}>
+          <div className="modal-header">
+            <h2>Stop Session</h2>
+          </div>
+          <div className="modal-content">
+            <p>Are you sure you want to stop the current session ?</p>
+          </div>
+          <div className="modal-actions">
+            <button className="link-btn" onClick={this.showModal}>
               Disagree
-            </Button>
-            <Button
+            </button>
+            <button
+              className="link-btn"
               onClick={() => {
                 this.showModal();
                 this.setMode("STOP_SESSION");
@@ -138,9 +131,9 @@ class SessionControls extends Component {
               color="primary"
             >
               Agree
-            </Button>
-          </DialogActions>
-        </Dialog>
+            </button>
+          </div>
+        </ConfirmModal>
       </>
     );
   }
@@ -150,4 +143,6 @@ const mapStateToProps = state => {
     session: state.session
   };
 };
-export default connect(mapStateToProps, { setActiveMode })(SessionControls);
+export default connect(mapStateToProps, { setActiveMode, systemStatusChange })(
+  SessionControls
+);

@@ -1,16 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { changeControlMode } from "../../actions/controlModeActions";
+import { systemStatusChange } from "../../actions/systemsCheckActions";
 
 import openSocket from "socket.io-client";
 
 const basePath = process.env.REACT_APP_API_BASE_PATH;
-const socket = openSocket(`${basePath}/control/mode`);
+const socket = openSocket(`${basePath}/control/mode`).connect();
 
 class ControlModes extends Component {
   componentDidMount() {
-    socket.connect();
-
     socket.on("json", controlModeState => {
       const { mode } = controlModeState;
       let changedMode = "";
@@ -29,11 +28,21 @@ class ControlModes extends Component {
       console.log(controlModeState);
       this.props.changeControlMode(changedMode);
     });
+
+    socket.on("connect", () =>
+      this.props.systemStatusChange({ controlMode: true })
+    );
+    socket.on("disconnect", () =>
+      this.props.systemStatusChange({ controlMode: false })
+    );
+
+    if (!socket.connected) {
+      this.props.systemStatusChange({ controlMode: false });
+    }
   }
 
   componentWillUnmount() {
-    socket.off("json");
-    socket.disconnect();
+    socket.removeAllListeners();
   }
 
   changeControlMode = mode => {
@@ -99,4 +108,7 @@ const mapStateToProps = state => {
     controlModes: state.controlModes
   };
 };
-export default connect(mapStateToProps, { changeControlMode })(ControlModes);
+export default connect(mapStateToProps, {
+  changeControlMode,
+  systemStatusChange
+})(ControlModes);
