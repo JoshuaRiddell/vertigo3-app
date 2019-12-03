@@ -3,13 +3,14 @@ import { Player, ControlBar } from "video-react";
 import "video-react/dist/video-react.css";
 import HLSSource from "./HlsSource";
 import TapSelection from "./TapSelection";
-import Popup from "reactjs-popup";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay, faPause, faCog } from "@fortawesome/free-solid-svg-icons";
 import testVidClip from "../../assets/underwater-test-vid.mp4";
 import sampleVidClip from "../../assets/sample-vid-2.mp4";
 import { connect } from "react-redux";
-import { toggleTrainigSetModal } from "../../actions/trainingSetActions";
+import {
+  toggleTrainigSetModal,
+  sendTapAnnotationData,
+  initTrainigSetModal
+} from "../../actions/trainingSetActions";
 import { setPlayerStateSnapshot } from "../../actions/videoPlayerActions";
 
 class VideoPlayer extends React.Component {
@@ -18,8 +19,6 @@ class VideoPlayer extends React.Component {
 
     this.state = {
       source: "",
-      showPressSelection: false,
-      seletionValues: {},
       activeAnnotations: false
     };
 
@@ -65,8 +64,33 @@ class VideoPlayer extends React.Component {
 
   getSelectionValue = (type, values) => {
     console.log(type, values);
-    this.props.toggleTrainigSetModal(true);
-    this.setState({ seletionValues: values, showPressSelection: true });
+    const { pathIndex, path } = this.props.mapState;
+    const latitude = path[pathIndex] ? path[pathIndex][0] : 0;
+    const longitude = path[pathIndex] ? path[pathIndex][1] : 0;
+    if (type === "tap") {
+      const tapData = {
+        annotation: {
+          timestamp: Date.now(),
+          latitude,
+          longitude,
+          class: null
+        },
+        point: values
+      };
+      this.props.sendTapAnnotationData(tapData);
+    } else {
+      const dragData = {
+        showTrainingSet: true,
+        annotation: {
+          timestamp: Date.now(),
+          latitude,
+          longitude
+        },
+        point: values
+      };
+
+      this.props.initTrainigSetModal(dragData);
+    }
   };
 
   fullScreen() {
@@ -81,7 +105,6 @@ class VideoPlayer extends React.Component {
       prevProps.trainingSet.showTrainingSet !== showTrainingSet &&
       showTrainingSet === false
     ) {
-      this.setState({ showPressSelection: false });
       const { player } = this.player.getState();
       this.player.seek(player.currentTime + 3);
       this.player.play();
@@ -141,10 +164,13 @@ class VideoPlayer extends React.Component {
 const mapStateToProps = state => {
   return {
     trainingSet: state.trainingSet,
-    videoPlayerState: state.videoPlayerState
+    videoPlayerState: state.videoPlayerState,
+    mapState: state.mapState
   };
 };
-export default connect(
-  mapStateToProps,
-  { toggleTrainigSetModal, setPlayerStateSnapshot }
-)(VideoPlayer);
+export default connect(mapStateToProps, {
+  toggleTrainigSetModal,
+  setPlayerStateSnapshot,
+  sendTapAnnotationData,
+  initTrainigSetModal
+})(VideoPlayer);

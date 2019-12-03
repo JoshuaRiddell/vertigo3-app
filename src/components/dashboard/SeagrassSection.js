@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import clickSound from "../../assets/Key-click.ogg";
 import soundDataSuccess from "../../assets/Data_sent.ogg";
+import { connect } from "react-redux";
+import { sendSeaGrassData } from "../../actions/trainingSetActions";
 
-export default class SeagrassSection extends Component {
+class SeagrassSection extends Component {
   state = {
     percentBarMenu: false,
     dataSelection: "",
@@ -41,7 +43,37 @@ export default class SeagrassSection extends Component {
     this.setState({ sedimentPopupActiveItem: item.name });
   };
 
-  sendPercentageData = item => {
+  sendPercentageData = percentage => {
+    const { dataSelection, sedimentPopupActiveItem } = this.state;
+    const {
+      trainingSet: { dataSet },
+      mapState: { pathIndex, path }
+    } = this.props;
+
+    const latitude = path[pathIndex] ? path[pathIndex][0] : 0;
+    const longitude = path[pathIndex] ? path[pathIndex][1] : 0;
+    let className = "";
+
+    if (dataSelection) {
+      const item = dataSet.filter(
+        ds_Item => ds_Item.shortName === dataSelection
+      )[0];
+      className = item.title;
+    }
+    if (sedimentPopupActiveItem) {
+      className = sedimentPopupActiveItem;
+    }
+
+    this.props.sendSeaGrassData({
+      annotation: {
+        timestamp: Date.now(),
+        latitude,
+        longitude,
+        class: className,
+        percentage
+      }
+    });
+
     this.feedBackSounds("success");
     this.setState({
       percentBarMenu: false,
@@ -84,6 +116,7 @@ export default class SeagrassSection extends Component {
       sedimentPopupData,
       sedimentPopupActiveItem
     } = this.state;
+
     return (
       <React.Fragment>
         <div className="bottom-sec">
@@ -174,7 +207,7 @@ export default class SeagrassSection extends Component {
                 </span>
               </div>
             </div>
-            <div className="data-inner-wrap data-inner-wrap_lg">
+            <div className="data-inner-wrap">
               <div style={{ width: "650px", display: "flex" }}>
                 <div
                   style={{ marginRight: "85px" }}
@@ -297,3 +330,11 @@ export default class SeagrassSection extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    trainingSet: state.trainingSet,
+    mapState: state.mapState
+  };
+};
+export default connect(mapStateToProps, { sendSeaGrassData })(SeagrassSection);

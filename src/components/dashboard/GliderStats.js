@@ -1,12 +1,48 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { systemStatusChange } from "../../actions/systemsCheckActions";
 
-export default class GliderStats extends Component {
+import openSocket from "socket.io-client";
+
+const basePath = process.env.REACT_APP_API_BASE_PATH;
+const socket = openSocket(`${basePath}/status/updates`).connect();
+
+class GliderStats extends Component {
+  state = {
+    status: []
+  };
+  componentDidMount() {
+    socket.on("json", this.updateState);
+
+    socket.on("connect", () =>
+      this.props.systemStatusChange({ gliderStats: true })
+    );
+    socket.on("disconnect", () =>
+      this.props.systemStatusChange({ gliderStats: false })
+    );
+
+    if (!socket.connected) {
+      this.props.systemStatusChange({ gliderStats: false });
+    }
+  }
+
+  componentWillUnmount() {
+    socket.removeAllListeners("json");
+  }
+
+  updateState = status => {
+    this.setState({ status });
+  };
+
   render() {
+    const [depthM, depthKM] = this.state.status;
     return (
       <React.Fragment>
         <div className="state-labels">
           <span className="state-title">Depth</span>
-          <span className="state-value">24.1 m</span>
+          <span className="state-value">
+            {depthM ? `${depthM.value.toFixed(1)} m` : "24.1 m"}
+          </span>
         </div>
         <div className="state-labels">
           <span className="state-title">Speed</span>
@@ -56,3 +92,12 @@ export default class GliderStats extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    systemStatus: state.systemStatus
+  };
+};
+export default connect(mapStateToProps, {
+  systemStatusChange
+})(GliderStats);

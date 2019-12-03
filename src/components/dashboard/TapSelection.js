@@ -20,6 +20,7 @@ export default class TapSelection extends Component {
       zoomState: {
         zooming: false,
         scale: 1,
+        lastScale: 1,
         startZoomPosition: { x: 0, y: 0 },
         currentZoomPosition: { x: 0, y: 0 }
       },
@@ -35,16 +36,15 @@ export default class TapSelection extends Component {
 
     if (gesturesTimeout) clearTimeout(gesturesTimeout);
 
-    // this.clearCanvas();
     this.setState({
+      annotationState: {
+        dragging: true,
+        start: { x, y },
+        current: { x, y }
+      },
       zoomState: {
         ...this.state.zoomState,
         zooming: false
-      },
-      annotationState: {
-        dragging: true,
-        start: { x: x, y: y },
-        current: { x: x, y: y }
       }
     });
   };
@@ -59,7 +59,6 @@ export default class TapSelection extends Component {
       this.setState({
         annotationState: {
           ...this.state.annotationState,
-          dragging: true,
           current: { x: x, y: y }
         }
       });
@@ -76,7 +75,10 @@ export default class TapSelection extends Component {
   touchEnd = e => {
     const { annotationState, gesturesTimeout } = this.state;
     if (annotationState.dragging && e.distance > 10) {
-      this.props.getSelectionValue(e.type, this.state.annotationState);
+      this.props.getSelectionValue(e.type, {
+        topLeft: annotationState.start,
+        bottomRight: annotationState.current
+      });
       this.setState({ activateGestures: false });
     } else {
       if (gesturesTimeout) clearTimeout(gesturesTimeout);
@@ -135,7 +137,8 @@ export default class TapSelection extends Component {
     } else {
       if (gesturesTimeout) clearTimeout(gesturesTimeout);
       this.zoomReset();
-
+      const { player } = this.props.handleVideoPlayer.getState();
+      this.props.handleVideoPlayer.seek(player.currentTime + 1);
       this.props.handleVideoPlayer.play();
       this.setState({
         activateGestures: false,
@@ -152,18 +155,26 @@ export default class TapSelection extends Component {
     let posX = zoomState.currentZoomPosition.x,
       posY = zoomState.currentZoomPosition.y,
       scale = zoomState.scale,
-      last_scale = 1,
-      last_posX = 0,
-      last_posY = 0,
+      last_scale = zoomState.lastScale,
+      last_posX = zoomState.startZoomPosition.x,
+      last_posY = zoomState.startZoomPosition.y,
       max_pos_x = 0,
       max_pos_y = 0,
-      transform = "",
       el = ev.target;
+
     //pinch
-    if (ev.type == "pinch") {
+    if (ev.type === "pinch") {
       scale = Math.max(0.999, Math.min(last_scale * ev.scale, 4));
     }
 
+    if (ev.type === "pinchstart") {
+      this.setState({
+        annotationState: {
+          ...annotationState,
+          drag: false
+        }
+      });
+    }
     //pan
     if (scale != 1) {
       posX = last_posX + ev.deltaX;
@@ -183,38 +194,48 @@ export default class TapSelection extends Component {
       if (posY < -max_pos_y) {
         posY = -max_pos_y;
       }
-    }
 
-    if (ev.type == "pinchend") {
-      last_scale = scale;
-    }
+      if (ev.type === "pinch") {
+        this.setState({
+          zoomState: {
+            ...this.state.zoomState,
+            scale,
+            zooming: true,
+            currentZoomPosition: { x: posX, y: posY }
+          }
+        });
+      }
 
-    if (scale != 1) {
-      transform =
-        "translate3d(" +
-        posX +
-        "px," +
-        posY +
-        "px, 0) " +
-        "scale3d(" +
-        scale +
-        ", " +
-        scale +
-        ", 1)";
-    }
+      if (ev.type === "panmove") {
+        this.setState({
+          zoomState: {
+            ...this.state.zoomState,
+            currentZoomPosition: { x: posX, y: posY }
+          }
+        });
+      }
 
-    if (transform) {
-      this.setState({
-        annotationState: {
-          ...annotationState,
-          drag: false
-        },
-        zoomState: {
-          scale,
-          zooming: true,
-          currentZoomPosition: { x: posX, y: posY }
-        }
-      });
+      if (ev.type === "pinchend") {
+        last_scale = scale;
+
+        this.setState({
+          zoomState: {
+            ...this.state.zoomState,
+            lastScale: last_scale,
+            startZoomPosition: { x: posX, y: posY },
+            currentZoomPosition: { x: posX, y: posY }
+          }
+        });
+      }
+
+      if (ev.type === "panend") {
+        this.setState({
+          zoomState: {
+            ...this.state.zoomState,
+            startZoomPosition: this.state.zoomState.currentZoomPosition
+          }
+        });
+      }
     }
   };
 
@@ -227,6 +248,7 @@ export default class TapSelection extends Component {
       zoomState: {
         zooming: false,
         scale: 1,
+        lastScale: 1,
         startZoomPosition: { x: 0, y: 0 },
         currentZoomPosition: { x: 0, y: 0 }
       }
@@ -240,8 +262,10 @@ export default class TapSelection extends Component {
       activateGestures === true
     ) {
       this.hammerTime.on("press", this.touchStart);
-      this.hammerTime.on("pan", this.touchMove);
-      this.hammerTime.on("pinch pinchend", this.pinchZoom);
+      this.hammerTime.on(
+        "pinchstart pinch pinchend panmove panend",
+        this.touchMove
+      );
       this.hammerTime.on("panend pancancel pressup", this.touchEnd);
     }
 
@@ -249,9 +273,12 @@ export default class TapSelection extends Component {
       prevState.activateGestures !== activateGestures &&
       activateGestures === false
     ) {
-      this.hammerTime.off("press pan pinch pinchend panend pancancel pressup");
+      this.hammerTime.off(
+        "press pressup pan panend pancancel pinchstart pinch pinchend"
+      );
     }
   }
+
   draw = () => {
     const { dragging, start, current } = this.state.annotationState;
     const { canvas } = this.state;
@@ -276,7 +303,7 @@ export default class TapSelection extends Component {
     const y = start.y - drag_height - top;
     const width = drag_width * 2;
     const height = drag_height * 2;
-
+    // console.log({ x, y, drag_width, drag_height, width, height });
     ctx.clearRect(0, 0, canvas.current.width, canvas.current.height);
     ctx.strokeRect(x, y, width, height);
   };
@@ -302,10 +329,6 @@ export default class TapSelection extends Component {
   showRipple = e => {
     e.preventDefault();
 
-    //api call
-    const audio = new Audio(soundDataSuccess);
-    audio.play();
-
     const { center } = e;
     const { selectionArea, bounce } = this.state;
     const rippleContainer = selectionArea.current;
@@ -328,6 +351,12 @@ export default class TapSelection extends Component {
       count: count,
       bounce: setTimeout(() => this.setState({ spanStyles: {}, count: 0 }), 500)
     });
+
+    //api call
+    const audio = new Audio(soundDataSuccess);
+    audio.play();
+
+    this.props.getSelectionValue(e.type, { x, y });
   };
 
   renderRippleSpan = () => {
@@ -373,6 +402,18 @@ export default class TapSelection extends Component {
           return false;
         }}
       >
+        {/* <div
+          style={{
+            position: "absolute",
+            zIndex: 1000,
+            color: "white",
+            fontSize: "23px",
+            backgroundColor: "black",
+            padding: "10px"
+          }}
+        >
+          {JSON.stringify(this.state.zoomState)}
+        </div> */}
         <div
           className="zoomFrame"
           style={

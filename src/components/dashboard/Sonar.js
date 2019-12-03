@@ -1,25 +1,15 @@
 import React from "react";
 import SonarChart from "./SonarChart";
-import HorizontalSlider from "./HorizontalRangeSlider";
-import VerticalRangeSlider from "./VerticalRangeSlider";
 
 export default class Sonar extends React.Component {
-  state = {
-    verticalValues: {
-      min: 5,
-      max: 20
-    },
-    horizantalValues: {
-      min: 5,
-      max: 10
-    }
-  };
-  static propTypes = {};
-
   render() {
     const { expandSonar } = this.props;
     return (
-      <div className="sonar-container">
+      // Todo: Zoom functionality
+      <div
+        className="sonar-container"
+        style={expandSonar ? { backgroundPositionY: `116px` } : {}}
+      >
         <div
           className="sonar-controller-wrapper"
           style={expandSonar ? { top: 115 } : {}}
@@ -44,9 +34,8 @@ export default class Sonar extends React.Component {
         </div>
         <SonarChart
           className="bezierCurves"
-          viewBoxWidth={250}
-          viewBoxHeight={210}
-          activeMode={this.props.activeMode}
+          viewBoxWidth={538}
+          viewBoxHeight={450}
         />
       </div>
     );

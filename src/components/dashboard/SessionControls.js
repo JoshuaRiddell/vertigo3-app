@@ -1,37 +1,80 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setActiveMode } from "../../actions/sessionActions";
+import { systemStatusChange } from "../../actions/systemsCheckActions";
+
 import PauseButton from "../../helpers/pauseButton";
 import RecordButton from "../../helpers/recordButton";
 import StopButton from "../../helpers/stopButton";
+import ConfirmModal from "../../helpers/ConfirmModal";
+import openSocket from "socket.io-client";
 
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
+const basePath = process.env.REACT_APP_API_BASE_PATH;
+const socket = openSocket(`${basePath}/session/state`).connect();
 
 class SessionControls extends Component {
   state = {
     showConfirmModal: false
   };
-  // componentDidMount() {
-  //   console.log(this.props);
-  //   this.setMode("PREVIEW");
-  // }
+
+  componentDidMount() {
+    socket.on("json", sessionState => {
+      const { active, paused } = sessionState;
+      let mode = "";
+      //record session
+      if (active && !paused) {
+        mode = "RECORD_SESSION";
+      }
+      //pause session
+      if (paused && !active) {
+        mode = "PAUSE_SESSION";
+      }
+      //stop session
+      if (!active && !paused) {
+        mode = "STOP_SESSION";
+      }
+      console.log({ sessionState, mode });
+      this.props.setActiveMode(mode, this.props.showNotification);
+    });
+
+    socket.on("connect", () =>
+      this.props.systemStatusChange({ sessionControls: true })
+    );
+    socket.on("disconnect", () =>
+      this.props.systemStatusChange({ sessionControls: false })
+    );
+
+    if (!socket.connected) {
+      this.props.systemStatusChange({ sessionControls: false });
+    }
+  }
+
+  componentWillUnmount() {
+    socket.removeAllListeners("json");
+  }
 
   setMode = mode => {
-    console.log(mode);
     const { activeMode } = this.props.session;
     if (activeMode === mode) return;
 
-    this.props.setActiveMode(mode, this.props.showNotification);
+    if (mode === "PREVIEW" || mode === "STOP_SESSION") {
+      if (mode === "STOP_SESSION") {
+        socket.emit("json", { active: false, paused: false });
+      }
+    }
+
+    if (mode === "RECORD_SESSION") {
+      socket.emit("json", { active: true, paused: false });
+    }
+
+    if (mode === "PAUSE_SESSION") {
+      socket.emit("json", { active: false, paused: true });
+    }
   };
 
   showModal = () => {
     this.setState({ showConfirmModal: !this.state.showConfirmModal });
-    console.log(!this.state.showConfirmModal);
+
     if (!this.state.showConfirmModal) {
       this.props.showNotification(
         "Stop recording session ?",
@@ -68,29 +111,19 @@ class SessionControls extends Component {
         />
         {sessionPause && <StopButton handler={this.showModal} />}
 
-        <Dialog
-          open={showConfirmModal}
-          onClose={this.showModal}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          className="record-modal"
-        >
-          <DialogTitle id="alert-dialog-title" className="record-modal title">
-            {"Stop Session"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText
-              id="alert-dialog-description"
-              className="record-modal content"
-            >
-              Are you sure you want to stop the current session ?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions className="record-modal actions">
-            <Button onClick={this.showModal} color="primary">
+        <ConfirmModal open={showConfirmModal} onClose={this.showModal}>
+          <div className="modal-header">
+            <h2>Stop Session</h2>
+          </div>
+          <div className="modal-content">
+            <p>Are you sure you want to stop the current session ?</p>
+          </div>
+          <div className="modal-actions">
+            <button className="link-btn" onClick={this.showModal}>
               Disagree
-            </Button>
-            <Button
+            </button>
+            <button
+              className="link-btn"
               onClick={() => {
                 this.showModal();
                 this.setMode("STOP_SESSION");
@@ -98,9 +131,9 @@ class SessionControls extends Component {
               color="primary"
             >
               Agree
-            </Button>
-          </DialogActions>
-        </Dialog>
+            </button>
+          </div>
+        </ConfirmModal>
       </>
     );
   }
@@ -110,7 +143,6 @@ const mapStateToProps = state => {
     session: state.session
   };
 };
-export default connect(
-  mapStateToProps,
-  { setActiveMode }
-)(SessionControls);
+export default connect(mapStateToProps, { setActiveMode, systemStatusChange })(
+  SessionControls
+);
