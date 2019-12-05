@@ -18,6 +18,12 @@ class SessionControls extends Component {
   };
 
   componentDidMount() {
+    const { startupMode } = this.props.session;
+
+    if (startupMode) {
+      this.props.showNotification("Not recording", 0, "STARTUP");
+    }
+
     socket.on("json", sessionState => {
       const { active, paused } = sessionState;
       let mode = "";

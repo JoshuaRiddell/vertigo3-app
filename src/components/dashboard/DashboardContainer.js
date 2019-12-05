@@ -52,6 +52,10 @@ class DashboardContainer extends React.Component {
       mode
     };
 
+    if (mode === "STARTUP") {
+      return this.setState({ notification: notificationObj });
+    }
+
     if (mode !== "PAUSE_SESSION" && mode !== "STOP_SESSION") {
       notificationObj.timeoutId = setTimeout(
         () => this.closeNotification(),
@@ -198,7 +202,7 @@ class DashboardContainer extends React.Component {
                         />
                       </span>
                       <p>
-                        Version: <strong>0.0.16</strong>
+                        Version: <strong>0.0.17</strong>
                       </p>
                       <button
                         onClick={() => {

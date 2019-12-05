@@ -79,7 +79,9 @@ class SystemsCheck extends PureComponent {
               NUC link established
             </li>
             <li className="check">Vertigo3 powered up</li>
-            <li className="check">Storage capacity 68%</li>
+            <li className="check">Storage remaining 68%</li>
+            <li className="check">NUC battery 80%</li>
+            <li className="check">Vertigo3 battery 50%</li>
           </ul>
         </div>
       </>
