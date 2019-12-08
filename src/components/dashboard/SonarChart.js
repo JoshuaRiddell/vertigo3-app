@@ -207,7 +207,7 @@ class SonarChart extends React.PureComponent {
       }
 
       if (activeMode === "surFace") {
-        if (viewBoxY > 13.5 && viewBoxY < 369.5) {
+        if (viewBoxY > 13.5 && viewBoxY < 363) {
           const labelVal = (
             (Math.round((viewBoxY - 7.3) * 100) * 0.083) /
             100

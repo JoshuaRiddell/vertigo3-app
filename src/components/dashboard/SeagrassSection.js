@@ -20,21 +20,26 @@ class SeagrassSection extends Component {
   };
 
   setDataSelection = selection => {
-    const { dataSelection } = this.state;
-    this.feedBackSounds("click");
-    if (selection === "sediment") {
-      return this.setState({ sedimentPopup: !this.state.sedimentPopup });
-    }
-    if (dataSelection === selection) {
-      this.setState({
-        dataSelection: "",
-        percentBarMenu: false
-      });
-    } else {
-      this.setState({
-        dataSelection: selection,
-        percentBarMenu: true
-      });
+    const {
+      session: { recordingMode }
+    } = this.props;
+    if (recordingMode) {
+      const { dataSelection } = this.state;
+      this.feedBackSounds("click");
+      if (selection === "sediment") {
+        return this.setState({ sedimentPopup: !this.state.sedimentPopup });
+      }
+      if (dataSelection === selection) {
+        this.setState({
+          dataSelection: "",
+          percentBarMenu: false
+        });
+      } else {
+        this.setState({
+          dataSelection: selection,
+          percentBarMenu: true
+        });
+      }
     }
   };
 
@@ -117,6 +122,9 @@ class SeagrassSection extends Component {
       sedimentPopupActiveItem
     } = this.state;
 
+    const {
+      session: { recordingMode }
+    } = this.props;
     return (
       <React.Fragment>
         <div className="bottom-sec">
@@ -246,7 +254,10 @@ class SeagrassSection extends Component {
               </div>
 
               <div className="dr-pagination-wrapper">
-                <ul className="dr-pagination">
+                <ul
+                  className="dr-pagination"
+                  style={!recordingMode ? { pointerEvents: "none" } : {}}
+                >
                   <li className="first-item dr-pagination-item">
                     <a>Starfish</a>
                   </li>
@@ -334,7 +345,8 @@ class SeagrassSection extends Component {
 const mapStateToProps = state => {
   return {
     trainingSet: state.trainingSet,
-    mapState: state.mapState
+    mapState: state.mapState,
+    session: state.session
   };
 };
 export default connect(mapStateToProps, { sendSeaGrassData })(SeagrassSection);

@@ -131,6 +131,9 @@ class VideoPlayer extends React.Component {
   }
 
   render() {
+    const {
+      session: { recordingMode }
+    } = this.props;
     return (
       <div className="video-player-container">
         <TapSelection
@@ -138,7 +141,7 @@ class VideoPlayer extends React.Component {
           showVideoControls={this.showVideoControls}
           getSelectionValue={this.getSelectionValue}
           handleVideoPlayer={this.player}
-          disableAnnotations={this.props.disableAnnotations}
+          disableAnnotations={this.props.disableAnnotations || !recordingMode}
         >
           <Player
             fluid={false}
@@ -165,7 +168,8 @@ const mapStateToProps = state => {
   return {
     trainingSet: state.trainingSet,
     videoPlayerState: state.videoPlayerState,
-    mapState: state.mapState
+    mapState: state.mapState,
+    session: state.session
   };
 };
 export default connect(mapStateToProps, {
