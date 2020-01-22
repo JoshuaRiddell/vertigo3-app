@@ -7,7 +7,8 @@ const initialState = {
   showTrainingSet: false,
   dataSet: traningSet,
   annotation: {},
-  point: {}
+  point: {},
+  recordingSession: []
 };
 
 export default function(state = initialState, actions) {
@@ -23,6 +24,11 @@ export default function(state = initialState, actions) {
       return {
         ...state,
         ...actions.payload
+      };
+    case TRAINING_SET_TYPES.RECORDING_SESSION_DATA:
+      return {
+        ...state,
+        recordingSession: [...state.recordingSession, actions.payload]
       };
 
     default:

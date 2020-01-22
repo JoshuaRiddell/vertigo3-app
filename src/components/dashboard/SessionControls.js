@@ -100,6 +100,11 @@ class SessionControls extends Component {
     } = this.props.session;
 
     const { showConfirmModal } = this.state;
+
+    const {
+      trainingSet: { recordingSession }
+    } = this.props;
+    console.log(recordingSession);
     return (
       <>
         <RecordButton
@@ -146,7 +151,8 @@ class SessionControls extends Component {
 }
 const mapStateToProps = state => {
   return {
-    session: state.session
+    session: state.session,
+    trainingSet: state.trainingSet
   };
 };
 export default connect(mapStateToProps, { setActiveMode, systemStatusChange })(
