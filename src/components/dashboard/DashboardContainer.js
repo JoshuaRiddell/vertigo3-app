@@ -21,6 +21,8 @@ import ControlModes from "./ControlModes";
 import clickSound from "../../assets/Key-click.ogg";
 import "../../styles/dashboardStyles.css";
 
+const videoBasePath = process.env.REACT_APP_VIDEO_API_BASE_PATH;
+
 class DashboardContainer extends React.Component {
   state = {
     expandFrame: false,
@@ -36,10 +38,11 @@ class DashboardContainer extends React.Component {
 
   componentDidMount() {
     // const video = document.getElementById("video-1");
+    console.log(videoBasePath);
     fetch(sampleVidClip)
       .then(response => response.blob())
       .then(blob =>
-        this.setState({ videoUrl: window.URL.createObjectURL(blob) })
+        this.setState({ videoUrl: "http://" + videoBasePath + "/stream?topic=/glider/camera_front/flight_feed" })
       );
   }
   showNotification = (msg, duration, mode) => {

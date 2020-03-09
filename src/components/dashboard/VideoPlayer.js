@@ -94,7 +94,7 @@ class VideoPlayer extends React.Component {
   };
 
   fullScreen() {
-    this.player.toggleFullscreen();
+    // this.player.toggleFullscreen();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -105,29 +105,29 @@ class VideoPlayer extends React.Component {
       prevProps.trainingSet.showTrainingSet !== showTrainingSet &&
       showTrainingSet === false
     ) {
-      const { player } = this.player.getState();
-      this.player.seek(player.currentTime + 3);
-      this.player.play();
+      // const { player } = this.player.getState();
+      // this.player.seek(player.currentTime + 3);
+      // this.player.play();
       this.refs.tapSelectionRef && this.refs.tapSelectionRef.clearCanvas();
     }
 
     if (prevProps.videoPlayerState !== videoPlayerState) {
       if (videoPlayerState && Object.keys(videoPlayerState).length) {
         const { currentTime } = videoPlayerState;
-        this.player.seek(currentTime);
+        // this.player.seek(currentTime);
         // this.player.played.start(currentTime);
       }
     }
 
     if (prevProps.videoUrl !== videoUrl) {
-      this.player.play();
+      // this.player.play();
     }
   }
 
   componentWillUnmount() {
     const { player } = this.player.getState();
     this.props.setPlayerStateSnapshot(player);
-    this.player = null;
+    // this.player = null;
   }
 
   render() {
@@ -137,24 +137,10 @@ class VideoPlayer extends React.Component {
           ref="tapSelectionRef"
           showVideoControls={this.showVideoControls}
           getSelectionValue={this.getSelectionValue}
-          handleVideoPlayer={this.player}
+          // handleVideoPlayer={this.player}
           disableAnnotations={this.props.disableAnnotations}
         >
-          <Player
-            fluid={false}
-            width={this.props.playerWidth}
-            height={this.props.playerHeight}
-            loop
-            autoplay={true}
-            preload="auto"
-            src={this.props.videoUrl}
-            // src={testVidClip}
-            ref={player => {
-              this.player = player;
-            }}
-          >
-            <ControlBar autoHide={false} />
-          </Player>
+          <img src={this.props.videoUrl}></img>
         </TapSelection>
       </div>
     );
