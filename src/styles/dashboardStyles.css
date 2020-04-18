@@ -350,7 +350,7 @@ body {
   margin-bottom: 24px;
 }
 .sonar-container {
-  background-image: url("../assets/sonar-image.png");
+  background-image: url("http://localhost:8080/stream?topic=/sonar_raster");
   background-size: contain;
   /* background-repeat: no-repeat;
   background-position-y: 30px;
