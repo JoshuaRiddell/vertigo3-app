@@ -1,0 +1,9 @@
+training_set,cell,label,image
+"Starfish, confusers, other POI",1,Crown of Thorns,Acanthaster.png
+,2,Blue Linckia,Linckia.png
+,3,Culcita,Culcita.png
+,4,Crinoids,crinoid.png
+,5,Hydroids,hydroid.png
+,7,Coral trout,P_leopardus.png
+,8,Other POI,Other_POI.png
+,9,Unknown,questionmark.png

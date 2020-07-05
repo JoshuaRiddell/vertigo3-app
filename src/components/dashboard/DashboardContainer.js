@@ -11,11 +11,12 @@ import ExpandButton from "../../helpers/ExpandButton";
 import TraningSetModal from "./TraningSetModal";
 import GliderStats from "./GliderStats";
 import SeaBedInfo from "./SeaBedInfo";
-import SeagrassSection from "./SeagrassSection";
+// import SeagrassSection from "./SeagrassSection";
+import Frame_5 from "./Frame_5";
 import SystemsCheck from "./SystemsCheck";
 
 import { systemsCheckModal } from "../../actions/systemsCheckActions";
-
+import { getTrainingSets } from "../../actions/trainingSetActions";
 import sampleVidClip from "../../assets/sample-vid-2.mp4";
 import ControlModes from "./ControlModes";
 import clickSound from "../../assets/Key-click.ogg";
@@ -37,10 +38,13 @@ class DashboardContainer extends React.Component {
   componentDidMount() {
     // const video = document.getElementById("video-1");
     fetch(sampleVidClip)
-      .then(response => response.blob())
-      .then(blob =>
+      .then((response) => response.blob())
+      .then((blob) =>
         this.setState({ videoUrl: window.URL.createObjectURL(blob) })
       );
+
+    //get training sets
+    this.props.getTrainingSets();
   }
   showNotification = (msg, duration, mode) => {
     this.closeNotification();
@@ -73,7 +77,7 @@ class DashboardContainer extends React.Component {
     this.setState({ notification: {} });
   };
 
-  expandingFrames = frame => {
+  expandingFrames = (frame) => {
     const { expandSonar, expandMap } = this.state;
     if (frame === "sonar") {
       this.setState({
@@ -92,7 +96,7 @@ class DashboardContainer extends React.Component {
     audio.play();
   };
 
-  setStarFishCounter = count => {
+  setStarFishCounter = (count) => {
     const {
       session: { recordingMode }
     } = this.props;
@@ -198,7 +202,7 @@ class DashboardContainer extends React.Component {
                   position="bottom center"
                   closeOnDocumentClick={false}
                 >
-                  {close => (
+                  {(close) => (
                     <div className="settings-popup">
                       <span className="dr-close-btn" onClick={close}>
                         <img
@@ -207,7 +211,7 @@ class DashboardContainer extends React.Component {
                         />
                       </span>
                       <p>
-                        Version: <strong>0.0.18</strong>
+                        Version: <strong>0.0.19</strong>
                       </p>
                       <button
                         onClick={() => {
@@ -253,8 +257,8 @@ class DashboardContainer extends React.Component {
             </div>
           </div>
         </div>
-
-        <SeagrassSection setStarFishCounter={this.setStarFishCounter} />
+        <Frame_5 setStarFishCounter={this.setStarFishCounter} />
+        {/* <SeagrassSection setStarFishCounter={this.setStarFishCounter} /> */}
 
         {showTrainingSet && <TraningSetModal />}
 
@@ -271,12 +275,12 @@ class DashboardContainer extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     trainingSet: state.trainingSet,
     session: state.session
   };
 };
-export default connect(mapStateToProps, { systemsCheckModal })(
+export default connect(mapStateToProps, { systemsCheckModal, getTrainingSets })(
   DashboardContainer
 );

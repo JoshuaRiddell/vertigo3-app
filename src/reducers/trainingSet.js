@@ -5,13 +5,13 @@ const { TRAINING_SET_TYPES } = types;
 
 const initialState = {
   showTrainingSet: false,
-  dataSet: traningSet,
+  dataSet: {},
   annotation: {},
   point: {},
   recordingSession: []
 };
 
-export default function(state = initialState, actions) {
+export default function (state = initialState, actions) {
   switch (actions.type) {
     case TRAINING_SET_TYPES.TOGGLE_TRAINING_SET:
       return {
@@ -29,6 +29,12 @@ export default function(state = initialState, actions) {
       return {
         ...state,
         recordingSession: [...state.recordingSession, actions.payload]
+      };
+
+    case TRAINING_SET_TYPES.SET_TRAINING_DATA_SET:
+      return {
+        ...state,
+        dataSet: actions.payload
       };
 
     default:

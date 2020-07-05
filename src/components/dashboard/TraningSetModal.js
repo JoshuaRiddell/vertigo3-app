@@ -5,8 +5,45 @@ import {
   sendDragAnnotationData
 } from "../../actions/trainingSetActions";
 import soundDataSuccess from "../../assets/Data_sent.ogg";
+
 class TraningSetModal extends Component {
-  handlePopup = itemClass => {
+  state = {
+    trainingSetName: "",
+    cells: Array.from(Array(9), (_, i) => i + 1)
+  };
+
+  componentDidMount() {
+    const {
+      trainingSet: { dataSet }
+    } = this.props;
+
+    if (dataSet && Object.keys(dataSet).length) {
+      this.mapDataOverCells(dataSet);
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { trainingSet } = this.props;
+
+    if (prevProps.trainingSet !== trainingSet) {
+      this.mapDataOverCells(trainingSet.dataSet);
+    }
+  }
+
+  mapDataOverCells = (dataSet) => {
+    const { cells } = this.state;
+    const { training_set, rows } = dataSet;
+
+    let cellsCopy = cells.slice();
+
+    rows.forEach((element) => {
+      cellsCopy[element.cell - 1] = element;
+    });
+
+    this.setState({ cells: cellsCopy, trainingSetName: training_set });
+  };
+
+  handlePopup = (itemClass) => {
     const { trainingSet } = this.props;
     const { showTrainingSet, annotation, point } = trainingSet;
     //do api stuff
@@ -21,48 +58,36 @@ class TraningSetModal extends Component {
 
     const audio = new Audio(soundDataSuccess);
     audio.play();
-    // this.props.toggleTrainigSetModal(false);
   };
   render() {
-    const { trainingSet } = this.props;
-    const { dataSet } = trainingSet;
+    const { trainingSetName, cells } = this.state;
+
     return (
       <div className="popup-layer">
         <div className="dr-popup-wrapper">
-          <span className="dr-popup-label">Training set:</span>
+          <div className="training-set-header">
+            <span className="training-set-label">Training set: </span>
+            <span className="training-set-name">{trainingSetName}</span>
+          </div>
           <div className="dr-popup-inner-wrap">
-            {dataSet.map((item, index) => (
+            {cells.map((cell, index) => (
               <div
                 key={index}
                 className="popup-item"
-                onClick={item.img ? () => this.handlePopup(item.title) : null}
+                onClick={cell.label ? () => this.handlePopup(cell.label) : null}
               >
                 <div className="popup-img-wrapper">
-                  {item.img && <img src={item.img} className="popup-img" />}
+                  {cell.image && (
+                    <img src={`images/${cell.image}`} className="popup-img" />
+                  )}
                 </div>
-                <span
-                  className={`popup-label ${
-                    item.labelColorClass ? item.labelColorClass : ""
-                  }`}
-                >
-                  {item.title && (
-                    <span className="popup-text">{item.title}</span>
+                <span className={`popup-label`}>
+                  {cell.label && (
+                    <span className="popup-text">{cell.label}</span>
                   )}
                 </span>
               </div>
             ))}
-            <div
-              className="popup-item"
-              onClick={() => this.handlePopup("Unknown")}
-            >
-              <div className="popup-img-wrapper">
-                {/* <img src="images/question.png" className="popup-img" /> */}
-                <h1>?</h1>
-              </div>
-              <span className="popup-label bg-red-d">
-                <span className="popup-text">Unknown or Other</span>
-              </span>
-            </div>
           </div>
         </div>
       </div>
@@ -70,7 +95,7 @@ class TraningSetModal extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     trainingSet: state.trainingSet
   };
