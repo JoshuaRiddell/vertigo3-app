@@ -18,7 +18,8 @@ export const initTrainigSetModal = dragData => dispatch => {
 };
 
 export const sendTapAnnotationData = values => dispatch => {
-  fetch(`${basePath}/annotation/videoPoint`, {
+  console.log(basePath + "/annotation/videoPoint");
+  fetch(basePath + "/annotation/videoPoint", {
     method: "POST",
     headers: {
       "content-type": "application/json"

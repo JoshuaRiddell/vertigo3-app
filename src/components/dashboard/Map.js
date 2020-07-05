@@ -26,7 +26,7 @@ class Map extends React.Component {
     //sat view:
     //http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}
     L.tileLayer(
-      "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      "http://192.168.0.101/tiles/{z}/{x}/{y}.png",
       {
         maxZoom: 20
       }

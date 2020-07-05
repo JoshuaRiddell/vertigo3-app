@@ -42,7 +42,7 @@ class DashboardContainer extends React.Component {
     fetch(sampleVidClip)
       .then(response => response.blob())
       .then(blob =>
-        this.setState({ videoUrl: "http://" + videoBasePath + "/stream?topic=/glider/camera_front/flight_feed" })
+        this.setState({ videoUrl: "http://192.168.0.101:8080/stream?topic=/glider/camera_front/hud_feed" })
       );
   }
   showNotification = (msg, duration, mode) => {

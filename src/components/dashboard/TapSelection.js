@@ -91,9 +91,9 @@ export default class TapSelection extends Component {
         gesturesTimeout: setTimeout(() => {
           this.setState({ activateGestures: false });
           this.zoomReset();
-          const { player } = this.props.handleVideoPlayer.getState();
-          this.props.handleVideoPlayer.seek(player.currentTime + 3);
-          this.props.handleVideoPlayer.play();
+          // const { player } = this.props.handleVideoPlayer.getState();
+          // this.props.handleVideoPlayer.seek(player.currentTime + 3);
+          // this.props.handleVideoPlayer.play();
         }, 3000)
       });
     }
@@ -124,22 +124,22 @@ export default class TapSelection extends Component {
     const { activateGestures, gesturesTimeout } = this.state;
 
     if (!activateGestures) {
-      this.props.handleVideoPlayer.pause();
+      // this.props.handleVideoPlayer.pause();
       this.setState({
         activateGestures: true,
         gesturesTimeout: setTimeout(() => {
-          const { player } = this.props.handleVideoPlayer.getState();
-          this.props.handleVideoPlayer.seek(player.currentTime + 3);
-          this.props.handleVideoPlayer.play();
+          // const { player } = this.props.handleVideoPlayer.getState();
+          // this.props.handleVideoPlayer.seek(player.currentTime + 3);
+          // this.props.handleVideoPlayer.play();
           this.setState({ activateGestures: false });
         }, 3000)
       });
     } else {
       if (gesturesTimeout) clearTimeout(gesturesTimeout);
       this.zoomReset();
-      const { player } = this.props.handleVideoPlayer.getState();
-      this.props.handleVideoPlayer.seek(player.currentTime + 1);
-      this.props.handleVideoPlayer.play();
+      // const { player } = this.props.handleVideoPlayer.getState();
+      // this.props.handleVideoPlayer.seek(player.currentTime + 1);
+      // this.props.handleVideoPlayer.play();
       this.setState({
         activateGestures: false,
         gesturesTimeout: ""
