@@ -8,37 +8,33 @@ import {
   setViewPosition
 } from "../../actions/mapActions";
 
+
+
 class Map extends React.Component {
   state = {
     timeoutId: ""
   };
   componentDidMount() {
-    const {
-      mapState: { zoomLevel, viewPosition }
-    } = this.props;
+    const {mapState: { zoomLevel, viewPosition }} = this.props;
+
     // create map
     this.map = L.map("map", {
       zoomControl: false,
       minZoom: 0,
       maxZoom: 22,
       maxNativeZoom: 18
-    }).setView(
+    });
+    
+    this.map.setView(
       viewPosition,
       zoomLevel
     );
-    //normal view
-    //http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
-    //sat view:
-    //http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}
-    L.tileLayer(
-      "http://192.168.0.101/tiles/{z}/{y}/{x}.png",
-      {
-        minZoom: 0,
-        maxZoom: 22,
-        maxNativeZoom: 18
-      }
-    ).addTo(this.map);
-    // add layer
+
+    L.tileLayer("http://192.168.0.101/tiles/{z}/{y}/{x}.png",
+      {minZoom: 0, maxZoom: 22, maxNativeZoom: 18}
+      ).addTo(this.map);
+
+    L.control.scale().addTo(this.map);
 
     //path to follow
     const customPolyline = L.Polyline.extend({
