@@ -50,6 +50,7 @@ export default class TapSelection extends Component {
   };
 
   touchMove = e => {
+    console.log(e);
     const {
       center: { x, y }
     } = e;
@@ -117,11 +118,14 @@ export default class TapSelection extends Component {
       enable: true
     });
 
-    !disableAnnotations && this.hammerTime.on("tap", this.activateGestures);
+    this.hammerTime.on("tap", this.activateGestures);
   }
 
   activateGestures = e => {
+    const { disableAnnotations } = this.props;
     const { activateGestures, gesturesTimeout } = this.state;
+
+    if (disableAnnotations) return;
 
     if (!activateGestures) {
       this.props.handleVideoPlayer.pause();
@@ -267,6 +271,7 @@ export default class TapSelection extends Component {
         this.touchMove
       );
       this.hammerTime.on("panend pancancel pressup", this.touchEnd);
+      //avas
     }
 
     if (
@@ -274,7 +279,7 @@ export default class TapSelection extends Component {
       activateGestures === false
     ) {
       this.hammerTime.off(
-        "press pressup pan panend pancancel pinchstart pinch pinchend"
+        "press pressup pan panmove panend pancancel pinchstart pinch pinchend"
       );
     }
   }

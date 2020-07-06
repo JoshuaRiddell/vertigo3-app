@@ -18,6 +18,12 @@ class SessionControls extends Component {
   };
 
   componentDidMount() {
+    const { startupMode } = this.props.session;
+
+    if (startupMode) {
+      this.props.showNotification("Not recording", 0, "STARTUP");
+    }
+
     socket.on("json", sessionState => {
       const { active, paused } = sessionState;
       let mode = "";
@@ -94,6 +100,11 @@ class SessionControls extends Component {
     } = this.props.session;
 
     const { showConfirmModal } = this.state;
+
+    const {
+      trainingSet: { recordingSession }
+    } = this.props;
+    console.log(recordingSession);
     return (
       <>
         <RecordButton
@@ -140,7 +151,8 @@ class SessionControls extends Component {
 }
 const mapStateToProps = state => {
   return {
-    session: state.session
+    session: state.session,
+    trainingSet: state.trainingSet
   };
 };
 export default connect(mapStateToProps, { setActiveMode, systemStatusChange })(

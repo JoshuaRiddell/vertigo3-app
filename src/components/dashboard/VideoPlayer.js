@@ -75,7 +75,7 @@ class VideoPlayer extends React.Component {
           longitude,
           class: null
         },
-        point: values
+        point: this.scalingAlgo(values, type)
       };
       this.props.sendTapAnnotationData(tapData);
     } else {
@@ -86,7 +86,7 @@ class VideoPlayer extends React.Component {
           latitude,
           longitude
         },
-        point: values
+        point: this.scalingAlgo(values)
       };
 
       this.props.initTrainigSetModal(dragData);
@@ -130,7 +130,33 @@ class VideoPlayer extends React.Component {
     this.player = null;
   }
 
+  scalingAlgo = (values, action) => {
+    const { playerWidth, playerHeight } = this.props;
+    const blackFlyVideoSize = { h: 2448, v: 2048 };
+    const scaled_h = blackFlyVideoSize.h / playerWidth;
+    const scaled_v = blackFlyVideoSize.v / playerHeight;
+
+    if (action === "tap") {
+      const { x, y } = values;
+      return { x: Math.round(x * scaled_h), y: Math.round(y * scaled_v) };
+    } else {
+      const { topLeft, bottomRight } = values;
+      return {
+        topLeft: {
+          x: Math.round(topLeft.x * scaled_h),
+          y: Math.round(topLeft.y * scaled_v)
+        },
+        bottomRight: {
+          x: Math.round(bottomRight.x * scaled_h),
+          y: Math.round(bottomRight.y * scaled_v)
+        }
+      };
+    }
+  };
   render() {
+    const {
+      session: { recordingMode }
+    } = this.props;
     return (
       <div className="video-player-container">
         <TapSelection
@@ -138,7 +164,7 @@ class VideoPlayer extends React.Component {
           showVideoControls={this.showVideoControls}
           getSelectionValue={this.getSelectionValue}
           handleVideoPlayer={this.player}
-          disableAnnotations={this.props.disableAnnotations}
+          disableAnnotations={this.props.disableAnnotations || !recordingMode}
         >
           <Player
             fluid={false}
@@ -165,7 +191,8 @@ const mapStateToProps = state => {
   return {
     trainingSet: state.trainingSet,
     videoPlayerState: state.videoPlayerState,
-    mapState: state.mapState
+    mapState: state.mapState,
+    session: state.session
   };
 };
 export default connect(mapStateToProps, {

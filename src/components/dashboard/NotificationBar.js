@@ -14,6 +14,9 @@ export default function NotificationBar({
   );
 
   React.useEffect(() => {
+    if (mode === "STARTUP") {
+      return;
+    }
     if (showBar) {
       audio.play();
     }

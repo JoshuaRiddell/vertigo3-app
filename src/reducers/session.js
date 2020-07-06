@@ -2,7 +2,7 @@ import types from "../actions/types";
 
 const initialState = {
   activeMode: "PREVIEW",
-  startupMode: false,
+  startupMode: true,
   previewMode: true,
   recordingMode: false,
   sessionPause: false

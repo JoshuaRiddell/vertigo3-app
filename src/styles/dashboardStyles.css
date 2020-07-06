@@ -339,6 +339,10 @@ body {
   top: 185px;
   right: 493px;
 }
+.map-controller-wrapper .current-location-icon {
+  z-index: 1;
+  cursor: pointer;
+}
 .map-controller-wrapper .zoom-icon {
   width: 60px;
   height: 60px;
@@ -945,7 +949,7 @@ body {
 }
 
 .systems-check {
-  top: 330px;
+  top: 225px;
   left: 670px;
   width: 600px;
 }

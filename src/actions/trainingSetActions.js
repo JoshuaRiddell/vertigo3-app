@@ -26,12 +26,14 @@ export const sendTapAnnotationData = values => dispatch => {
     body: JSON.stringify(values)
   })
     .then(res => res.json())
-    .then(res => console.log(res))
+    .then(res => {
+      console.log(res);
+      dispatch({
+        type: TRAINING_SET_TYPES.RECORDING_SESSION_DATA,
+        payload: values
+      });
+    })
     .catch(err => console.log(err));
-  // dispatch({
-  //   type: types.TOGGLE_TRAINING_SET,
-  //   payload: values
-  // });
 };
 
 export const sendDragAnnotationData = values => dispatch => {
@@ -49,6 +51,11 @@ export const sendDragAnnotationData = values => dispatch => {
         type: TRAINING_SET_TYPES.TOGGLE_TRAINING_SET,
         payload: false
       });
+
+      dispatch({
+        type: TRAINING_SET_TYPES.RECORDING_SESSION_DATA,
+        payload: values
+      });
     })
     .catch(err => console.log(err));
 };
@@ -62,10 +69,12 @@ export const sendSeaGrassData = values => dispatch => {
     body: JSON.stringify(values)
   })
     .then(res => res.json())
-    .then(res => console.log(res))
+    .then(res => {
+      console.log(res);
+      dispatch({
+        type: TRAINING_SET_TYPES.RECORDING_SESSION_DATA,
+        payload: values
+      });
+    })
     .catch(err => console.log(err));
-  // dispatch({
-  //   type: types.TOGGLE_TRAINING_SET,
-  //   payload: values
-  // });
 };

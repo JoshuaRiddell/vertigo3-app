@@ -52,6 +52,10 @@ class DashboardContainer extends React.Component {
       mode
     };
 
+    if (mode === "STARTUP") {
+      return this.setState({ notification: notificationObj });
+    }
+
     if (mode !== "PAUSE_SESSION" && mode !== "STOP_SESSION") {
       notificationObj.timeoutId = setTimeout(
         () => this.closeNotification(),
@@ -89,8 +93,13 @@ class DashboardContainer extends React.Component {
   };
 
   setStarFishCounter = count => {
-    const { starFishCounter } = this.state;
-    this.setState({ starFishCounter: starFishCounter + count });
+    const {
+      session: { recordingMode }
+    } = this.props;
+    if (recordingMode) {
+      const { starFishCounter } = this.state;
+      this.setState({ starFishCounter: starFishCounter + count });
+    }
   };
 
   static propTypes = {};
@@ -198,7 +207,7 @@ class DashboardContainer extends React.Component {
                         />
                       </span>
                       <p>
-                        Version: <strong>0.0.16</strong>
+                        Version: <strong>0.0.18</strong>
                       </p>
                       <button
                         onClick={() => {
@@ -249,10 +258,12 @@ class DashboardContainer extends React.Component {
 
         {showTrainingSet && <TraningSetModal />}
 
-        <NotificationBar
-          {...notification}
-          closeNotification={this.closeNotification}
-        />
+        {!expandMap && !expandSonar && (
+          <NotificationBar
+            {...notification}
+            closeNotification={this.closeNotification}
+          />
+        )}
 
         <SystemsCheck />
       </div>
@@ -262,7 +273,8 @@ class DashboardContainer extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    trainingSet: state.trainingSet
+    trainingSet: state.trainingSet,
+    session: state.session
   };
 };
 export default connect(mapStateToProps, { systemsCheckModal })(
