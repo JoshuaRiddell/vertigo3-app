@@ -17,7 +17,12 @@ class Map extends React.Component {
       mapState: { zoomLevel, viewPosition }
     } = this.props;
     // create map
-    this.map = L.map("map", { zoomControl: false }).setView(
+    this.map = L.map("map", {
+      zoomControl: false,
+      minZoom: 0,
+      maxZoom: 22,
+      maxNativeZoom: 18
+    }).setView(
       viewPosition,
       zoomLevel
     );
@@ -26,9 +31,11 @@ class Map extends React.Component {
     //sat view:
     //http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}
     L.tileLayer(
-      "http://192.168.0.101/tiles/{z}/{x}/{y}.png",
+      "http://192.168.0.101/tiles/{z}/{y}/{x}.png",
       {
-        maxZoom: 20
+        minZoom: 0,
+        maxZoom: 22,
+        maxNativeZoom: 18
       }
     ).addTo(this.map);
     // add layer
