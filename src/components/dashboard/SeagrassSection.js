@@ -4,6 +4,7 @@ import soundDataSuccess from "../../assets/Data_sent.ogg";
 import { connect } from "react-redux";
 import { sendSeaGrassData } from "../../actions/trainingSetActions";
 
+//Disabled for now.
 class SeagrassSection extends Component {
   state = {
     percentBarMenu: false,
@@ -19,7 +20,7 @@ class SeagrassSection extends Component {
     sedimentPopupActiveItem: ""
   };
 
-  setDataSelection = selection => {
+  setDataSelection = (selection) => {
     const {
       session: { recordingMode }
     } = this.props;
@@ -43,12 +44,12 @@ class SeagrassSection extends Component {
     }
   };
 
-  setSedimentItem = item => {
+  setSedimentItem = (item) => {
     this.feedBackSounds("click");
     this.setState({ sedimentPopupActiveItem: item.name });
   };
 
-  sendPercentageData = percentage => {
+  sendPercentageData = (percentage) => {
     const { dataSelection, sedimentPopupActiveItem } = this.state;
     const {
       trainingSet: { dataSet },
@@ -61,7 +62,7 @@ class SeagrassSection extends Component {
 
     if (dataSelection) {
       const item = dataSet.filter(
-        ds_Item => ds_Item.shortName === dataSelection
+        (ds_Item) => ds_Item.shortName === dataSelection
       )[0];
       className = item.title;
     }
@@ -88,7 +89,7 @@ class SeagrassSection extends Component {
     });
   };
 
-  feedBackSounds = type => {
+  feedBackSounds = (type) => {
     if (type === "click") {
       const audio = new Audio(clickSound);
       audio.play();
@@ -342,7 +343,7 @@ class SeagrassSection extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     trainingSet: state.trainingSet,
     mapState: state.mapState,

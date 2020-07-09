@@ -10,7 +10,7 @@ const socket = openSocket(`${basePath}/control/mode`).connect();
 
 class ControlModes extends Component {
   componentDidMount() {
-    socket.on("json", controlModeState => {
+    socket.on("json", (controlModeState) => {
       const { mode } = controlModeState;
       let changedMode = "";
 
@@ -24,6 +24,10 @@ class ControlModes extends Component {
 
       if (mode === "manual") {
         changedMode = "manual";
+      }
+
+      if (mode === "stable") {
+        changedMode = "stable";
       }
       console.log(controlModeState);
       this.props.changeControlMode(changedMode);
@@ -45,7 +49,7 @@ class ControlModes extends Component {
     socket.removeAllListeners();
   }
 
-  changeControlMode = mode => {
+  changeControlMode = (mode) => {
     const {
       controlModes: { activeMode }
     } = this.props;
@@ -62,6 +66,10 @@ class ControlModes extends Component {
 
     if (mode === "manual") {
       socket.emit("json", { mode: "manual" });
+    }
+
+    if (mode === "stable") {
+      socket.emit("json", { mode: "stable" });
     }
   };
 
@@ -88,12 +96,23 @@ class ControlModes extends Component {
           Seabed
         </div>
         <div
-          className={`dr-btn btn-full ${
+          className={`dr-btn btn-half btn-r controller-btn ${
             activeMode === "manual" ? "nav-btn-bg-1" : "nav-btn-bg-2"
           }`}
           onClick={() => this.changeControlMode("manual")}
         >
-          manual
+          Manual
+          <span>
+            <img src="images/remote.png" className="remote-icon" />
+          </span>
+        </div>
+        <div
+          className={`dr-btn btn-half btn-r controller-btn ${
+            activeMode === "stable" ? "nav-btn-bg-1" : "nav-btn-bg-2"
+          }`}
+          onClick={() => this.changeControlMode("stable")}
+        >
+          Stable
           <span>
             <img src="images/remote.png" className="remote-icon" />
           </span>
@@ -103,7 +122,7 @@ class ControlModes extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     controlModes: state.controlModes
   };

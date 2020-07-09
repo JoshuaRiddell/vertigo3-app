@@ -50,24 +50,6 @@ class SonarChart extends React.PureComponent {
     } = this.props;
     this.updateCoordinatesByMode(activeMode);
 
-    //socket.on("json", positionState => {
-    // const { mode } = controlModeState;
-    // let changedMode = "";
-
-    // if (mode === "surface") {
-    //   changedMode = "surFace";
-    // }
-
-    // if (mode === "seabed") {
-    //   changedMode = "seaBed";
-    // }
-
-    // if (mode === "manual") {
-    //   changedMode = "manual";
-    // }
-    //console.log(positionState);
-    // this.props.changeControlMode(changedMode);
-    //});
     socket.on("connect", () =>
       this.props.systemStatusChange({ sonarControls: true })
     );
@@ -102,7 +84,7 @@ class SonarChart extends React.PureComponent {
     socket.removeAllListeners();
   }
 
-  updateCoordinatesByMode = activeMode => {
+  updateCoordinatesByMode = (activeMode) => {
     if (activeMode === "surFace") {
       this.setState({
         vSliderPosition: {
@@ -121,7 +103,7 @@ class SonarChart extends React.PureComponent {
       });
     }
 
-    if (activeMode === "manual") {
+    if (activeMode === "manual" || activeMode === "stable") {
       this.setState({
         vSliderPosition: {
           startPoint: { x: 526, y: 170.5 },
@@ -277,12 +259,12 @@ class SonarChart extends React.PureComponent {
     `;
     return (
       <svg
-        ref={node => (this.node = node)}
+        ref={(node) => (this.node = node)}
         viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
-        onMouseMove={ev =>
+        onMouseMove={(ev) =>
           draggingPointKeys && this.handleMouseMove(ev, "mouseMove")
         }
-        onTouchMove={ev =>
+        onTouchMove={(ev) =>
           draggingPointKeys && this.handleMouseMove(ev, "touchMove")
         }
         onMouseUp={() => draggingPointKeys && this.handleMouseUp()}
@@ -299,40 +281,20 @@ class SonarChart extends React.PureComponent {
         />
 
         <g className="boat-glider-bezier">
-          {/* <ConnectingLine from={startPoint} to={controlPoint} />
-          <ConnectingLine from={controlPoint} to={endPoint} /> */}
-
           <Path instructions={instructions} />
 
-          <BoatHandle
-            coordinates={boatToGliderPosition.startPoint}
-            // onMouseDown={() =>
-            //   this.handleMouseDown("boatToGliderPosition.startPoint")
-            // }
-          />
+          <BoatHandle coordinates={boatToGliderPosition.startPoint} />
 
-          {/* <SmallHandle
-            coordinates={boatToGliderPosition.controlPoint}
-            onMouseDown={() =>
-              this.handleMouseDown("boatToGliderPosition.controlPoint")
-            }
-          /> */}
-
-          <GliderHandle
-            coordinates={boatToGliderPosition.endPoint}
-            // onMouseDown={() =>
-            //   this.handleMouseDown("boatToGliderPosition.endPoint")
-            // }
-          />
+          <GliderHandle coordinates={boatToGliderPosition.endPoint} />
         </g>
 
-        {activeMode !== "manual" && (
+        {activeMode !== "manual" && activeMode !== "stable" && (
           <g className="verticle-slider">
             {activeMode === "seaBed" ? (
               <VerticleToolTip
                 coordinates={vSliderPosition.startPoint}
                 mode={activeMode}
-                onMouseDown={e =>
+                onMouseDown={(e) =>
                   this.handleMouseDown(e, "vSliderPosition.startPoint")
                 }
               />
@@ -348,7 +310,7 @@ class SonarChart extends React.PureComponent {
               <VerticleToolTip
                 mode={activeMode}
                 coordinates={vSliderPosition.endPoint}
-                onMouseDown={e =>
+                onMouseDown={(e) =>
                   this.handleMouseDown(e, "vSliderPosition.endPoint")
                 }
               />
@@ -359,15 +321,16 @@ class SonarChart extends React.PureComponent {
               <HorizontalToolTip
                 coordinates={hSliderPosition.startPoint}
                 mode={"manual"}
-                onMouseDown={e =>
+                onMouseDown={(e) =>
                   activeMode !== "manual" &&
+                  activeMode !== "stable" &&
                   this.handleMouseDown(e, "hSliderPosition.startPoint")
                 }
               />
             </g>
           </g>
         )}
-        {activeMode === "manual" && (
+        {(activeMode === "manual" || activeMode === "stable") && (
           <>
             <CircleHandle coordinates={vSliderPosition.startPoint} />
             <rect
@@ -391,7 +354,7 @@ class SonarChart extends React.PureComponent {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     sonarState: state.sonarState,
     controlModes: state.controlModes
