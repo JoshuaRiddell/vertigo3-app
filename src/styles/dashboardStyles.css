@@ -318,6 +318,13 @@ body {
 .video-controller-wrapper .setting-icon-wrapper {
   margin-left: auto;
 }
+.stream-unavailable-icon {
+  width: 150px;
+  position: absolute;
+  top: 45%;
+  left: 45%;
+  animation: flash-infinite;
+}
 .right-sidebar {
   flex: 0 0 28.02%;
   max-width: 28.02%;
@@ -362,7 +369,7 @@ body {
   margin-bottom: 24px;
 }
 .sonar-container {
-  background-image: url("../assets/sonar-image.png");
+  background-image: url("/images/sonar-image.png");
   background-size: contain;
   /* background-repeat: no-repeat;
   background-position-y: 30px;

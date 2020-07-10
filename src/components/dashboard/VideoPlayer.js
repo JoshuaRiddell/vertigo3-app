@@ -1,65 +1,90 @@
 import React from "react";
-import { Player, ControlBar } from "video-react";
-import "video-react/dist/video-react.css";
-import HLSSource from "./HlsSource";
 import TapSelection from "./TapSelection";
-import testVidClip from "../../assets/underwater-test-vid.mp4";
-import sampleVidClip from "../../assets/sample-vid-2.mp4";
 import { connect } from "react-redux";
 import {
   toggleTrainigSetModal,
   sendTapAnnotationData,
   initTrainigSetModal
 } from "../../actions/trainingSetActions";
-import { setPlayerStateSnapshot } from "../../actions/videoPlayerActions";
+
+const videoBasePath = process.env.REACT_APP_VIDEO_API_BASE_PATH;
 
 class VideoPlayer extends React.Component {
   constructor(props, context) {
     super(props, context);
 
     this.state = {
-      source: "",
-      activeAnnotations: false
+      activeAnnotations: false,
+      streamAvailable: true,
+      pauseStream: false,
+      jpegStreamCanvas: React.createRef()
     };
 
-    this.togglePlay = this.togglePlay.bind(this);
-    this.fullScreen = this.fullScreen.bind(this);
+    this.image = new Image();
+    this.image.src = videoBasePath;
+
+    this.image.onload = this.onStreamLoad;
+    this.image.onerror = this.onError;
   }
 
   componentDidMount() {
-    if (this.player) {
-      this.player.subscribeToStateChange(this.handleStateChange.bind(this));
-      // subscribe state change
-      this.player.play();
+    const {
+      jpegStreamCanvas: { current }
+    } = this.state;
+    const ctx = current.getContext("2d");
+
+    ctx.beginPath();
+    ctx.rect(0, 0, 1076, 900);
+    ctx.fillStyle = "black";
+    ctx.fill();
+
+    this.drawImages();
+  }
+
+  onStreamLoad = (e) => {
+    this.setState({ streamAvailable: true });
+  };
+
+  onError = (e) => {
+    const { pauseStream } = this.state;
+
+    if (!pauseStream) {
+      this.setState({ streamAvailable: false });
     }
-  }
+  };
 
-  handleStateChange(state) {
-    // copy player state to this component's state
-    this.setState({
-      player: state
-    });
-  }
-
-  togglePlay() {
-    const { player } = this.state;
-
-    if (!player.paused) {
-      this.player.pause();
-    } else {
-      this.player.play();
-    }
-  }
-
-  showVideoControls = () => {
-    const { timeOutId } = this.state;
-
-    if (timeOutId) clearTimeout(timeOutId);
+  drawImages = () => {
+    const {
+      jpegStreamCanvas: { current }
+    } = this.state;
+    const ctx = current.getContext("2d");
 
     this.setState({
-      showControls: true,
-      timeOutId: setTimeout(() => this.setState({ showControls: false }), 5000)
+      intervalId: setInterval(() => {
+        try {
+          ctx.drawImage(
+            this.image,
+            0,
+            0,
+            this.props.playerWidth,
+            this.props.playerHeight
+          );
+        } catch (err) {
+          this.image.src = videoBasePath;
+        }
+      }, 1000 / 30)
     });
+  };
+
+  playStream = () => {
+    this.setState(
+      { pauseStream: false },
+      () => (this.image.src = videoBasePath)
+    );
+  };
+
+  pauseStream = () => {
+    this.setState({ pauseStream: true }, () => (this.image.src = ""));
   };
 
   getSelectionValue = (type, values) => {
@@ -93,41 +118,26 @@ class VideoPlayer extends React.Component {
     }
   };
 
-  fullScreen() {
-    this.player.toggleFullscreen();
-  }
-
   componentDidUpdate(prevProps, prevState) {
-    const { videoPlayerState, trainingSet, videoUrl } = this.props;
+    const { trainingSet } = this.props;
     const { showTrainingSet } = trainingSet;
 
     if (
       prevProps.trainingSet.showTrainingSet !== showTrainingSet &&
       showTrainingSet === false
     ) {
-      const { player } = this.player.getState();
-      this.player.seek(player.currentTime + 3);
-      this.player.play();
+      this.playStream();
       this.refs.tapSelectionRef && this.refs.tapSelectionRef.clearCanvas();
-    }
-
-    if (prevProps.videoPlayerState !== videoPlayerState) {
-      if (videoPlayerState && Object.keys(videoPlayerState).length) {
-        const { currentTime } = videoPlayerState;
-        this.player.seek(currentTime);
-        // this.player.played.start(currentTime);
-      }
-    }
-
-    if (prevProps.videoUrl !== videoUrl) {
-      this.player.play();
     }
   }
 
   componentWillUnmount() {
-    const { player } = this.player.getState();
-    this.props.setPlayerStateSnapshot(player);
-    this.player = null;
+    const { intervalId } = this.state;
+
+    if (intervalId) {
+      clearInterval(intervalId);
+    }
+    this.image = null;
   }
 
   scalingAlgo = (values, action) => {
@@ -157,47 +167,43 @@ class VideoPlayer extends React.Component {
     const {
       session: { recordingMode }
     } = this.props;
+    const { streamAvailable, pauseStream } = this.state;
     return (
       <div className="video-player-container">
         <TapSelection
           ref="tapSelectionRef"
-          showVideoControls={this.showVideoControls}
           getSelectionValue={this.getSelectionValue}
-          handleVideoPlayer={this.player}
           disableAnnotations={this.props.disableAnnotations || !recordingMode}
+          playStream={this.playStream}
+          pauseStream={this.pauseStream}
         >
-          <Player
-            fluid={false}
+          {!streamAvailable && !pauseStream && (
+            <img
+              className="stream-unavailable-icon flash-infinite"
+              src={"images/no-video.svg"}
+            ></img>
+          )}
+          <canvas
+            id="jpeg-stream-canvas"
+            ref={this.state.jpegStreamCanvas}
             width={this.props.playerWidth}
             height={this.props.playerHeight}
-            loop
-            autoplay={true}
-            preload="auto"
-            src={this.props.videoUrl}
-            // src={testVidClip}
-            ref={player => {
-              this.player = player;
-            }}
-          >
-            <ControlBar autoHide={false} />
-          </Player>
+          ></canvas>
         </TapSelection>
       </div>
     );
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     trainingSet: state.trainingSet,
-    videoPlayerState: state.videoPlayerState,
     mapState: state.mapState,
     session: state.session
   };
 };
 export default connect(mapStateToProps, {
   toggleTrainigSetModal,
-  setPlayerStateSnapshot,
   sendTapAnnotationData,
   initTrainigSetModal
 })(VideoPlayer);

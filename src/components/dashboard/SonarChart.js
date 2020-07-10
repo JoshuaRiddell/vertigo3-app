@@ -17,11 +17,15 @@ import openSocket from "socket.io-client";
 const basePath = process.env.REACT_APP_API_BASE_PATH;
 const socket = openSocket(`${basePath}/control/parameters`).connect();
 
+const videoBasePath = process.env.REACT_APP_VIDEO_API_BASE_PATH;
+
 class SonarChart extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
+      streamAvailable: true,
+      sonarStreamRef: React.createRef(),
       // These are our 3 BÃ©zier points, stored in state.
       boatToGliderPosition: {
         startPoint: { x: 98, y: 20 },
@@ -48,6 +52,11 @@ class SonarChart extends React.PureComponent {
     const {
       controlModes: { activeMode }
     } = this.props;
+
+    const {
+      sonarStreamRef: { current }
+    } = this.state;
+
     this.updateCoordinatesByMode(activeMode);
 
     socket.on("connect", () =>
@@ -60,6 +69,19 @@ class SonarChart extends React.PureComponent {
     if (!socket.connected) {
       this.props.systemStatusChange({ sonarControls: false });
     }
+
+    current.onload = () => {
+      this.setState({ streamAvailable: true }, () =>
+        this.handleSonarStreamSuccess()
+      );
+    };
+    current.onerror = () => {
+      this.setState({ streamAvailable: false }, () =>
+        this.handleSonarStreamError()
+      );
+    };
+
+    current.href.baseVal = videoBasePath;
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -79,7 +101,39 @@ class SonarChart extends React.PureComponent {
     }
   }
 
+  handleSonarStreamError = async () => {
+    const { streamCheckIntervalId } = this.state;
+
+    if (streamCheckIntervalId) {
+      clearInterval(streamCheckIntervalId);
+    }
+
+    this.setState({
+      streamCheckIntervalId: setInterval(() => {
+        const {
+          sonarStreamRef: { current }
+        } = this.state;
+
+        if (!this.state.streamAvailable) {
+          current.href.baseVal = videoBasePath;
+        }
+      }, 1000)
+    });
+  };
+
+  handleSonarStreamSuccess = () => {
+    const { streamCheckIntervalId } = this.state;
+
+    if (streamCheckIntervalId) {
+      clearInterval(streamCheckIntervalId);
+    }
+  };
+
   componentWillUnmount() {
+    const { streamCheckIntervalId } = this.state;
+    if (streamCheckIntervalId) {
+      clearInterval(streamCheckIntervalId);
+    }
     this.props.setSonarStateSnapshot(this.state);
     socket.removeAllListeners();
   }
@@ -249,7 +303,8 @@ class SonarChart extends React.PureComponent {
       boatToGliderPosition,
       vSliderPosition,
       hSliderPosition,
-      draggingPointKeys
+      draggingPointKeys,
+      streamAvailable
     } = this.state;
 
     const instructions = `
@@ -273,6 +328,17 @@ class SonarChart extends React.PureComponent {
         onTouchCancel={() => draggingPointKeys && this.handleMouseUp()}
         style={{ overflow: "visible" }}
       >
+        <image
+          ref={this.state.sonarStreamRef}
+          style={
+            streamAvailable
+              ? { transform: "translate(0, 17px)" }
+              : { opacity: 0 }
+          }
+          height="100%"
+          width="100%"
+        />
+
         <rect
           width={viewBoxWidth}
           height="40"

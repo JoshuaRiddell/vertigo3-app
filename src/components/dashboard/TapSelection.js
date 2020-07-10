@@ -28,7 +28,7 @@ export default class TapSelection extends Component {
     };
   }
 
-  touchStart = e => {
+  touchStart = (e) => {
     const { gesturesTimeout } = this.state;
     const {
       center: { x, y }
@@ -49,7 +49,7 @@ export default class TapSelection extends Component {
     });
   };
 
-  touchMove = e => {
+  touchMove = (e) => {
     console.log(e);
     const {
       center: { x, y }
@@ -69,11 +69,11 @@ export default class TapSelection extends Component {
       this.pinchZoom(e);
     }
     if (!this.state.annotationState.dragging) {
-      this.props.handleVideoPlayer.pause();
+      this.props.pauseStream();
     }
   };
 
-  touchEnd = e => {
+  touchEnd = (e) => {
     const { annotationState, gesturesTimeout } = this.state;
     if (annotationState.dragging && e.distance > 10) {
       this.props.getSelectionValue(e.type, {
@@ -92,9 +92,7 @@ export default class TapSelection extends Component {
         gesturesTimeout: setTimeout(() => {
           this.setState({ activateGestures: false });
           this.zoomReset();
-          const { player } = this.props.handleVideoPlayer.getState();
-          this.props.handleVideoPlayer.seek(player.currentTime + 3);
-          this.props.handleVideoPlayer.play();
+          this.props.playStream();
         }, 3000)
       });
     }
@@ -121,29 +119,25 @@ export default class TapSelection extends Component {
     this.hammerTime.on("tap", this.activateGestures);
   }
 
-  activateGestures = e => {
+  activateGestures = (e) => {
     const { disableAnnotations } = this.props;
     const { activateGestures, gesturesTimeout } = this.state;
 
     if (disableAnnotations) return;
 
     if (!activateGestures) {
-      this.props.handleVideoPlayer.pause();
+      this.props.pauseStream();
       this.setState({
         activateGestures: true,
         gesturesTimeout: setTimeout(() => {
-          const { player } = this.props.handleVideoPlayer.getState();
-          this.props.handleVideoPlayer.seek(player.currentTime + 3);
-          this.props.handleVideoPlayer.play();
+          this.props.playStream();
           this.setState({ activateGestures: false });
         }, 3000)
       });
     } else {
       if (gesturesTimeout) clearTimeout(gesturesTimeout);
       this.zoomReset();
-      const { player } = this.props.handleVideoPlayer.getState();
-      this.props.handleVideoPlayer.seek(player.currentTime + 1);
-      this.props.handleVideoPlayer.play();
+      this.props.playStream();
       this.setState({
         activateGestures: false,
         gesturesTimeout: ""
@@ -152,7 +146,7 @@ export default class TapSelection extends Component {
     }
   };
 
-  pinchZoom = ev => {
+  pinchZoom = (ev) => {
     const { gesturesTimeout, zoomState, annotationState } = this.state;
     if (gesturesTimeout) clearTimeout(gesturesTimeout);
 
@@ -313,7 +307,7 @@ export default class TapSelection extends Component {
     ctx.strokeRect(x, y, width, height);
   };
 
-  clearCanvas = type => {
+  clearCanvas = (type) => {
     const { canvas, zoomState } = this.state;
 
     this.setState({
@@ -331,7 +325,7 @@ export default class TapSelection extends Component {
     setTimeout(() => this.draw(), 300);
   };
 
-  showRipple = e => {
+  showRipple = (e) => {
     e.preventDefault();
 
     const { center } = e;
@@ -402,7 +396,7 @@ export default class TapSelection extends Component {
       <div
         ref={this.state.selectionArea}
         className={"ripple " + classes}
-        onContextMenu={e => {
+        onContextMenu={(e) => {
           e.preventDefault();
           return false;
         }}
@@ -443,13 +437,13 @@ export default class TapSelection extends Component {
           }`}
           ref={this.state.canvas}
           width={offsetWidth}
-          height={offsetHeight}
+          height={offsetHeight - 7}
           style={
             dragging
               ? { outline: "10px solid #24ea00", outlineOffset: "-8px" }
               : {}
           }
-          onContextMenu={e => {
+          onContextMenu={(e) => {
             e.preventDefault();
             return false;
           }}
@@ -457,7 +451,7 @@ export default class TapSelection extends Component {
         <div
           ref="ripples"
           className="rippleContainer"
-          onContextMenu={e => {
+          onContextMenu={(e) => {
             e.preventDefault();
             return false;
           }}

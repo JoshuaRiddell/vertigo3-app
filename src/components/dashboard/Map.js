@@ -9,6 +9,11 @@ import {
 } from "../../actions/mapActions";
 import CurrentLocationIcon from "../../helpers/CurrentLocationIcon";
 
+import openSocket from "socket.io-client";
+
+const basePath = process.env.REACT_APP_API_BASE_PATH;
+const socket = openSocket(`${basePath}/surface/gps`).connect();
+
 class Map extends React.Component {
   state = {
     timeoutId: "",
@@ -35,53 +40,36 @@ class Map extends React.Component {
       }
     ).addTo(this.map);
     // add layer
-
-    //path to follow
-    const customPolyline = L.Polyline.extend({});
-
-    const polyline = new customPolyline(gpsTrackData, {
-      color: "#fee60f",
-      dashArray: 10,
-      dashOffset: 50
-    });
-
-    polyline.addTo(this.map);
-
     this.layer = L.layerGroup().addTo(this.map);
-    //this.updateMarkers(this.props.markersData);
 
-    this.drawGpsData();
     this.updatePath();
-
-    //event handlers
-    // this.map.on("zoomstart", this.zoomStart);
-    // this.map.on("movestart", this.moveStart);
 
     this.map.on("moveend", this.mapMove);
     this.map.on("zoomend", this.mapZoom);
+
+    socket.on("json", (coordinates) => {
+      const { mapState } = this.props;
+      const { path, pathIndex } = mapState;
+
+      if (coordinates && coordinates.length) {
+        this.props.setMapStateSnapshot({
+          path: [...path, coordinates],
+          pathIndex: pathIndex + 1
+        });
+      }
+    });
   }
-  // zoomStart = (e) => {
-  //   const { followPath } = this.state;
-  //   if(followPath){
-  //     this.setState({ followPath: false });
-  //   }
-  // }
-  // moveStart = (e) => {
-  //   const { followPath } = this.state;
-  //   if(followPath){
-  //     this.setState({ followPath: false });
-  //   }
-  // }
-  mapMove = e => {
+
+  mapMove = (e) => {
     const position = this.map.getCenter();
     this.props.setViewPosition(Object.values(position));
   };
-  mapZoom = e => {
+  mapZoom = (e) => {
     const zoomLevel = this.map.getZoom();
     this.props.setMapZoomLevel(zoomLevel);
   };
 
-  viewFollowPath = userAction => {
+  viewFollowPath = (userAction) => {
     const {
       mapState: { trackData }
     } = this.props;
@@ -101,6 +89,10 @@ class Map extends React.Component {
     const { mapState } = this.props;
     const { path, trackData } = mapState;
 
+    if (prevProps.mapState && prevProps.mapState.path.length !== path.length) {
+      this.drawGpsData();
+    }
+
     if (
       prevProps.mapState &&
       prevProps.mapState.trackData.features.length !== trackData.features.length
@@ -110,64 +102,45 @@ class Map extends React.Component {
   }
 
   componentWillUnmount() {
-    clearTimeout(this.state.timeoutId);
+    socket.removeAllListeners();
   }
 
   updateMarkers(markersData) {
     this.layer.clearLayers();
-    markersData.forEach(marker => {
+    markersData.forEach((marker) => {
       L.marker(marker.latLng, { title: marker.title }).addTo(this.layer);
     });
   }
 
   drawGpsData = async () => {
     const { mapState } = this.props;
-    const { pathIndex } = mapState;
-    const pathData = gpsTrackData;
+    const { pathIndex, path, trackData } = mapState;
 
-    for (let i = pathIndex; i < pathData.length; i++) {
-      await this.pathPromise(i, pathData);
-    }
-  };
+    if (path.length > 1 && path[pathIndex - 1]) {
+      //update the features key with the updated coordinates
+      //we need two sets of coordinates eg [lat, lng] + [lat, lng] to be able to draw line between them.
+      const [lat1, lng1] = path[pathIndex - 2];
+      const [lat2, lng2] = path[pathIndex - 1];
 
-  pathPromise = (i, pathData) => {
-    const {
-      mapState: { path, trackData }
-    } = this.props;
+      const updatedPath = {
+        type: "Feature",
+        geometry: {
+          type: "LineString",
+          coordinates: [
+            [lng1, lat1],
+            [lng2, lat2]
+          ]
+        },
+        properties: { speed: pathIndex }
+      };
 
-    return new Promise(resolve => {
-      this.setState({
-        timeoutId: setTimeout(() => {
-          if (pathData[i + 1]) {
-            //update the features key with the updated coordinates
-            const [lat1, lng1] = pathData[i];
-            const [lat2, lng2] = pathData[i + 1];
-
-            const updatedPath = {
-              type: "Feature",
-              geometry: {
-                type: "LineString",
-                coordinates: [
-                  [lng1, lat1],
-                  [lng2, lat2]
-                ]
-              },
-              properties: { speed: i }
-            };
-
-            this.props.setMapStateSnapshot({
-              trackData: {
-                ...trackData,
-                features: [...trackData.features, updatedPath]
-              },
-              path: [...path, pathData[i]],
-              pathIndex: i
-            });
-          }
-          resolve(clearTimeout(this.state.timeoutId));
-        }, 2000)
+      this.props.setMapStateSnapshot({
+        trackData: {
+          ...trackData,
+          features: [...trackData.features, updatedPath]
+        }
       });
-    });
+    }
   };
 
   updatePath() {
@@ -177,36 +150,11 @@ class Map extends React.Component {
 
     const { followPath } = this.state;
     this.layer.clearLayers();
-    // const customPolyline = L.Polyline.extend({
-    //   options: {
-    //     speed: "",
-    //     bearing: ""
-    //   }
-    // });
-
-    // const polyline = new customPolyline(mapState.path, {
-    //   speed: "143",
-    //   bearing: "38",
-    //   color: "#ff0000"
-    // });
-
-    // polyline.addTo(this.map);
-
-    // var myRenderer = L.canvas({ padding: 0.5 });
-    // const currentPosition = mapState.path[mapState.path.length - 1] || [];
-
-    // if (currentPosition.length) {
-    //   var circleMarker = L.circleMarker(currentPosition, {
-    //     // renderer: myRenderer,
-    //     color: "#ffeb3b",
-    //     fillOpacity: 1
-    //   }).addTo(this.map);
-    // }
 
     if (trackData && Object.keys(trackData).length) {
       L.geoJson(trackData, {
         style: this.style,
-        onEachFeature: function(feature, layer) {
+        onEachFeature: function (feature, layer) {
           // assign bounds to feature
           feature.properties.bounds_calculated = layer.getBounds();
         }
@@ -216,7 +164,7 @@ class Map extends React.Component {
     }
   }
 
-  getColor = speed => {
+  getColor = (speed) => {
     return speed > 150
       ? "#d94b38"
       : speed > 100
@@ -226,7 +174,7 @@ class Map extends React.Component {
       : "#e91e63";
   };
 
-  style = feature => {
+  style = (feature) => {
     return {
       weight: 5,
       opacity: 1,
@@ -254,7 +202,7 @@ class Map extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     mapState: state.mapState
   };

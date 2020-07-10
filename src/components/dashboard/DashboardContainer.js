@@ -36,13 +36,6 @@ class DashboardContainer extends React.Component {
   };
 
   componentDidMount() {
-    // const video = document.getElementById("video-1");
-    fetch(sampleVidClip)
-      .then((response) => response.blob())
-      .then((blob) =>
-        this.setState({ videoUrl: window.URL.createObjectURL(blob) })
-      );
-
     //get training sets
     this.props.getTrainingSets();
   }
