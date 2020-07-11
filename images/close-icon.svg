@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="55.295" height="55.294" viewBox="0 0 55.295 55.294">
+  <defs>
+    <linearGradient id="linear-gradient" y1="0.5" x2="1" y2="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="1" stop-color="#d1d3d4"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" y1="0.5" x2="1" y2="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#d1d3d4"/>
+      <stop offset="1" stop-color="#fff"/>
+    </linearGradient>
+  </defs>
+  <g id="Group_176" data-name="Group 176" transform="translate(153.945 -1503.483)">
+    <ellipse id="Ellipse_23" data-name="Ellipse 23" cx="27.647" cy="27.647" rx="27.647" ry="27.647" transform="translate(-153.944 1503.483)" fill="url(#linear-gradient)"/>
+    <ellipse id="Ellipse_24" data-name="Ellipse 24" cx="26.265" cy="26.265" rx="26.265" ry="26.265" transform="translate(-152.562 1504.865)" fill="url(#linear-gradient-2)"/>
+    <g id="Group_2" data-name="Group 2" transform="translate(-146.687 1510.74)">
+      <ellipse id="Ellipse_25" data-name="Ellipse 25" cx="20.735" cy="20.735" rx="20.735" ry="20.735" transform="translate(5.327 5.327)" fill="#fff" opacity="0"/>
+      <ellipse id="Ellipse_26" data-name="Ellipse 26" cx="20.714" cy="20.714" rx="20.714" ry="20.714" transform="translate(4.994 4.994)" fill="#f7f7f7" opacity="0.063"/>
+      <ellipse id="Ellipse_27" data-name="Ellipse 27" cx="20.692" cy="20.692" rx="20.692" ry="20.692" transform="translate(4.661 4.661)" fill="#efeff0" opacity="0.125"/>
+      <ellipse id="Ellipse_28" data-name="Ellipse 28" cx="20.671" cy="20.671" rx="20.671" ry="20.671" transform="translate(4.328 4.328)" fill="#e7e8e8" opacity="0.188"/>
+      <ellipse id="Ellipse_29" data-name="Ellipse 29" cx="20.649" cy="20.649" rx="20.649" ry="20.649" transform="translate(3.995 3.995)" fill="#dfe0e1" opacity="0.25"/>
+      <ellipse id="Ellipse_30" data-name="Ellipse 30" cx="20.627" cy="20.627" rx="20.627" ry="20.627" transform="translate(3.662 3.662)" fill="#d7d8d9" opacity="0.313"/>
+      <ellipse id="Ellipse_31" data-name="Ellipse 31" cx="20.606" cy="20.606" rx="20.606" ry="20.606" transform="translate(3.329 3.329)" fill="#cfd0d1" opacity="0.375"/>
+      <ellipse id="Ellipse_32" data-name="Ellipse 32" cx="20.584" cy="20.584" rx="20.584" ry="20.584" transform="translate(2.996 2.996)" fill="#c7c8ca" opacity="0.438"/>
+      <ellipse id="Ellipse_33" data-name="Ellipse 33" cx="20.563" cy="20.563" rx="20.563" ry="20.563" transform="translate(2.663 2.663)" fill="#c0c1c2" opacity="0.5"/>
+      <ellipse id="Ellipse_34" data-name="Ellipse 34" cx="20.541" cy="20.541" rx="20.541" ry="20.541" transform="translate(2.331 2.331)" fill="#b8b9ba" opacity="0.563"/>
+      <ellipse id="Ellipse_35" data-name="Ellipse 35" cx="20.519" cy="20.519" rx="20.519" ry="20.519" transform="translate(1.998 1.998)" fill="#b0b1b3" opacity="0.625"/>
+      <ellipse id="Ellipse_36" data-name="Ellipse 36" cx="20.498" cy="20.498" rx="20.498" ry="20.498" transform="translate(1.665 1.665)" fill="#a8a9ab" opacity="0.688"/>
+      <ellipse id="Ellipse_37" data-name="Ellipse 37" cx="20.476" cy="20.476" rx="20.476" ry="20.476" transform="translate(1.332 1.332)" fill="#a0a1a4" opacity="0.75"/>
+      <ellipse id="Ellipse_38" data-name="Ellipse 38" cx="20.455" cy="20.455" rx="20.455" ry="20.455" transform="translate(0.999 0.999)" fill="#98999c" opacity="0.813"/>
+      <ellipse id="Ellipse_39" data-name="Ellipse 39" cx="20.433" cy="20.433" rx="20.433" ry="20.433" transform="translate(0.666 0.666)" fill="#909294" opacity="0.875"/>
+      <ellipse id="Ellipse_40" data-name="Ellipse 40" cx="20.411" cy="20.411" rx="20.411" ry="20.411" transform="translate(0.333 0.333)" fill="#888a8d" opacity="0.938"/>
+      <ellipse id="Ellipse_41" data-name="Ellipse 41" cx="20.39" cy="20.39" rx="20.39" ry="20.39" fill="#808285"/>
+    </g>
+    <ellipse id="Ellipse_42" data-name="Ellipse 42" cx="20.735" cy="20.735" rx="20.735" ry="20.735" transform="translate(-147.032 1510.395)" fill="#2e4442"/>
+    <ellipse id="Ellipse_43" data-name="Ellipse 43" cx="17.279" cy="17.279" rx="17.279" ry="17.279" transform="translate(-143.577 1513.851)" fill="#2e4442"/>
+    <text id="_" data-name="+" transform="translate(-120.168 1536.759) rotate(-45)" fill="#fff" font-size="27" font-family="SegoeUI, Segoe UI"><tspan x="-9.235" y="0">+</tspan></text>
+  </g>
+</svg>
